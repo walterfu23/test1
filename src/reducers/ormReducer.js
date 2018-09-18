@@ -25,6 +25,11 @@ export default function ormReducer(dbState, action) {
       //    console.log(session.state.BizDoc);
       BizDoc.hydrateArray(action.data.data.value);
       break;
+    case ActionTypesBizDoc.CREATE_BizDoc_SUCCESSFUL:
+      console.log(action.data.data.value);
+      //    console.log(session.state.BizDoc);
+      const i = 123;
+      break;
     case ActionTypesBizDocRev.FETCH_BizDocRev_SUCCESSFUL:
       BizDocRev.hydrateArray(action.data.data.value);
       break;

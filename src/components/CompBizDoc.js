@@ -3,19 +3,36 @@ import { connect } from 'react-redux';
 import { createBizDocListSelector } from '../selectors/selectBizDoc';
 import { Grid, GridColumn, GridCell, GridToolbar } from '@progress/kendo-react-grid';
 import { DropDownList } from '@progress/kendo-react-dropdowns';
+import { Input, Switch } from '@progress/kendo-react-inputs';
 import MyCommandCell from './MyCommandCell';
 import { ActionTypesBizDoc } from '../constants/actionTypes';
 import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
 
 class CompBizDoc extends Component {
+
+  static defaultProps = {
+    recInit: {              // record initial values 
+      Id: undefined,
+      Active: true,
+      DocNum: undefined,
+      DocName: undefined,
+      Comment: undefined,
+    },
+
+    stateInit: {
+      creating: true,        // true: adding; false: editing.
+      recInEdit: undefined,  // record being edited or being added.
+    },
+
+    EDIT_FIELD_WIDTH: '500px',       // width of edit fields
+    TEXTAREA_COLS: 47,       // cols in a textarea
+    TEXTAREA_ROWS: 3,       // rows in a textarea
+
+  }
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      recordInEdit: undefined,  // true: adding or editing a record.
-      creating: undefined,      // true: adding; false: editing.
-    }
-
+    this.state = props.stateInit;
     this.CommandCell = MyCommandCell(
       this.enterEdit,
       this.remove,
@@ -25,32 +42,55 @@ class CompBizDoc extends Component {
     );
   }
 
+  // Add button pressed: requesting a new record added.
+  handleAdd = () => {
+    this.setState({
+      creating: true,
+      recInEdit: this.props.recInit,
+    });
+  }
+
+  // cancel button or form close clicked.
+  handleCancel = () => {
+    this.setState(this.props.stateInit);
+  }
+
+  // save button pressed. Save the record
+  handleSave = () => {
+    this.props.createRequested(this.state.recInEdit);  // request to create the record
+    //   this.handleCancel();
+    //    this.setState(this.props.stateInit);   // done with the dialog
+  }
+
+  // Enter key pressed in the form. Q: same as pressing Save?
+  handleSubmit = (event) => {
+    event.preventDefault();
+  }
+
   // title of the diaglog box
   dialogTitle = () => {
     return this.state.creating ? 'Add BizDoc' : 'Edit BizDoc';
   }
 
-  handleAdd = () => {
-    this.setState({
-      recordInEdit: {},
-      creating: true
-    })
+  // return a clone of the record
+  cloneRec = rec => Object.assign({}, rec);
+
+  onDialogInputChange = (event) => {
+    const target = event.target;
+    const fieldVal = target.type === 'checkbox' ? target.checked : target.value;
+    const fieldName = target.props ? target.props.name : target.name;
+
+    const recEdited = this.cloneRec(this.state.recInEdit);
+    recEdited[fieldName] = fieldVal;
+
+    this.setState(
+      {
+        recInEdit: recEdited
+      }
+    );
   }
 
-  handleCancel = () => {
-    this.setState({
-      recordInEdit: undefined,  // true: adding or editing a record.
-      creating: undefined,      // true: adding; false: editing.
-    })
-  }
-
-  handleSave = () => {
-    this.setState({
-      recordInEdit: undefined,  // true: adding or editing a record.
-      creating: undefined,      // true: adding; false: editing.
-    })
-  }
-
+  //==========================================================
   // Add new button pressed to add a new record
   enterInsert = () => {
     const dataItem = { inEdit: true };
@@ -184,11 +224,55 @@ class CompBizDoc extends Component {
           <GridColumn cell={this.CommandCell} />
         </Grid>
 
-        {this.state.recordInEdit &&
+        {this.state.recInEdit &&   // show dialog if adding or editing
           <Dialog
             title={this.dialogTitle()}
             onClose={this.handleCancel}
+            width={this.props.EDIT_FIELD_WIDTH}
           >
+            <form
+              onSubmit={this.handleSubmit}
+            >
+              <div style={{ marginBottom: '1rem' }}>
+                <label>
+                  <Switch
+                    name="Active"
+                    checked={this.state.recInEdit.Active}
+                    onChange={this.onDialogInputChange}
+                  />
+                  &nbsp;&nbsp;Active
+              </label>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <Input
+                  name="DocNum"
+                  label="Document Number"
+                  value={this.state.recInEdit.DocNum || ''}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "100%" }}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <Input
+                  name="DocName"
+                  label="Document Name"
+                  value={this.state.recInEdit.DocName || ''}
+                  required={true}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "100%" }}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <Input
+                  name="Comment"
+                  label="Comment"
+                  value={this.state.recInEdit.Comment || ''}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </form>
+
             <DialogActionsBar>
               <button
                 className="k-button"
@@ -203,7 +287,6 @@ class CompBizDoc extends Component {
                 Save
               </button>
             </DialogActionsBar>
-
           </Dialog>
         }
       </div>
@@ -219,12 +302,22 @@ const mapStateToProps = (state, props) => {
 }
 
 const mapDispatchToProps = (dispatch, props) => {
-  const action = type => dispatch({ type });
+  const action = (type, payload) => dispatch({
+    type,
+    payload,
+  });
+  // return {
+  //   createRequested: (recToCreate) => dispatch({
+  //     type: ActionTypesBizDoc.CREATE_BizDoc_REQUESTED, 
+  //     payload: recToCreate,
+  //   })
+  // }
   return {
-    addRequested: () => action(ActionTypesBizDoc.ADD_BizDoc_REQUESTED),
-    addCancelled: () => action(ActionTypesBizDoc.ADD_BizDoc_CANCELLED),
-    createRequested: () => action(ActionTypesBizDoc.CREATE_BizDoc_REQUESTED),
+    createRequested: (recToCreate) => action(
+      ActionTypesBizDoc.CREATE_BizDoc_REQUESTED,
+      recToCreate
+    ),
   }
 }
 
-export default connect(mapStateToProps)(CompBizDoc);
+export default connect(mapStateToProps, mapDispatchToProps)(CompBizDoc);
