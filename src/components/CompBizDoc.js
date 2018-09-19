@@ -5,8 +5,9 @@ import { Grid, GridColumn, GridCell, GridToolbar } from '@progress/kendo-react-g
 import { DropDownList } from '@progress/kendo-react-dropdowns';
 import { Input, Switch } from '@progress/kendo-react-inputs';
 import MyCommandCell from './MyCommandCell';
-import { ActionTypesBizDoc } from '../constants/actionTypes';
-import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
+import actionGen from '../actions/actionGen';
+import actionBizDoc from '../actions/actionBizDoc';
+import CompBizDocForm from './CompBizDocForm';
 
 class CompBizDoc extends Component {
 
@@ -35,9 +36,9 @@ class CompBizDoc extends Component {
     this.state = props.stateInit;
     this.CommandCell = MyCommandCell(
       this.enterEdit,
-      this.remove,
-      this.save,
-      this.cancel,
+      this.removeRec,
+      this.saveChanges,
+      this.cancelEdit,
       "inEdit"
     );
   }
@@ -50,62 +51,11 @@ class CompBizDoc extends Component {
     });
   }
 
-  // cancel button or form close clicked.
-  handleCancel = () => {
-    this.setState(this.props.stateInit);
-  }
-
-  // save button pressed. Save the record
-  handleSave = () => {
-    this.props.createRequested(this.state.recInEdit);  // request to create the record
-    //   this.handleCancel();
-    //    this.setState(this.props.stateInit);   // done with the dialog
-  }
-
-  // Enter key pressed in the form. Q: same as pressing Save?
-  handleSubmit = (event) => {
-    event.preventDefault();
-  }
-
-  // title of the diaglog box
-  dialogTitle = () => {
-    return this.state.creating ? 'Add BizDoc' : 'Edit BizDoc';
-  }
-
-  // return a clone of the record
-  cloneRec = rec => Object.assign({}, rec);
-
-  onDialogInputChange = (event) => {
-    const target = event.target;
-    const fieldVal = target.type === 'checkbox' ? target.checked : target.value;
-    const fieldName = target.props ? target.props.name : target.name;
-
-    const recEdited = this.cloneRec(this.state.recInEdit);
-    recEdited[fieldName] = fieldVal;
-
-    this.setState(
-      {
-        recInEdit: recEdited
-      }
-    );
-  }
-
   //==========================================================
-  // Add new button pressed to add a new record
-  enterInsert = () => {
-    const dataItem = { inEdit: true };
-    this.props.listBizDoc.unshift(dataItem);
-    // const newproducts = this.state.data.slice();
-    // newproducts.unshift(dataItem);
-    // this.update(newproducts, dataItem);
-    // this.setState({
-    //   data: newproducts
-    // });
-  }
 
-  // cancel the add operation
-  cancelInsert = () => {
-    console.log("cancelInsert() invoked.")
+  // cancel the Edit operation
+  cancelEdit = () => {
+    console.log("cancelEdit() invoked.")
   }
 
   enterEdit = (dataItem) => {
@@ -115,7 +65,7 @@ class CompBizDoc extends Component {
     });
   }
 
-  save = (dataItem) => {
+  saveChanges = (dataItem) => {
     dataItem.inEdit = undefined;
     //  dataItem.ProductID = this.update(sampleProducts, dataItem).ProductID;
     this.setState({
@@ -123,7 +73,7 @@ class CompBizDoc extends Component {
     });
   }
 
-  cancel = (dataItem) => {
+  cancelEdit = (dataItem) => {
     if (dataItem.ProductID) {
       //   let originalItem = sampleProducts.find(p => p.ProductID === dataItem.ProductID);
       let originalItem = undefined;
@@ -136,7 +86,7 @@ class CompBizDoc extends Component {
     });
   }
 
-  remove = (dataItem) => {
+  removeRec = (dataItem) => {
     dataItem.inEdit = undefined;
     this.update(this.state.data, dataItem, true);
     //   this.update(sampleProducts, dataItem, true);
@@ -191,7 +141,6 @@ class CompBizDoc extends Component {
     const listBizDoc = this.props.listBizDoc;
     return (
       <div>
-        <button onClick={this.buttonClicked}>Test</button>
         <Grid
           style={{ height: '420px' }}
           data={listBizDoc}
@@ -210,7 +159,7 @@ class CompBizDoc extends Component {
               <button
                 title="Cancel current changes"
                 className="k-button"
-                onClick={this.cancelInsert}
+                onClick={this.cancelEdit}
               >
                 Cancel current changes
               </button>
@@ -221,73 +170,11 @@ class CompBizDoc extends Component {
           <GridColumn field="DocNum" title="DocNum" width="100px" />
           <GridColumn field="DocName" title="DocName" />
           <GridColumn field="Comment" title="Comment" />
-          <GridColumn cell={this.CommandCell} />
+          <GridColumn cell={this.CommandCell} width="150px"/>
         </Grid>
 
         {this.state.recInEdit &&   // show dialog if adding or editing
-          <Dialog
-            title={this.dialogTitle()}
-            onClose={this.handleCancel}
-            width={this.props.EDIT_FIELD_WIDTH}
-          >
-            <form
-              onSubmit={this.handleSubmit}
-            >
-              <div style={{ marginBottom: '1rem' }}>
-                <label>
-                  <Switch
-                    name="Active"
-                    checked={this.state.recInEdit.Active}
-                    onChange={this.onDialogInputChange}
-                  />
-                  &nbsp;&nbsp;Active
-              </label>
-              </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <Input
-                  name="DocNum"
-                  label="Document Number"
-                  value={this.state.recInEdit.DocNum || ''}
-                  onChange={this.onDialogInputChange}
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <Input
-                  name="DocName"
-                  label="Document Name"
-                  value={this.state.recInEdit.DocName || ''}
-                  required={true}
-                  onChange={this.onDialogInputChange}
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div style={{ marginBottom: '1rem' }}>
-                <Input
-                  name="Comment"
-                  label="Comment"
-                  value={this.state.recInEdit.Comment || ''}
-                  onChange={this.onDialogInputChange}
-                  style={{ width: "100%" }}
-                />
-              </div>
-            </form>
-
-            <DialogActionsBar>
-              <button
-                className="k-button"
-                onClick={this.handleCancel}
-              >
-                Cancel
-              </button>
-              <button
-                className="k-button k-primary"
-                onClick={this.handleSave}
-              >
-                Save
-              </button>
-            </DialogActionsBar>
-          </Dialog>
+          <CompBizDocForm />
         }
       </div>
     );
@@ -302,20 +189,9 @@ const mapStateToProps = (state, props) => {
 }
 
 const mapDispatchToProps = (dispatch, props) => {
-  const action = (type, payload) => dispatch({
-    type,
-    payload,
-  });
-  // return {
-  //   createRequested: (recToCreate) => dispatch({
-  //     type: ActionTypesBizDoc.CREATE_BizDoc_REQUESTED, 
-  //     payload: recToCreate,
-  //   })
-  // }
   return {
-    createRequested: (recToCreate) => action(
-      ActionTypesBizDoc.CREATE_BizDoc_REQUESTED,
-      recToCreate
+    createRequested: (recToCreate) => dispatch(
+      actionGen(actionBizDoc.CREATE_BizDoc_REQUESTED, recToCreate)
     ),
   }
 }

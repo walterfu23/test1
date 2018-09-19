@@ -5,15 +5,6 @@ export const ActionTypesCounter = {
   INCREMENT_ASYNC: 'INCREMENT_ASYNC',
 }
 
-export const ActionTypesBizDoc = {
-  FETCH_BizDoc_REQUESTED: 'FETCH_BizDoc_REQUESTED',
-  FETCH_BizDoc_SUCCESSFUL: 'FETCH_BizDoc_SUCCESSFUL',
-  FETCH_BizDoc_FAILED: 'FETCH_BizDoc_FAILED',
-  CREATE_BizDoc_REQUESTED: 'CREATE_BizDoc_REQUESTED',  // create db rec
-  CREATE_BizDoc_SUCCESSFUL: 'CREATE_BizDoc_SUCCESSFUL', 
-  CREATE_BizDoc_FAILED: 'CREATE_BizDoc_FAILED',
-}
-
 export const ActionTypesBizDocRev = {
   FETCH_BizDocRev_REQUESTED: 'FETCH_BizDocRev_REQUESTED',
   FETCH_BizDocRev_SUCCESSFUL: 'FETCH_BizDocRev_SUCCESSFUL',

@@ -1,12 +1,11 @@
-import {
-  ActionTypesBizDoc, 
-  ActionTypesBizDocRev,
-  ActionTypesBizDocRevPage,
-} from '../constants/actionTypes';
+import actionGen from '../actions/actionGen';
+import actionBizDoc from '../actions/actionBizDoc';
+import actionBizDocRev from '../actions/actionBizDocRev';
+import actionBizDocRevPage from '../actions/actionBizDocRevPage';
 
-const action = (store, type) => {
-  store.dispatch({ type });
-}
+// const action = (store, type) => {
+//   store.dispatch({ type });
+// }
 
 const loadData = store => {
   loadBizDoc(store);
@@ -15,15 +14,15 @@ const loadData = store => {
 }
 
 const loadBizDoc = storeOrm => {
-  action(storeOrm, ActionTypesBizDoc.FETCH_BizDoc_REQUESTED);
+  storeOrm.dispatch(actionGen(actionBizDoc.FETCH_BizDoc_REQUESTED));
 }
 
 const loadBizDocRev = storeOrm => {
-  action(storeOrm, ActionTypesBizDocRev.FETCH_BizDocRev_REQUESTED);
+  storeOrm.dispatch(actionGen(actionBizDocRev.FETCH_BizDocRev_REQUESTED));
 }
 
 const loadBizDocRevPage = storeOrm => {
-  action(storeOrm, ActionTypesBizDocRevPage.FETCH_BizDocRevPage_REQUESTED);
+  storeOrm.dispatch(actionGen(actionBizDocRevPage.FETCH_BizDocRevPage_REQUESTED));
 }
 
 export default loadData;

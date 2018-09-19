@@ -1,0 +1,65 @@
+        {this.state.recInEdit &&   // show dialog if adding or editing
+          <Dialog
+            title={this.dialogTitle()}
+            onClose={this.handleCancel}
+            width={this.props.EDIT_FIELD_WIDTH}
+          >
+            <form
+              onSubmit={this.handleSubmit}
+            >
+              <div style={{ marginBottom: '1rem' }}>
+                <label>
+                  <Switch
+                    name="Active"
+                    checked={this.state.recInEdit.Active}
+                    onChange={this.onDialogInputChange}
+                  />
+                  &nbsp;&nbsp;Active
+              </label>
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <Input
+                  name="DocNum"
+                  label="Document Number"
+                  value={this.state.recInEdit.DocNum || ''}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "100%" }}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <Input
+                  name="DocName"
+                  label="Document Name"
+                  value={this.state.recInEdit.DocName || ''}
+                  required={true}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "100%" }}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <Input
+                  name="Comment"
+                  label="Comment"
+                  value={this.state.recInEdit.Comment || ''}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </form>
+
+            <DialogActionsBar>
+              <button
+                className="k-button"
+                onClick={this.handleCancel}
+              >
+                Cancel
+              </button>
+              <button
+                className="k-button k-primary"
+                onClick={this.handleSave}
+              >
+                Save
+              </button>
+            </DialogActionsBar>
+          </Dialog>
+        }

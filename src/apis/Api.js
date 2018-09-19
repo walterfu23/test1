@@ -1,16 +1,16 @@
 import axios from 'axios';
 import moment from 'moment';
 
-//const urlBase = 'http://localhost:57090/odata/book';
+const urlBase = 'http://localhost:57090/odata/';
 //const urlBase = 'http://ssalt465hdy/BooksOData/odata/';
-const urlBase = 'http://localhost/BooksOData/odata/';
+//const urlBase = 'http://localhost/BooksOData/odata/';
 
 const getBizDocs = () => {
   const url = urlBase + 'BizDoc';
   return axios.get(url);
 }
 
-const createBizDoc = (Active, DocNum, DocName, Comment) => {
+const createBizDoc = ({Active, DocNum, DocName, Comment} = {}) => {
   const url = urlBase + 'BizDoc';
   const now = moment();
   const uid = 'fuw';
@@ -20,11 +20,11 @@ const createBizDoc = (Active, DocNum, DocName, Comment) => {
     DocName,
     Comment,
     Creator: uid,
-    Create_Time: now,
+    CreateTime: now,
     Modifier: uid,
-    Mod_Time: now,
-  }
- // return axios.post( url, bizDocToUse );
+    ModTime: now,
+  }; 
+  return axios.post( url, bizDocToUse );
 }
 
 const getBizDocRevs = () => {
@@ -43,6 +43,7 @@ const getTest = () => {
 
 const Api = {
   getBizDocs,
+  createBizDoc,
   getBizDocRevs,
   getBizDocRevPages,
   getTest

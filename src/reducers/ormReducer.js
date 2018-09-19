@@ -1,11 +1,7 @@
 import orm from '../orm/orm';
-
-import {
-  ActionTypesBizDoc,
-  ActionTypesBizDocRev,
-  ActionTypesBizDocRevPage,
-  ActionTypesTest,
-} from '../constants/actionTypes';
+import actionBizDoc from '../actions/actionBizDoc';
+import actionBizDocRev from '../actions/actionBizDocRev';
+import actionBizDocRevPage from '../actions/actionBizDocRevPage';
 
 export default function ormReducer(dbState, action) {
   const session = orm.session(dbState);
@@ -16,27 +12,26 @@ export default function ormReducer(dbState, action) {
   } = session;
 
   switch (action.type) {
-    //    case ActionTypesBizDoc.FETCH_BizDoc_REQUESTED:
+    //    case actionBizDoc.FETCH_BizDoc_REQUESTED:
     //      break;
-    //    case ActionTypesBizDoc.FETCH_BizDoc_FAILED:
+    //    case actionBizDoc.FETCH_BizDoc_FAILED:
     //      break;
-    case ActionTypesBizDoc.FETCH_BizDoc_SUCCESSFUL:
+    case actionBizDoc.FETCH_BizDoc_SUCCESSFUL:
       //    console.log(action.data.data.value);
       //    console.log(session.state.BizDoc);
-      BizDoc.hydrateArray(action.data.data.value);
+      BizDoc.hydrateArray(action.payload.data.value);
       break;
-    case ActionTypesBizDoc.CREATE_BizDoc_SUCCESSFUL:
-      console.log(action.data.data.value);
+    case actionBizDoc.CREATE_BizDoc_SUCCESSFUL:
+      console.log('ormReducer, createBizDoc successful:', action.payload.data);
       //    console.log(session.state.BizDoc);
-      const i = 123;
       break;
-    case ActionTypesBizDocRev.FETCH_BizDocRev_SUCCESSFUL:
-      BizDocRev.hydrateArray(action.data.data.value);
+    case actionBizDocRev.FETCH_BizDocRev_SUCCESSFUL:
+      BizDocRev.hydrateArray(action.payload.data.value);
       break;
-    case ActionTypesBizDocRevPage.FETCH_BizDocRevPage_SUCCESSFUL:
-      BizDocRevPage.hydrateArray(action.data.data.value);
+    case actionBizDocRevPage.FETCH_BizDocRevPage_SUCCESSFUL:
+      BizDocRevPage.hydrateArray(action.payload.data.value);
       break;
-    case ActionTypesTest.TEST_CHECK:
+//    case ActionTypesTest.TEST_CHECK:
       // BizDoc.all().toModelArray().map(modelBizDoc => {
       //   console.log(modelBizDoc.ref);
       //   const modelBizDocRevs = modelBizDoc.revs;
@@ -56,10 +51,11 @@ export default function ormReducer(dbState, action) {
       //   console.log('  ', modelBizDocRev.ref);
       //   console.log('    ', modelBizDoc.ref);
       // });
-      const json = BizDocRevPage.all().toModelArray().map(
-        modelBizDocRevPage => modelBizDocRevPage.toJson());
-      console.log('Method1: ', json);
-      break;
+
+//      const json = BizDocRevPage.all().toModelArray().map(
+//        modelBizDocRevPage => modelBizDocRevPage.toJson());
+//      console.log('Method1: ', json);
+//      break;
     default:
       break;
   } // switch
