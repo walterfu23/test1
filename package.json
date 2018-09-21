@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@progress/kendo-data-query": "^1.5.0",
+    "@progress/kendo-react-animation": "^2.0.0",
     "@progress/kendo-react-dateinputs": "^2.0.0",
     "@progress/kendo-react-dialogs": "^2.0.0",
     "@progress/kendo-react-dropdowns": "^2.0.0",

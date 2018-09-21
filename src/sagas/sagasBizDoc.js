@@ -26,7 +26,6 @@ export function* watchCreateBizDoc() {
 
 function* createBizDoc(action) {
   try {
-    console.log('createBizDoc', action);
     const data = yield call(Api.createBizDoc, action.payload);
 //    yield put({ type: ActionTypesBizDoc.CREATE_BizDoc_SUCCESSFUL, data });
     yield put(actionGen(actionBizDoc.CREATE_BizDoc_SUCCESSFUL, data));
@@ -34,5 +33,35 @@ function* createBizDoc(action) {
     yield put(actionGen(actionBizDoc.CREATE_BizDoc_FAILED, error));
   }
 }
+
+//==================================================================
+export function* watchDeleteBizDoc() {
+  yield takeEvery(actionBizDoc.DELETE_BizDoc_REQUESTED, deleteBizDoc);
+}
+
+function* deleteBizDoc(action) {
+  try {
+    yield call(Api.deleteBizDoc, action.payload);
+    yield put(actionGen(actionBizDoc.DELETE_BizDoc_SUCCESSFUL, action.payload));
+  } catch (error) {
+    yield put(actionGen(actionBizDoc.DELETE_BizDoc_FAILED, error));
+  }
+}
+
+//==================================================================
+export function* watchUpdateBizDoc() {
+  yield takeEvery(actionBizDoc.UPDATE_BizDoc_REQUESTED, updateBizDoc);
+}
+
+function* updateBizDoc(action) {
+  try {
+    const rec = yield call(Api.updateBizDocPrep, action.payload);
+    yield call(Api.updateBizDoc, rec);
+    yield put(actionGen(actionBizDoc.UPDATE_BizDoc_SUCCESSFUL, rec));
+  } catch (error) {
+    yield put(actionGen(actionBizDoc.UPDATE_BizDoc_FAILED, error));
+  }
+}
+
 
 //==================================================================

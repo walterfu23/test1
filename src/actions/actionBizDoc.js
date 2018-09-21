@@ -17,9 +17,16 @@ const CREATE_BizDoc_REQUESTED = 'CREATE_BizDoc_REQUESTED';
 const CREATE_BizDoc_SUCCESSFUL = 'CREATE_BizDoc_SUCCESSFUL';
 const CREATE_BizDoc_FAILED = 'CREATE_BizDoc_FAILED';
 
+const DELETE_BizDoc_REQUESTED = 'DELETE_BizDoc_REQUESTED';
+const DELETE_BizDoc_SUCCESSFUL = 'DELETE_BizDoc_SUCCESSFUL';
+const DELETE_BizDoc_FAILED = 'DELETE_BizDoc_FAILED';
+
+const UPDATE_BizDoc_REQUESTED = 'UPDATE_BizDoc_REQUESTED';
+const UPDATE_BizDoc_SUCCESSFUL = 'UPDATE_BizDoc_SUCCESSFUL';
+const UPDATE_BizDoc_FAILED = 'UPDATE_BizDoc_FAILED';
+
 // actions
 //const actionBizDocFetchRequested = action(FETCH_BizDoc_REQUESTED);
-
 
 
 const actionBizDoc = {
@@ -29,7 +36,12 @@ const actionBizDoc = {
   CREATE_BizDoc_REQUESTED,
   CREATE_BizDoc_SUCCESSFUL,
   CREATE_BizDoc_FAILED,
-
+  DELETE_BizDoc_REQUESTED,
+  DELETE_BizDoc_SUCCESSFUL,
+  DELETE_BizDoc_FAILED,
+  UPDATE_BizDoc_REQUESTED,
+  UPDATE_BizDoc_SUCCESSFUL,
+  UPDATE_BizDoc_FAILED,
 }
 
 export default actionBizDoc;

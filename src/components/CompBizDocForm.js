@@ -5,47 +5,48 @@ import actionGen from '../actions/actionGen';
 import actionBizDoc from '../actions/actionBizDoc';
 import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
 
+// The form in a dialog to add or edit fields for BizDoc
+// Props passed in that are not in defaultProps:
+// handleCancel - called by the component to tell the caller
+//                to close this component.
+// 
 class CompBizDocForm extends Component {
+ 
   static defaultProps = {
     // true defaults - props that can be passed in from caller, 
     creating: true,        // default is creating a new record
-    EDIT_FIELD_WIDTH: '500px',       // width of edit fields
-    TEXTAREA_COLS: 47,      // cols in a textarea
-    TEXTAREA_ROWS: 3,       // rows in a textarea
-
-    // initial values, used internally, not passed in from caller
-    recInit: {              // record initial values 
+    recInEdit: {           
       Id: undefined,
       Active: true,
       DocNum: undefined,
       DocName: undefined,
       Comment: undefined,
     },
-
-  }
-
-  stateInit = {
-    recInEdit: this.props.recInit,  // record being edited or being added.
+    EDIT_FIELD_WIDTH: '500px',       // width of edit fields
+    TEXTAREA_COLS: 47,      // cols in a textarea
+    TEXTAREA_ROWS: 3,       // rows in a textarea
   }
 
   constructor(props) {
     super(props);
-    this.state = this.stateInit;
+    this.state = {
+      recInEdit: props.recInEdit,
+    }
   }
 
-  // cancel button or form close clicked.
-  handleCancel = () => {
-    this.setState(this.stateInit);
-  }
-
-  // save button pressed. Save the record
+  // save button pressed. Save or update the record
   handleSave = () => {
-    this.props.createRequested(this.state.recInEdit);  // request to create the record
-    //   this.handleCancel();
-    //    this.setState(this.stateInit);   // done with the dialog
+    if ( this.props.creating ) {
+      // request to create the record
+      this.props.createRequested(this.state.recInEdit);  
+    } else {
+      // request to update the record
+      this.props.updateRequested(this.state.recInEdit);  
+    }
+    this.props.handleCancel();   // close the form
   }
 
-  // Enter key pressed in the form. Q: same as pressing Save?
+  // Enter key pressed becomes a no-op.
   handleSubmit = (event) => {
     event.preventDefault();
   }
@@ -78,7 +79,7 @@ class CompBizDocForm extends Component {
       <div>
         <Dialog
           title={this.dialogTitle()}
-          onClose={this.handleCancel}
+          onClose={this.props.handleCancel}
           width={this.props.EDIT_FIELD_WIDTH}
         >
           <form
@@ -107,8 +108,8 @@ class CompBizDocForm extends Component {
               <Input
                 name="DocName"
                 label="Document Name"
-                value={this.state.recInEdit.DocName || ''}
                 required={true}
+                value={this.state.recInEdit.DocName || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />
@@ -127,7 +128,7 @@ class CompBizDocForm extends Component {
           <DialogActionsBar>
             <button
               className="k-button"
-              onClick={this.handleCancel}
+              onClick={this.props.handleCancel}
             >
               Cancel
               </button>
@@ -144,12 +145,15 @@ class CompBizDocForm extends Component {
   } // render()
 } // CompBizDocForm
 
-const mapStateToProps = null;  // no need for redux state info
+const mapStateToProps = null;  // no need to get redux state info
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    createRequested: (recToCreate) => dispatch(
-      actionGen(actionBizDoc.CREATE_BizDoc_REQUESTED, recToCreate)
+    createRequested: (rec) => dispatch(
+      actionGen(actionBizDoc.CREATE_BizDoc_REQUESTED, rec)
+    ),
+    updateRequested: (rec) => dispatch(
+      actionGen(actionBizDoc.UPDATE_BizDoc_REQUESTED, rec)
     ),
   }
 }

@@ -16,11 +16,11 @@ export default class BizDoc extends Model {
       DocName: attr(),
       DocNum: attr(),
       Comment: attr(),
-    
+
       Creator: attr(),
       CreateTime: attr(),
       Modifier: attr(),
-      ModTime: attr()    
+      ModTime: attr()
     };
   }
 
@@ -36,14 +36,19 @@ export default class BizDoc extends Model {
     return this.create(data);
   }
 
+  // remove one record
+  static delete(data) {
+    return this.withId(data.Id).delete();
+  }
+
   // hydrate a list of records
   static hydrateArray(dataArray) {
-    dataArray.map(data=>this.hydrate(data));
+    dataArray.map(data => this.hydrate(data));
   }
 
   // convert the model to json
   toJson = () => ({
     ...this.ref,
   })
-}; 
+};
 

@@ -1,141 +1,58 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createBizDocListSelector } from '../selectors/selectBizDoc';
-import { Grid, GridColumn, GridCell, GridToolbar } from '@progress/kendo-react-grid';
-import { DropDownList } from '@progress/kendo-react-dropdowns';
-import { Input, Switch } from '@progress/kendo-react-inputs';
-import MyCommandCell from './MyCommandCell';
+import { Grid, GridColumn, GridToolbar } from '@progress/kendo-react-grid';
+import CmdCell from './CmdCell';
 import actionGen from '../actions/actionGen';
 import actionBizDoc from '../actions/actionBizDoc';
 import CompBizDocForm from './CompBizDocForm';
 
 class CompBizDoc extends Component {
 
-  static defaultProps = {
-    recInit: {              // record initial values 
-      Id: undefined,
-      Active: true,
-      DocNum: undefined,
-      DocName: undefined,
-      Comment: undefined,
-    },
-
-    stateInit: {
-      creating: true,        // true: adding; false: editing.
-      recInEdit: undefined,  // record being edited or being added.
-    },
-
-    EDIT_FIELD_WIDTH: '500px',       // width of edit fields
-    TEXTAREA_COLS: 47,       // cols in a textarea
-    TEXTAREA_ROWS: 3,       // rows in a textarea
-
-  }
-
   constructor(props) {
     super(props);
-    this.state = props.stateInit;
-    this.CommandCell = MyCommandCell(
-      this.enterEdit,
-      this.removeRec,
-      this.saveChanges,
-      this.cancelEdit,
-      "inEdit"
+    this.state = {
+      showForm: false,       // true: show the form
+      creating: undefined,   // true: adding; false: editing.
+      recInEdit: undefined,  // record being edited.
+    };
+    this.CmdCell = CmdCell(
+      this.enterEdit,        // Edit button will call this
+      this.removeRec,        // Remove button will call this
     );
-  }
-
-  // Add button pressed: requesting a new record added.
-  handleAdd = () => {
-    this.setState({
-      creating: true,
-      recInEdit: this.props.recInit,
-    });
   }
 
   //==========================================================
 
-  // cancel the Edit operation
-  cancelEdit = () => {
-    console.log("cancelEdit() invoked.")
+  // Add pressed: requesting a new record added.
+  handleAdd = () => {
+    this.setState({
+      showForm: true,
+      creating: true,
+    });
   }
 
+  // form's cancel button or form's close button clicked.
+  handleFormCancel = () => {
+    this.setState({ showForm: false });
+  }
+
+  // record's Edit button pressed.
   enterEdit = (dataItem) => {
-    this.update(this.state.data, dataItem).inEdit = true;
+    // dataItem.inEdit = true;
     this.setState({
-      data: this.state.data.slice()
+      showForm: true,
+      creating: false,
+      recInEdit: dataItem,
     });
   }
 
-  saveChanges = (dataItem) => {
-    dataItem.inEdit = undefined;
-    //  dataItem.ProductID = this.update(sampleProducts, dataItem).ProductID;
-    this.setState({
-      data: this.state.data.slice()
-    });
-  }
-
-  cancelEdit = (dataItem) => {
-    if (dataItem.ProductID) {
-      //   let originalItem = sampleProducts.find(p => p.ProductID === dataItem.ProductID);
-      let originalItem = undefined;
-      this.update(this.state.data, originalItem);
-    } else {
-      this.update(this.state.data, dataItem, !dataItem.ProductID);
-    }
-    this.setState({
-      data: this.state.data.slice()
-    });
-  }
-
+  // record's Remove button pressed.
   removeRec = (dataItem) => {
     dataItem.inEdit = undefined;
-    this.update(this.state.data, dataItem, true);
-    //   this.update(sampleProducts, dataItem, true);
-    this.setState({
-      data: this.state.data.slice()
-    });
+    this.props.deleteRequested(dataItem);
   }
 
-  itemChange = (event) => {
-    const value = event.value;
-    const name = event.field;
-    if (!name) {
-      return;
-    }
-    const updatedData = this.state.data.slice();
-    const item = this.update(updatedData, event.dataItem);
-    item[name] = value;
-    this.setState({
-      data: updatedData
-    });
-  }
-
-  update = (data, item, remove) => {
-    let updated;
-    let index = data.findIndex((p) =>
-      (p === item) ||
-      (item.ProductID && (p.ProductID === item.ProductID))
-    );
-    if (index >= 0) {
-      updated = Object.assign({}, item);
-      data[index] = updated;
-    } else {
-      let id = 1;
-      data.forEach(p => { id = Math.max(p.ProductID + 1, id); });
-      updated = Object.assign({}, item, { ProductID: id });
-      data.unshift(updated);
-      index = 0;
-    }
-
-    if (remove) {
-      return data.splice(index, 1)[0];
-    }
-
-    return data[index];
-  }
-
-  buttonClicked = (e) => {
-    console.log('buttonClicked: ', e);
-  }
   // render for CompBizDoc
   render() {
     const listBizDoc = this.props.listBizDoc;
@@ -144,8 +61,6 @@ class CompBizDoc extends Component {
         <Grid
           style={{ height: '420px' }}
           data={listBizDoc}
-          onItemChange={this.itemChange}
-          editField='inEdit'
         >
           <GridToolbar>
             <button
@@ -155,26 +70,29 @@ class CompBizDoc extends Component {
             >
               Add new
             </button>
-            {listBizDoc.filter(p => p.inEdit).length > 0 && (
-              <button
-                title="Cancel current changes"
-                className="k-button"
-                onClick={this.cancelEdit}
-              >
-                Cancel current changes
-              </button>
-            )}
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="60px" editable={false} />
           <GridColumn field="Active" title="Active" width="70px" />
-          <GridColumn field="DocNum" title="DocNum" width="100px" />
-          <GridColumn field="DocName" title="DocName" />
+          <GridColumn field="DocNum" title="Doc Num" width="100px" />
+          <GridColumn field="DocName" title="Doc Name" />
           <GridColumn field="Comment" title="Comment" />
-          <GridColumn cell={this.CommandCell} width="150px"/>
+          <GridColumn cell={this.CmdCell} title="Action" width="150px" />
         </Grid>
-
-        {this.state.recInEdit &&   // show dialog if adding or editing
-          <CompBizDocForm />
+        
+        {this.state.showForm &&    // show the form if adding or editing
+          (
+            this.state.creating ?
+              <CompBizDocForm
+                creating={this.state.creating}
+                handleCancel={this.handleFormCancel}
+              />
+              :
+              <CompBizDocForm
+                creating={this.state.creating}
+                recInEdit={this.state.recInEdit}
+                handleCancel={this.handleFormCancel}
+              />
+          )
         }
       </div>
     );
@@ -190,8 +108,11 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    createRequested: (recToCreate) => dispatch(
-      actionGen(actionBizDoc.CREATE_BizDoc_REQUESTED, recToCreate)
+    createRequested: (rec) => dispatch(
+      actionGen(actionBizDoc.CREATE_BizDoc_REQUESTED, rec)
+    ),
+    deleteRequested: (rec) => dispatch(
+      actionGen(actionBizDoc.DELETE_BizDoc_REQUESTED, rec)
     ),
   }
 }

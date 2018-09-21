@@ -27,6 +27,27 @@ const createBizDoc = ({Active, DocNum, DocName, Comment} = {}) => {
   return axios.post( url, bizDocToUse );
 }
 
+const deleteBizDoc = ({Id} ) => {
+  const url = urlBase + 'BizDoc/' + Id;
+  return axios.delete( url );
+}
+
+const updateBizDocPrep = (bizDoc ) => {
+  const now = moment();
+  const uid = 'fuw';
+  const bizDocToUse = {
+    ...bizDoc,
+    Modifier: uid,
+    ModTime: now,
+  }
+  return bizDocToUse;
+}
+
+const updateBizDoc = (bizDocToUse ) => {
+  const url = urlBase + 'BizDoc/' + bizDocToUse.Id;
+  return axios.put( url, bizDocToUse );
+}
+
 const getBizDocRevs = () => {
   const url = urlBase + 'BizDocRev';
   return axios.get(url);
@@ -44,6 +65,10 @@ const getTest = () => {
 const Api = {
   getBizDocs,
   createBizDoc,
+  deleteBizDoc,
+  updateBizDocPrep,
+  updateBizDoc,
+
   getBizDocRevs,
   getBizDocRevPages,
   getTest
