@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, HashRouter, Switch } from 'react-router-dom';
 import MenuNavContainer from './MenuNavContainer';
-import CompBizDoc from '../components/CompBizDoc';
-import CompBizDocRev from '../components/CompBizDocRev';
-import CompBizDocRevPage from '../components/CompBizDocRevPage';
+import CompBizDoc from '../components/bizDoc/CompBizDoc';
+import CompBizDocRev from '../components/bizDocRev/CompBizDocRev';
+import CompBizDocRevPage from '../components/bizDocRevPage/CompBizDocRevPage';
 
 const AppRouter = () => (
   <HashRouter>

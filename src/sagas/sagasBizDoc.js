@@ -1,5 +1,6 @@
 import { put, takeEvery, call } from 'redux-saga/effects';
 import actionGen from '../actions/actionGen';
+import actionError from '../actions/actionError';
 import actionBizDoc from '../actions/actionBizDoc';
 import Api from '../apis/Api';
 
@@ -11,11 +12,10 @@ export function* watchFetchBizDocs() {
 function* fetchBizDocs(action) {
   try {
     const data = yield call(Api.getBizDocs);
-//    yield put({ type: ActionTypesBizDoc.FETCH_BizDoc_SUCCESSFUL, data });
+    //    yield put({ type: ActionTypesBizDoc.FETCH_BizDoc_SUCCESSFUL, data });
     yield put(actionGen(actionBizDoc.FETCH_BizDoc_SUCCESSFUL, data));
   } catch (error) {
-//    yield put({ type: ActionTypesBizDoc.FETCH_BizDoc_FAILED, error });
-    yield put(actionGen(actionBizDoc.FETCH_BizDoc_FAILED, error));
+    yield put(actionError.reportStateError(error));
   }
 }
 
@@ -26,11 +26,12 @@ export function* watchCreateBizDoc() {
 
 function* createBizDoc(action) {
   try {
+    yield put(actionError.clearStateError);
     const data = yield call(Api.createBizDoc, action.payload);
-//    yield put({ type: ActionTypesBizDoc.CREATE_BizDoc_SUCCESSFUL, data });
+    //    yield put({ type: ActionTypesBizDoc.CREATE_BizDoc_SUCCESSFUL, data });
     yield put(actionGen(actionBizDoc.CREATE_BizDoc_SUCCESSFUL, data));
   } catch (error) {
-    yield put(actionGen(actionBizDoc.CREATE_BizDoc_FAILED, error));
+    yield put(actionError.reportStateError(error));
   }
 }
 
@@ -44,7 +45,7 @@ function* deleteBizDoc(action) {
     yield call(Api.deleteBizDoc, action.payload);
     yield put(actionGen(actionBizDoc.DELETE_BizDoc_SUCCESSFUL, action.payload));
   } catch (error) {
-    yield put(actionGen(actionBizDoc.DELETE_BizDoc_FAILED, error));
+    yield put(actionError.reportStateError(error));
   }
 }
 
@@ -59,7 +60,7 @@ function* updateBizDoc(action) {
     yield call(Api.updateBizDoc, rec);
     yield put(actionGen(actionBizDoc.UPDATE_BizDoc_SUCCESSFUL, rec));
   } catch (error) {
-    yield put(actionGen(actionBizDoc.UPDATE_BizDoc_FAILED, error));
+    yield put(actionError.reportStateError(error));
   }
 }
 

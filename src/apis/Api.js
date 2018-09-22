@@ -1,9 +1,9 @@
 import axios from 'axios';
 import moment from 'moment';
 
-const urlBase = 'http://localhost:57090/odata/';
+//const urlBase = 'http://localhost:57090/odata/';
 //const urlBase = 'http://ssalt465hdy/BooksOData/odata/';
-//const urlBase = 'http://localhost/BooksOData/odata/';
+const urlBase = 'http://localhost/BooksOData/odata/';
 
 const getBizDocs = () => {
   const url = urlBase + 'BizDoc';
@@ -58,10 +58,6 @@ const getBizDocRevPages = () => {
   return axios.get(url);
 }
 
-const getTest = () => {
-  return axios.get('https://jsonplaceholder.typicode.com/todos/1');
-}
-
 const Api = {
   getBizDocs,
   createBizDoc,
@@ -71,7 +67,6 @@ const Api = {
 
   getBizDocRevs,
   getBizDocRevPages,
-  getTest
 }
 
 export default Api;

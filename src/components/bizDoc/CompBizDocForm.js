@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Input, Switch } from '@progress/kendo-react-inputs';
-import actionGen from '../actions/actionGen';
-import actionBizDoc from '../actions/actionBizDoc';
+import actionGen from '../../actions/actionGen';
+import actionBizDoc from '../../actions/actionBizDoc';
 import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
+import ErrorBox from '../shared/ErrorBox';
 
 // The form in a dialog to add or edit fields for BizDoc
 // Props passed in that are not in defaultProps:
@@ -11,11 +12,11 @@ import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
 //                to close this component.
 // 
 class CompBizDocForm extends Component {
- 
+
   static defaultProps = {
     // true defaults - props that can be passed in from caller, 
     creating: true,        // default is creating a new record
-    recInEdit: {           
+    recInEdit: {
       Id: undefined,
       Active: true,
       DocNum: undefined,
@@ -32,23 +33,27 @@ class CompBizDocForm extends Component {
     this.state = {
       recInEdit: props.recInEdit,
     }
+    console.log('CompBizDocForm.st:', props.st);
   }
 
   // save button pressed. Save or update the record
   handleSave = () => {
-    if ( this.props.creating ) {
+    if (this.props.creating) {
       // request to create the record
-      this.props.createRequested(this.state.recInEdit);  
+      this.props.createRequested(this.state.recInEdit);
     } else {
       // request to update the record
-      this.props.updateRequested(this.state.recInEdit);  
+      this.props.updateRequested(this.state.recInEdit);
     }
-    this.props.handleCancel();   // close the form
+    //    this.props.handleCancel();   // close the form
   }
 
   // Enter key pressed becomes a no-op.
   handleSubmit = (event) => {
-    event.preventDefault();
+    console.log('handleSubmit() entered');
+    //    event.preventDefault();
+    this.handleSave();   // treat it the same as the Save button
+    console.log('handleSubmit() exiting');
   }
 
   // title of the diaglog box
@@ -108,7 +113,6 @@ class CompBizDocForm extends Component {
               <Input
                 name="DocName"
                 label="Document Name"
-                required={true}
                 value={this.state.recInEdit.DocName || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
@@ -124,6 +128,8 @@ class CompBizDocForm extends Component {
               />
             </div>
           </form>
+
+          <ErrorBox />
 
           <DialogActionsBar>
             <button
@@ -145,7 +151,10 @@ class CompBizDocForm extends Component {
   } // render()
 } // CompBizDocForm
 
-const mapStateToProps = null;  // no need to get redux state info
+//const mapStateToProps = null;  // no need to get redux state info
+const mapStateToProps = (state, ownProps) => ({
+  st: state,
+});
 
 const mapDispatchToProps = (dispatch, props) => {
   return {

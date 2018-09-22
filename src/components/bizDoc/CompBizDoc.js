@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createBizDocListSelector } from '../selectors/selectBizDoc';
+import { createBizDocListSelector } from '../../selectors/selectBizDoc';
 import { Grid, GridColumn, GridToolbar } from '@progress/kendo-react-grid';
-import CmdCell from './CmdCell';
-import actionGen from '../actions/actionGen';
-import actionBizDoc from '../actions/actionBizDoc';
+import CmdCell from '../shared/CmdCell';
+import actionGen from '../../actions/actionGen';
+import actionBizDoc from '../../actions/actionBizDoc';
 import CompBizDocForm from './CompBizDocForm';
+import ErrorBox from '../shared/ErrorBox';
 
 class CompBizDoc extends Component {
 
@@ -58,6 +59,8 @@ class CompBizDoc extends Component {
     const listBizDoc = this.props.listBizDoc;
     return (
       <div>
+        <ErrorBox />
+
         <Grid
           style={{ height: '420px' }}
           data={listBizDoc}
@@ -78,7 +81,7 @@ class CompBizDoc extends Component {
           <GridColumn field="Comment" title="Comment" />
           <GridColumn cell={this.CmdCell} title="Action" width="150px" />
         </Grid>
-        
+
         {this.state.showForm &&    // show the form if adding or editing
           (
             this.state.creating ?
