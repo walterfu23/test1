@@ -3,16 +3,16 @@ import { connect } from 'react-redux';
 import { createBizDocListSelector } from '../../selectors/selectBizDoc';
 import { Grid, GridColumn, GridToolbar } from '@progress/kendo-react-grid';
 import { filterBy, orderBy } from '@progress/kendo-data-query';
+import CmdCell from '../shared/CmdCell';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
 import actionBizDoc from '../../actions/actionBizDoc';
 import CompBizDocForm from './CompBizDocForm';
 import ErrorBox from '../shared/ErrorBox';
 import LoadingPanel from '../shared/LoadingPanel';
-import utils from '../../utils/utils';
-import '../../App.css';
 
-class CompBizDoc extends Component {
+// this implementation uses CmdCell. It's been replaced.
+class CompBizDoc_CmdCell extends Component {
 
   constructor(props) {
     super(props);
@@ -24,9 +24,12 @@ class CompBizDoc extends Component {
         filters: [],
       },
       sort: [],
-      selectedDataItem: {},    // the selected record
     }
 
+    this.CmdCell = CmdCell(
+      this.enterEdit,        // Edit button will call this
+      this.removeRec,        // Remove button will call this
+    );
   }
 
   //==========================================================
@@ -47,25 +50,6 @@ class CompBizDoc extends Component {
     this.props.setShowFormBizDoc(false);  // hide the form
   }
 
-  handleEdit = () => {
-    const selectedDataItem = this.state.selectedDataItem;
-    if (!utils.objEmpty(selectedDataItem)) {
-      this.props.setShowFormBizDoc(true);  // show the form  
-      this.setState((prevState) => {
-        return {
-          ...prevState,
-          creating: false,
-          recInEdit: {
-            ...selectedDataItem,
-            // the web svc model of BizDoc does not have
-            // the "selected" field. It needs to be wiped out.
-            selected: undefined,
-          }
-        }
-      });
-    }
-  }
-
   // record's Edit button pressed.
   enterEdit = (dataItem) => {
     this.props.setShowFormBizDoc(true);  // show the form  
@@ -78,30 +62,14 @@ class CompBizDoc extends Component {
     });
   }
 
-  // remove button pressed
-  handleRemove = () => {
-    const selectedDataItem = this.state.selectedDataItem;
-    if (!utils.objEmpty(selectedDataItem) &&
-      window.confirm(
-        'Confirm deleting: ' + selectedDataItem.DocName)) {
-      this.props.deleteRequested(selectedDataItem);
-      this.setState((prevState) => ({
-        ...prevState,
-        selectedDataItem: {},
-      }));
-    }
+  // record's Remove button pressed.
+  removeRec = (dataItem) => {
+    dataItem.inEdit = undefined;
+    this.props.deleteRequested(dataItem);
   }
 
   //==========================================================
-
-  // a row is clicked
-  handleRowClick = (event) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      selectedDataItem: event.dataItem,
-    }));
-  }
-
+  
   // filter changed
   handleFilterChange = (event) => {
     this.setState((prevState) => ({
@@ -110,7 +78,6 @@ class CompBizDoc extends Component {
     }));
   }
 
-  // column sort requested
   handleSortChange = (event) => {
     this.setState((prevState) => ({
       ...prevState,
@@ -118,17 +85,12 @@ class CompBizDoc extends Component {
     }));
   }
 
-  // data to use, after filtering, sorting, and selected marker
+  // data to use, after filtering and sorting
   dataToUse = () => {
     const listBizDoc = this.props.listBizDoc;
     const filteredData = filterBy(listBizDoc, this.state.filter);
     const sortedFilteredData = orderBy(filteredData, this.state.sort);
-
-    const dataWithSelectedItem = sortedFilteredData.map(item => ({
-      ...item,
-      selected: item.Id === this.state.selectedDataItem.Id,
-    }));
-    return dataWithSelectedItem;
+    return sortedFilteredData;
   }
 
   //==========================================================
@@ -143,8 +105,6 @@ class CompBizDoc extends Component {
           style={{ height: '420px' }}
           reorderable
           data={this.dataToUse()}
-          selectedField="selected"
-          onRowClick={this.handleRowClick}
           filterable
           filter={this.state.filter}
           onFilterChange={this.handleFilterChange}
@@ -163,34 +123,13 @@ class CompBizDoc extends Component {
             >
               Add new
             </button>
-            &nbsp;&nbsp;
-            {
-              !utils.objEmpty(this.state.selectedDataItem) &&
-              <div className="drp-edit-box drp-float-right">
-                <button
-                  title="Add New"
-                  className="k-button k-primary"
-                  onClick={this.handleEdit}
-                >
-                  Edit
-                </button>
-                &nbsp;&nbsp;
-                <button
-                  title="Add New"
-                  className="k-button"
-                  onClick={this.handleRemove}
-                >
-                  Remove
-                </button>
-                &nbsp;&nbsp;
-              </div>
-            }
           </GridToolbar>
-          <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
+          <GridColumn  field="Id" title="Id" width="70px" editable={false} filterable={false} />
           <GridColumn field="DocNum" title="Doc Num" width="170px" />
           <GridColumn field="DocName" title="Doc Name" />
           <GridColumn field="Comment" title="Comment" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
+          <GridColumn cell={this.CmdCell} title="Action" width="160px" filterable={false} reorderable={false} />
         </Grid>
 
         {this.props.getShowFormBizDoc &&    // show the form if adding or editing
@@ -235,4 +174,4 @@ const mapDispatchToProps = (dispatch, props) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompBizDoc);
+export default connect(mapStateToProps, mapDispatchToProps)(CompBizDoc_CmdCell);

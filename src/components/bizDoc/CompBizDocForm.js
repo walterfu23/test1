@@ -33,7 +33,6 @@ class CompBizDocForm extends Component {
     this.state = {
       recInEdit: props.recInEdit,
     }
-    console.log('CompBizDocForm.st:', props.st);
   }
 
   // save button pressed. Save or update the record
@@ -113,6 +112,7 @@ class CompBizDocForm extends Component {
               <Input
                 name="DocName"
                 label="Document Name"
+                required={true}
                 value={this.state.recInEdit.DocName || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}

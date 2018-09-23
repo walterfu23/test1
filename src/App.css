@@ -1,3 +1,25 @@
+
+.drp-error-message {
+  background-color: #11a8fff8;
+  color: white;
+  font-size: larger;
+  padding: 1em;
+}
+
+.drp-float-right {
+  float: right;  
+}
+
+.drp-edit-box {
+  border: 1px solid #ff4911;
+  padding: 3px 10px 3px 20px;
+  margin: 5px;
+}
+
+.loading-color {
+  color: #ff0101;
+}
+
 .App {
   text-align: left;
 }
@@ -22,12 +44,6 @@
   font-size: large;
 }
 
-.error-message {
-  background-color: #11a8fff8;
-  color: white;
-  font-size: larger;
-  padding: 1em;
-}
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

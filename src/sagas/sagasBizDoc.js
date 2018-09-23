@@ -1,6 +1,7 @@
 import { put, takeEvery, call } from 'redux-saga/effects';
 import actionGen from '../actions/actionGen';
 import actionError from '../actions/actionError';
+import actionControl from '../actions/actionControl';
 import actionBizDoc from '../actions/actionBizDoc';
 import Api from '../apis/Api';
 
@@ -11,9 +12,10 @@ export function* watchFetchBizDocs() {
 
 function* fetchBizDocs(action) {
   try {
+    yield put(actionControl.setShowLoadingBizDoc(true));  // show loading panel
     const data = yield call(Api.getBizDocs);
-    //    yield put({ type: ActionTypesBizDoc.FETCH_BizDoc_SUCCESSFUL, data });
     yield put(actionGen(actionBizDoc.FETCH_BizDoc_SUCCESSFUL, data));
+    yield put(actionControl.setShowLoadingBizDoc(false));  // hide loading panel
   } catch (error) {
     yield put(actionError.reportStateError(error));
   }
@@ -28,8 +30,8 @@ function* createBizDoc(action) {
   try {
     yield put(actionError.clearStateError);
     const data = yield call(Api.createBizDoc, action.payload);
-    //    yield put({ type: ActionTypesBizDoc.CREATE_BizDoc_SUCCESSFUL, data });
     yield put(actionGen(actionBizDoc.CREATE_BizDoc_SUCCESSFUL, data));
+    yield put(actionControl.setShowFormBizDoc(false));  // hide the form
   } catch (error) {
     yield put(actionError.reportStateError(error));
   }
@@ -59,6 +61,7 @@ function* updateBizDoc(action) {
     const rec = yield call(Api.updateBizDocPrep, action.payload);
     yield call(Api.updateBizDoc, rec);
     yield put(actionGen(actionBizDoc.UPDATE_BizDoc_SUCCESSFUL, rec));
+    yield put(actionControl.setShowFormBizDoc(false));  // hide the form
   } catch (error) {
     yield put(actionError.reportStateError(error));
   }

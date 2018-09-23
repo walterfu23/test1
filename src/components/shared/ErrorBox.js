@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import actionError from '../../actions/actionError';
 import utils  from '../../utils/utils';
+import '../../App.css';
 
 class ErrorBox extends React.Component {
 
@@ -16,7 +17,7 @@ class ErrorBox extends React.Component {
     }
 
     return (
-      <div className="error-message">
+      <div className="drp-error-message">
         {error.message}
       </div>
     );
