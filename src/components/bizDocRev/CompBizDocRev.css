@@ -1,0 +1,14 @@
+.drp-float-right {
+  float: right;  
+}
+
+.drp-edit-box {
+  border: 1px solid #c7c6c6;
+  padding: 1px 2px 1px 10px;
+  margin: 0px 5px 0px 0px;
+}
+
+.drp-icon-close {
+  font-size: 22px; /* Sets icon size to 32px */
+}
+

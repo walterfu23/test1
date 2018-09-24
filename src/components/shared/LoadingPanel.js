@@ -1,4 +1,5 @@
 import React from 'react';
+import './LoadingPanel.css';
 
 class LoadingPanel extends React.Component {
   render() {

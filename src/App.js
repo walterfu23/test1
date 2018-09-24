@@ -3,8 +3,9 @@ import '@progress/kendo-theme-default';
 //import '@progress/kendo-theme-bootstrap';
 //import '@progress/kendo-theme-material';
 import './App.css';
-import { TabStrip, TabStripTab, TabStripContent } from '@progress/kendo-react-layout'
+import { TabStrip, TabStripTab } from '@progress/kendo-react-layout'
 import CompBizDoc from './components/bizDoc/CompBizDoc';
+import CompBizDocRev from './components/bizDocRev/CompBizDocRev';
 
 export class App extends Component {
   constructor(props) {
@@ -32,7 +33,8 @@ export class App extends Component {
             <CompBizDoc />
           </TabStripTab>
           <TabStripTab title="Revisions">
-          BizRev tab
+            BizRev tab
+            <CompBizDocRev />
           </TabStripTab>
           <TabStripTab title="Pages">
             BizRevPage tab

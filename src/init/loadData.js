@@ -1,4 +1,5 @@
 import actionGen from '../actions/actionGen';
+import actionControl from '../actions/actionControl';
 import actionBizDoc from '../actions/actionBizDoc';
 import actionBizDocRev from '../actions/actionBizDocRev';
 import actionBizDocRevPage from '../actions/actionBizDocRevPage';
@@ -11,6 +12,7 @@ const loadData = store => {
   loadBizDoc(store);
   loadBizDocRev(store);
   loadBizDocRevPage(store);
+  loadUserInfo(store);
 }
 
 const loadBizDoc = storeOrm => {
@@ -23,6 +25,10 @@ const loadBizDocRev = storeOrm => {
 
 const loadBizDocRevPage = storeOrm => {
   storeOrm.dispatch(actionGen(actionBizDocRevPage.FETCH_BizDocRevPage_REQUESTED));
+}
+
+const loadUserInfo = store  => {
+  store.dispatch(actionControl.setUserInfo());
 }
 
 export default loadData;

@@ -12,6 +12,7 @@ export const createBizDocRevPageTreeSelector = createSelector(
   }
 );
 
+export const createBizDocRevPageListSelector =  createBizDocRevPageTreeSelector;
 
 // createSelector, //unified selector, that creates ORM selector or selector from reselect
 // createRecordSelector, //to select single record with query info for relations and etc

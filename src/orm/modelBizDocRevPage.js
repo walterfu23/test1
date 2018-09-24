@@ -35,6 +35,11 @@ export default class BizDocRevPage extends Model {
     return this.create(data);
   }
 
+  // remove one record
+  static delete(data) {
+    return this.withId(data.Id).delete();
+  }
+
   // hydrate a list of records
   static hydrateArray(dataArray) {
     dataArray.map(data => this.hydrate(data));

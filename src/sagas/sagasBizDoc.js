@@ -13,7 +13,7 @@ export function* watchFetchBizDocs() {
 function* fetchBizDocs(action) {
   try {
     yield put(actionControl.setShowLoadingBizDoc(true));  // show loading panel
-    const data = yield call(Api.getBizDocs);
+    const data = yield call(Api.getRecs, 'BizDoc');
     yield put(actionGen(actionBizDoc.FETCH_BizDoc_SUCCESSFUL, data));
     yield put(actionControl.setShowLoadingBizDoc(false));  // hide loading panel
   } catch (error) {
@@ -29,7 +29,7 @@ export function* watchCreateBizDoc() {
 function* createBizDoc(action) {
   try {
     yield put(actionError.clearStateError);
-    const data = yield call(Api.createBizDoc, action.payload);
+    const data = yield call(Api.createRec, 'BizDoc', action.payload);
     yield put(actionGen(actionBizDoc.CREATE_BizDoc_SUCCESSFUL, data));
     yield put(actionControl.setShowFormBizDoc(false));  // hide the form
   } catch (error) {
@@ -44,7 +44,7 @@ export function* watchDeleteBizDoc() {
 
 function* deleteBizDoc(action) {
   try {
-    yield call(Api.deleteBizDoc, action.payload);
+    yield call(Api.deleteRec, 'BizDoc', action.payload);
     yield put(actionGen(actionBizDoc.DELETE_BizDoc_SUCCESSFUL, action.payload));
   } catch (error) {
     yield put(actionError.reportStateError(error));
@@ -58,8 +58,8 @@ export function* watchUpdateBizDoc() {
 
 function* updateBizDoc(action) {
   try {
-    const rec = yield call(Api.updateBizDocPrep, action.payload);
-    yield call(Api.updateBizDoc, rec);
+    const rec = yield call(Api.updateRecPrep, action.payload);
+    yield call(Api.updateRec, 'BizDoc', rec);
     yield put(actionGen(actionBizDoc.UPDATE_BizDoc_SUCCESSFUL, rec));
     yield put(actionControl.setShowFormBizDoc(false));  // hide the form
   } catch (error) {

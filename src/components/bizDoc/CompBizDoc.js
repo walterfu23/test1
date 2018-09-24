@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createBizDocListSelector } from '../../selectors/selectBizDoc';
 import { Grid, GridColumn, GridToolbar } from '@progress/kendo-react-grid';
+import { Button } from '@progress/kendo-react-buttons';
 import { filterBy, orderBy } from '@progress/kendo-data-query';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
@@ -10,7 +11,7 @@ import CompBizDocForm from './CompBizDocForm';
 import ErrorBox from '../shared/ErrorBox';
 import LoadingPanel from '../shared/LoadingPanel';
 import utils from '../../utils/utils';
-import '../../App.css';
+import './CompBizDoc.css';
 
 class CompBizDoc extends Component {
 
@@ -102,6 +103,14 @@ class CompBizDoc extends Component {
     }));
   }
 
+  // edit group is closed
+  handleEditGroupClose = (event) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      selectedDataItem: {},
+    }));
+  }
+
   // filter changed
   handleFilterChange = (event) => {
     this.setState((prevState) => ({
@@ -154,35 +163,45 @@ class CompBizDoc extends Component {
           }}
           sort={this.state.sort}
           onSortChange={this.handleSortChange}
+          resizable={true}
         >
           <GridToolbar>
-            <button
+            <Button
               title="Add New"
               className="k-button k-primary"
-              onClick={this.handleAdd}
+              iconClass="k-icon k-i-plus"
+              onClick={this.handleAdd}              
             >
-              Add new
-            </button>
+              &nbsp;&nbsp;Add new&nbsp;&nbsp;
+            </Button>
             &nbsp;&nbsp;
             {
               !utils.objEmpty(this.state.selectedDataItem) &&
               <div className="drp-edit-box drp-float-right">
-                <button
-                  title="Add New"
+                <Button
+                  title="Edit"
                   className="k-button k-primary"
+                  iconClass="k-icon k-i-edit"
                   onClick={this.handleEdit}
                 >
-                  Edit
-                </button>
-                &nbsp;&nbsp;
-                <button
-                  title="Add New"
+                  &nbsp;&nbsp;Edit&nbsp;&nbsp;
+                </Button>
+                &nbsp;&nbsp;&nbsp;
+                <Button
+                  title="Remove"
+                  look="bare"
                   className="k-button"
+                  iconClass="k-icon k-i-delete"
                   onClick={this.handleRemove}
                 >
-                  Remove
-                </button>
-                &nbsp;&nbsp;
+                  &nbsp;Remove
+                </Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <Button
+                  look="bare"
+                  iconClass="k-icon k-i-close drp-icon-close"
+                  onClick={this.handleEditGroupClose}
+                />
               </div>
             }
           </GridToolbar>

@@ -22,12 +22,28 @@ export default function ormReducer(dbState, action) {
       BizDoc.withId(action.payload.Id).delete();
       break;
     case actionBizDoc.UPDATE_BizDoc_SUCCESSFUL:
-      const rec = action.payload;
-      BizDoc.withId(rec.Id).update(rec);
+      {
+        const rec = action.payload;
+        BizDoc.withId(rec.Id).update(rec);
+      }
       break;
+
     case actionBizDocRev.FETCH_BizDocRev_SUCCESSFUL:
       BizDocRev.hydrateArray(action.payload.data.value);
       break;
+    case actionBizDocRev.CREATE_BizDocRev_SUCCESSFUL:
+      BizDocRev.hydrate(action.payload.data);
+      break;
+    case actionBizDocRev.DELETE_BizDocRev_SUCCESSFUL:
+      BizDocRev.withId(action.payload.Id).delete();
+      break;
+    case actionBizDocRev.UPDATE_BizDocRev_SUCCESSFUL:
+      {
+        const rec = action.payload;
+        BizDocRev.withId(rec.Id).update(rec);
+      }
+      break;
+
     case actionBizDocRevPage.FETCH_BizDocRevPage_SUCCESSFUL:
       BizDocRevPage.hydrateArray(action.payload.data.value);
       break;

@@ -12,3 +12,4 @@ export const createBizDocRevTreeSelector = createSelector(
   }
 );
 
+export const createBizDocRevListSelector =  createBizDocRevTreeSelector;

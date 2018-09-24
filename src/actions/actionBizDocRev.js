@@ -8,6 +8,18 @@ const CREATE_BizDocRev_REQUESTED = 'CREATE_BizDocRev_REQUESTED';
 const CREATE_BizDocRev_SUCCESSFUL = 'CREATE_BizDocRev_SUCCESSFUL';
 const CREATE_BizDocRev_FAILED = 'CREATE_BizDocRev_FAILED';
 
+const DELETE_BizDocRev_REQUESTED = 'DELETE_BizDocRev_REQUESTED';
+const DELETE_BizDocRev_SUCCESSFUL = 'DELETE_BizDocRev_SUCCESSFUL';
+const DELETE_BizDocRev_FAILED = 'DELETE_BizDocRev_FAILED';
+
+const UPDATE_BizDocRev_REQUESTED = 'UPDATE_BizDocRev_REQUESTED';
+const UPDATE_BizDocRev_SUCCESSFUL = 'UPDATE_BizDocRev_SUCCESSFUL';
+const UPDATE_BizDocRev_FAILED = 'UPDATE_BizDocRev_FAILED';
+
+// actions
+//const actionBizDocRevFetchRequested = action(FETCH_BizDocRev_REQUESTED);
+
+
 const actionBizDocRev = {
   FETCH_BizDocRev_REQUESTED,
   FETCH_BizDocRev_SUCCESSFUL,
@@ -15,7 +27,12 @@ const actionBizDocRev = {
   CREATE_BizDocRev_REQUESTED,
   CREATE_BizDocRev_SUCCESSFUL,
   CREATE_BizDocRev_FAILED,
-
+  DELETE_BizDocRev_REQUESTED,
+  DELETE_BizDocRev_SUCCESSFUL,
+  DELETE_BizDocRev_FAILED,
+  UPDATE_BizDocRev_REQUESTED,
+  UPDATE_BizDocRev_SUCCESSFUL,
+  UPDATE_BizDocRev_FAILED,
 }
 
 export default actionBizDocRev;

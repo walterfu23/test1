@@ -11,6 +11,7 @@ export default class BizDocRev extends Model {
 
       Id: attr(),
       Active: attr(),
+      RevName: attr(),
       LangOrig: attr(),
       LangNormalized: attr(),
       RevOrig: attr(),
@@ -33,6 +34,11 @@ export default class BizDocRev extends Model {
   // hydrate one record
   static hydrate(data) {
     return this.create(data);
+  }
+
+  // remove one record
+  static delete(data) {
+    return this.withId(data.Id).delete();
   }
 
   // hydrate a list of records

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Input, Switch } from '@progress/kendo-react-inputs';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
-import actionBizDoc from '../../actions/actionBizDoc';
+import actionBizDocRev from '../../actions/actionBizDocRev';
 import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
 import ErrorBox from '../shared/ErrorBox';
 
@@ -12,17 +12,20 @@ import ErrorBox from '../shared/ErrorBox';
 // handleCancel - called by the component to tell the caller
 //                to close this component.
 // 
-class CompBizDocForm extends Component {
+class CompBizDocRevForm extends Component {
 
   static defaultProps = {
     // true defaults - props that can be passed in from caller, 
     creating: true,        // default is creating a new record
     recInEdit: {
       Id: undefined,
+      DocId: undefined,
       Active: true,
-      DocNum: undefined,
-      DocName: undefined,
-      Comment: undefined,
+      RevName: undefined,
+      LangOrig: undefined,
+      LangNormalized: undefined,
+      RevOrig: undefined,
+      RevNormalized: undefined,
     },
     EDIT_FIELD_WIDTH: '500px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
@@ -34,16 +37,14 @@ class CompBizDocForm extends Component {
     this.state = {
       recInEdit: {
         ...props.recInEdit,
-        Creator: props.getUserInfo.uid,
+        Creator: props.getUserInfo.uid,   // CreateTime added in Api.
         Modifier: props.getUserInfo.uid,  
       }
     }
   }
 
-
   // save button pressed. Save or update the record
   handleSave = () => {
-;
     if (this.props.creating) {
       // request to create the record
       this.props.createRequested(this.state.recInEdit);
@@ -65,7 +66,7 @@ class CompBizDocForm extends Component {
 
   // title of the diaglog box
   dialogTitle = () => {
-    return this.props.creating ? 'Add BizDoc' : 'Edit BizDoc';
+    return this.props.creating ? 'Add BizDocRev' : 'Edit BizDocRev';
   }
 
   // return a clone of the record
@@ -98,6 +99,16 @@ class CompBizDocForm extends Component {
             onSubmit={this.handleSubmit}
           >
             <div style={{ marginBottom: '1rem' }}>
+              <Input
+                name="DocId"
+                label="DocId"
+                required={true}
+                value={this.state.recInEdit.DocId || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "100%" }}
+              />
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
               <label>
                 <Switch
                   name="Active"
@@ -109,33 +120,51 @@ class CompBizDocForm extends Component {
             </div>
             <div style={{ marginBottom: '1rem' }}>
               <Input
-                name="DocNum"
-                label="Document Number"
+                name="RevName"
+                label="Rev. Name"
                 required={true}
-                value={this.state.recInEdit.DocNum || ''}
+                value={this.state.recInEdit.RevName || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />
             </div>
             <div style={{ marginBottom: '1rem' }}>
               <Input
-                name="DocName"
-                label="Document Name"
-                required={true}
-                value={this.state.recInEdit.DocName || ''}
+                name="LangOrig"
+                label="LangOrig"
+                value={this.state.recInEdit.LangOrig || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />
             </div>
             <div style={{ marginBottom: '1rem' }}>
               <Input
-                name="Comment"
-                label="Comment"
-                value={this.state.recInEdit.Comment || ''}
+                name="LangNormalized"
+                label="LangNorm"
+                value={this.state.recInEdit.LangNormalized || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />
             </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <Input
+                name="RevOrig"
+                label="RevOrig"
+                value={this.state.recInEdit.RevOrig || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "100%" }}
+              />
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <Input
+                name="RevNormalized"
+                label="RevNorm"
+                value={this.state.recInEdit.RevNormalized || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "100%" }}
+              />
+            </div>
+
           </form>
 
           <ErrorBox />
@@ -158,7 +187,7 @@ class CompBizDocForm extends Component {
       </div>
     ); // return
   } // render()
-} // CompBizDocForm
+} // CompBizDocRevForm
 
 //const mapStateToProps = null;  // no need to get redux state info
 const mapStateToProps = (state, ownProps) => ({
@@ -168,12 +197,12 @@ const mapStateToProps = (state, ownProps) => ({
 const mapDispatchToProps = (dispatch, props) => {
   return {
     createRequested: (rec) => dispatch(
-      actionGen(actionBizDoc.CREATE_BizDoc_REQUESTED, rec)
+      actionGen(actionBizDocRev.CREATE_BizDocRev_REQUESTED, rec)
     ),
     updateRequested: (rec) => dispatch(
-      actionGen(actionBizDoc.UPDATE_BizDoc_REQUESTED, rec)
+      actionGen(actionBizDocRev.UPDATE_BizDocRev_REQUESTED, rec)
     ),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompBizDocForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CompBizDocRevForm);

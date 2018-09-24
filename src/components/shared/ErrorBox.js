@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import actionError from '../../actions/actionError';
 import utils  from '../../utils/utils';
-import '../../App.css';
+import './ErrorBox.css';
 
 class ErrorBox extends React.Component {
 

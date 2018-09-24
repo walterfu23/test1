@@ -9,6 +9,7 @@ const objEmpty = (obj) => {
   return true;
 }
 
+// these functions will be made known to potential callers
 const utils = {
   objEmpty: (obj) => objEmpty(obj),
 }

@@ -5,7 +5,12 @@ import {
   watchDeleteBizDoc,
   watchUpdateBizDoc,
 } from './sagasBizDoc';
-import watchFetchBizDocRevs from './sagasBizDocRev';
+import { 
+  watchFetchBizDocRevs, 
+  watchCreateBizDocRev,
+  watchDeleteBizDocRev,
+  watchUpdateBizDocRev,
+} from './sagasBizDocRev';
 import watchFetchBizDocRevPages from './sagasBizDocRevPage';
 
 export default function* rootSaga() {
@@ -16,6 +21,10 @@ export default function* rootSaga() {
     watchUpdateBizDoc(),
 
     watchFetchBizDocRevs(),
+    watchCreateBizDocRev(),
+    watchDeleteBizDocRev(),
+    watchUpdateBizDocRev(),
+
     watchFetchBizDocRevPages(),
   ]);
 }

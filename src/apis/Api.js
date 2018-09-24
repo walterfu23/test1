@@ -5,68 +5,54 @@ import moment from 'moment';
 //const urlBase = 'http://ssalt465hdy/BooksOData/odata/';
 const urlBase = 'http://localhost/BooksOData/odata/';
 
-const getBizDocs = () => {
-  const url = urlBase + 'BizDoc';
+// get all records
+const getRecs = (modelName) => {
+  const url = urlBase + modelName;
   return axios.get(url);
 }
 
-const createBizDoc = ({Active, DocNum, DocName, Comment} = {}) => {
-  const url = urlBase + 'BizDoc';
+// create a record
+const createRec = (modelName, rec = {}) => {
+  const url = urlBase + modelName;
   const now = moment();
-  const uid = 'fuw';
-  const bizDocToUse = {
-    Active,
-    DocNum,
-    DocName,
-    Comment,
-    Creator: uid,
+  const recToUse = {
+    ...rec,
     CreateTime: now,
-    Modifier: uid,
     ModTime: now,
-  }; 
-  return axios.post( url, bizDocToUse );
+  };
+  return axios.post(url, recToUse);
 }
 
-const deleteBizDoc = ({Id} ) => {
-  const url = urlBase + 'BizDoc/' + Id;
-  return axios.delete( url );
+// delete the record
+const deleteRec = (modelName, { Id }) => {
+  const url = urlBase + modelName + '/' + Id;
+  return axios.delete(url);
 }
 
-const updateBizDocPrep = (bizDoc ) => {
+// prepare to update the record. this is needed to get the
+// ModTime value for redux-orm, after update is successful.
+const updateRecPrep = (rec) => {
   const now = moment();
-  const uid = 'fuw';
-  const bizDocToUse = {
-    ...bizDoc,
-    Modifier: uid,
+  const recToUse = {
+    ...rec,
     ModTime: now,
   }
-  return bizDocToUse;
+  return recToUse;
 }
 
-const updateBizDoc = (bizDocToUse ) => {
-  const url = urlBase + 'BizDoc/' + bizDocToUse.Id;
-  return axios.put( url, bizDocToUse );
+// update the record
+const updateRec = (modelName, recToUse) => {
+  const url = urlBase + modelName + '/' + recToUse.Id;
+  return axios.put(url, recToUse);
 }
 
-const getBizDocRevs = () => {
-  const url = urlBase + 'BizDocRev';
-  return axios.get(url);
-}
-
-const getBizDocRevPages = () => {
-  const url = urlBase + 'BizDocRevPage';
-  return axios.get(url);
-}
-
+// The api has these functions 
 const Api = {
-  getBizDocs,
-  createBizDoc,
-  deleteBizDoc,
-  updateBizDocPrep,
-  updateBizDoc,
-
-  getBizDocRevs,
-  getBizDocRevPages,
+  getRecs,
+  createRec,
+  deleteRec,
+  updateRecPrep,
+  updateRec,
 }
 
 export default Api;
