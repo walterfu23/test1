@@ -145,7 +145,7 @@ class CompBizDoc extends Component {
   render() {
     return (
       <div>
-        <ErrorBox />
+        <ErrorBox loc="BizDoc_main"/>
         {this.props.getShowLoadingBizDoc && <LoadingPanel />}
 
         <Grid
@@ -167,12 +167,12 @@ class CompBizDoc extends Component {
         >
           <GridToolbar>
             <Button
-              title="Add New"
+              title="Add"
               className="k-button k-primary"
               iconClass="k-icon k-i-plus"
               onClick={this.handleAdd}              
             >
-              &nbsp;&nbsp;Add new&nbsp;&nbsp;
+              &nbsp;&nbsp;Add&nbsp;&nbsp;
             </Button>
             &nbsp;&nbsp;
             {

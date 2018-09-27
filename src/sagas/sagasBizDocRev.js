@@ -17,7 +17,7 @@ function* fetchBizDocRevs(action) {
     yield put(actionGen(actionBizDocRev.FETCH_BizDocRev_SUCCESSFUL, data));
     yield put(actionControl.setShowLoadingBizDocRev(false));  // hide loading panel
   } catch (error) {
-    yield put(actionError.reportStateError(error));
+    yield put(actionError.reportStateError('BizDocRev_main', error));
   }
 }
 
@@ -33,7 +33,7 @@ function* createBizDocRev(action) {
     yield put(actionGen(actionBizDocRev.CREATE_BizDocRev_SUCCESSFUL, data));
     yield put(actionControl.setShowFormBizDocRev(false));  // hide the form
   } catch (error) {
-    yield put(actionError.reportStateError(error));
+    yield put(actionError.reportStateError('BizDocRev_form', error));
   }
 }
 
@@ -47,7 +47,7 @@ function* deleteBizDocRev(action) {
     yield call(Api.deleteRec, 'BizDocRev', action.payload);
     yield put(actionGen(actionBizDocRev.DELETE_BizDocRev_SUCCESSFUL, action.payload));
   } catch (error) {
-    yield put(actionError.reportStateError(error));
+    yield put(actionError.reportStateError('BizDocRev_main', error));
   }
 }
 
@@ -63,7 +63,7 @@ function* updateBizDocRev(action) {
     yield put(actionGen(actionBizDocRev.UPDATE_BizDocRev_SUCCESSFUL, rec));
     yield put(actionControl.setShowFormBizDocRev(false));  // hide the form
   } catch (error) {
-    yield put(actionError.reportStateError(error));
+    yield put(actionError.reportStateError('BizDocRev_form', error));
   }
 }
 

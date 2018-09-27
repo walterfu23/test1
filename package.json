@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/polyfill": "^7.0.0",
     "@progress/kendo-data-query": "^1.5.0",
     "@progress/kendo-react-animation": "^2.0.0",
     "@progress/kendo-react-buttons": "^2.0.0",

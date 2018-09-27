@@ -18,21 +18,21 @@ class CompBizDocRev extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      creating: undefined,   // true: adding; false: editing.
-      recInEdit: undefined,  // record being edited.
-      filter: {
+      creating: undefined,    // true: adding; false: editing.
+      recInEdit: undefined,   // record being edited.
+      filter: {               // used by the grid to filter
         logic: "and",
         filters: [],
       },
-      sort: [],
+      sort: [],                // used by the grid to sort
       selectedDataItem: {},    // the selected record
+      docIdForNewRec: undefined, // new BizDocRev will be for this BizDoc.
     }
-
   }
 
   //==========================================================
 
-  // Add pressed: requesting a new record added.
+  // Add pressed: requesting a new record to be added.
   handleAdd = () => {
     this.props.setShowForm(true);  // show the form
     this.setState((prevState) => {
@@ -48,6 +48,7 @@ class CompBizDocRev extends Component {
     this.props.setShowForm(false);  // hide the form
   }
 
+  // Edit button pressed.
   handleEdit = () => {
     const selectedDataItem = this.state.selectedDataItem;
     if (!utils.objEmpty(selectedDataItem)) {
@@ -65,18 +66,6 @@ class CompBizDocRev extends Component {
         }
       });
     }
-  }
-
-  // record's Edit button pressed.
-  enterEdit = (dataItem) => {
-    this.props.setShowForm(true);  // show the form  
-    this.setState((prevState) => {
-      return {
-        ...prevState,
-        creating: false,
-        recInEdit: dataItem,
-      }
-    });
   }
 
   // remove button pressed
@@ -127,7 +116,7 @@ class CompBizDocRev extends Component {
     }));
   }
 
-  // data to use, after filtering, sorting, and selected marker
+  // data to use, after filtering, sorting, with the selected marker
   dataToUse = () => {
     const listRecs = this.props.listRecs;
     const filteredData = filterBy(listRecs, this.state.filter);
@@ -145,7 +134,7 @@ class CompBizDocRev extends Component {
   render() {
     return (
       <div>
-        <ErrorBox />
+        <ErrorBox loc="BizDocRev_main"/>
         {this.props.getShowLoading && <LoadingPanel />}
 
         <Grid
@@ -167,14 +156,14 @@ class CompBizDocRev extends Component {
         >
           <GridToolbar>
             <Button
-              title="Add New"
+              title="Add"
               className="k-button k-primary"
               iconClass="k-icon k-i-plus"
               onClick={this.handleAdd}              
             >
-              &nbsp;&nbsp;Add new&nbsp;&nbsp;
+              &nbsp;&nbsp;Add&nbsp;&nbsp;
             </Button>
-            &nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;
             {
               !utils.objEmpty(this.state.selectedDataItem) &&
               <div className="drp-edit-box drp-float-right">
@@ -206,12 +195,11 @@ class CompBizDocRev extends Component {
             }
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
-          <GridColumn field="DocId" title="Doc Id" width="170px" />
+          <GridColumn field="BizDoc.DocNum" title="Doc Num" width="170px" />
           <GridColumn field="RevName" title="Rev Name" />
-          <GridColumn field="LangOrig" title="LangOrig" />
-          <GridColumn field="LangNormalized" title="LangNorm" />
-          <GridColumn field="RevOrig" title="RevOrig" />
-          <GridColumn field="RevNormalized" title="RevNorm" />
+          <GridColumn field="LangNormalized" title="LangNorm" filterable={false} width="98px"/>
+          <GridColumn field="RevNormalized" title="RevNorm" filterable={false} width="90px"/>
+          <GridColumn field="Comment" title="Comment" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
 
@@ -238,7 +226,7 @@ class CompBizDocRev extends Component {
 const mapStateToProps = (state, props) => {
   const listRecs = createBizDocRevListSelector(state);
   return {
-    listRecs,
+    listRecs,       // list of BizDocRev's
     getShowLoading: actionControl.getShowLoadingBizDocRev(state),
     getShowForm: actionControl.getShowFormBizDocRev(state),
   }

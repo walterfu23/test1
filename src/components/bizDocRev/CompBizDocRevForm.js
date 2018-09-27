@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Input, Switch } from '@progress/kendo-react-inputs';
+import { DropDownList } from '@progress/kendo-react-dropdowns';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
 import actionBizDocRev from '../../actions/actionBizDocRev';
 import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
 import ErrorBox from '../shared/ErrorBox';
+import { createBizDocListSelector } from '../../selectors/selectBizDoc';
+import BizDoc from '../../orm/modelBizDoc';
 
 // The form in a dialog to add or edit fields for BizDoc
 // Props passed in that are not in defaultProps:
@@ -27,7 +30,7 @@ class CompBizDocRevForm extends Component {
       RevOrig: undefined,
       RevNormalized: undefined,
     },
-    EDIT_FIELD_WIDTH: '500px',       // width of edit fields
+    EDIT_FIELD_WIDTH: '400px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
     TEXTAREA_ROWS: 3,       // rows in a textarea
   };
@@ -38,7 +41,7 @@ class CompBizDocRevForm extends Component {
       recInEdit: {
         ...props.recInEdit,
         Creator: props.getUserInfo.uid,   // CreateTime added in Api.
-        Modifier: props.getUserInfo.uid,  
+        Modifier: props.getUserInfo.uid,
       }
     }
   }
@@ -52,10 +55,8 @@ class CompBizDocRevForm extends Component {
       // request to update the record
       this.props.updateRequested(this.state.recInEdit);
     }
-    //    this.props.handleCancel();   // close the form
   }
 
-  
   // Enter key pressed becomes a no-op.
   handleSubmit = (event) => {
     console.log('handleSubmit() entered');
@@ -81,9 +82,18 @@ class CompBizDocRevForm extends Component {
     recEdited[fieldName] = fieldVal;
     this.setState(
       {
-        recInEdit: recEdited
+        docIdForNewRec: undefined,
+        recInEdit: recEdited,
       }
     );
+  }
+
+  // BizDoc dropdown value changed
+  handleBizDocDrownDownChange = (event) => {
+    this.setState(prevState => ({
+      ...prevState,
+      docIdForNewRec: event.target.value,
+    }));
   }
 
   // render the dialog
@@ -98,17 +108,8 @@ class CompBizDocRevForm extends Component {
           <form
             onSubmit={this.handleSubmit}
           >
-            <div style={{ marginBottom: '1rem' }}>
-              <Input
-                name="DocId"
-                label="DocId"
-                required={true}
-                value={this.state.recInEdit.DocId || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "100%" }}
-              />
-            </div>
-            <div style={{ marginBottom: '1rem' }}>
+
+            <div className="drp-input-margin-bottom">
               <label>
                 <Switch
                   name="Active"
@@ -118,7 +119,19 @@ class CompBizDocRevForm extends Component {
                 &nbsp;&nbsp;Active
               </label>
             </div>
-            <div style={{ marginBottom: '1rem' }}>
+            <div className="drp-input-margin-bottom">
+              <DropDownList
+                label={'DocNum'}
+                data={this.props.listBizDoc}
+                dataItemKey={'Id'}
+                textField={'DocNum'}
+                value={this.state.docIdForNewRec}
+                onChanged={this.handleBizDocDrownDownChange}
+                style={{ width: "100%" }}
+                required={true}
+              />
+            </div>
+            <div className="drp-input-margin-bottom">
               <Input
                 name="RevName"
                 label="Rev. Name"
@@ -128,38 +141,43 @@ class CompBizDocRevForm extends Component {
                 style={{ width: "100%" }}
               />
             </div>
-            <div style={{ marginBottom: '1rem' }}>
+            <div className="drp-input-margin-bottom">
               <Input
                 name="LangOrig"
                 label="LangOrig"
                 value={this.state.recInEdit.LangOrig || ''}
                 onChange={this.onDialogInputChange}
-                style={{ width: "100%" }}
+                style={{ width: "45%", float: "left" }}
               />
-            </div>
-            <div style={{ marginBottom: '1rem' }}>
               <Input
                 name="LangNormalized"
                 label="LangNorm"
                 value={this.state.recInEdit.LangNormalized || ''}
                 onChange={this.onDialogInputChange}
-                style={{ width: "100%" }}
+                style={{ width: "45%", float: "right" }}
               />
             </div>
-            <div style={{ marginBottom: '1rem' }}>
+            <div className="drp-input-margin-bottom">
               <Input
                 name="RevOrig"
                 label="RevOrig"
                 value={this.state.recInEdit.RevOrig || ''}
                 onChange={this.onDialogInputChange}
-                style={{ width: "100%" }}
+                style={{ width: "45%", float: "left" }}
               />
-            </div>
-            <div style={{ marginBottom: '1rem' }}>
               <Input
                 name="RevNormalized"
                 label="RevNorm"
                 value={this.state.recInEdit.RevNormalized || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "45%", float: "right" }}
+              />
+            </div>
+            <div className="drp-input-margin-bottom">
+              <Input
+                name="Comment"
+                label="Comment"
+                value={this.state.recInEdit.Comment || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />
@@ -167,7 +185,8 @@ class CompBizDocRevForm extends Component {
 
           </form>
 
-          <ErrorBox />
+          <br />
+          <ErrorBox loc="BizDocRev_form" />
 
           <DialogActionsBar>
             <button
@@ -190,9 +209,14 @@ class CompBizDocRevForm extends Component {
 } // CompBizDocRevForm
 
 //const mapStateToProps = null;  // no need to get redux state info
-const mapStateToProps = (state, ownProps) => ({
-  getUserInfo: actionControl.getUserInfo(state),
-});
+const mapStateToProps = (state, ownProps) => {
+  const listBizDocUnsorted = createBizDocListSelector(state);
+  const listBizDoc = BizDoc.sortByDocNum(listBizDocUnsorted);
+  return {
+    listBizDoc,
+    getUserInfo: actionControl.getUserInfo(state),
+  };
+}
 
 const mapDispatchToProps = (dispatch, props) => {
   return {

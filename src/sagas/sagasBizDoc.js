@@ -17,7 +17,7 @@ function* fetchBizDocs(action) {
     yield put(actionGen(actionBizDoc.FETCH_BizDoc_SUCCESSFUL, data));
     yield put(actionControl.setShowLoadingBizDoc(false));  // hide loading panel
   } catch (error) {
-    yield put(actionError.reportStateError(error));
+    yield put(actionError.reportStateError('BizDoc_main', error));
   }
 }
 
@@ -33,7 +33,7 @@ function* createBizDoc(action) {
     yield put(actionGen(actionBizDoc.CREATE_BizDoc_SUCCESSFUL, data));
     yield put(actionControl.setShowFormBizDoc(false));  // hide the form
   } catch (error) {
-    yield put(actionError.reportStateError(error));
+    yield put(actionError.reportStateError('BizDoc_form', error));
   }
 }
 
@@ -47,7 +47,7 @@ function* deleteBizDoc(action) {
     yield call(Api.deleteRec, 'BizDoc', action.payload);
     yield put(actionGen(actionBizDoc.DELETE_BizDoc_SUCCESSFUL, action.payload));
   } catch (error) {
-    yield put(actionError.reportStateError(error));
+    yield put(actionError.reportStateError('BizDoc_main', error));
   }
 }
 
@@ -63,7 +63,7 @@ function* updateBizDoc(action) {
     yield put(actionGen(actionBizDoc.UPDATE_BizDoc_SUCCESSFUL, rec));
     yield put(actionControl.setShowFormBizDoc(false));  // hide the form
   } catch (error) {
-    yield put(actionError.reportStateError(error));
+    yield put(actionError.reportStateError('BizDoc_form', error));
   }
 }
 

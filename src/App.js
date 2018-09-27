@@ -3,6 +3,8 @@ import '@progress/kendo-theme-default';
 //import '@progress/kendo-theme-bootstrap';
 //import '@progress/kendo-theme-material';
 import './App.css';
+import "@babel/polyfill";
+
 import { TabStrip, TabStripTab } from '@progress/kendo-react-layout'
 import CompBizDoc from './components/bizDoc/CompBizDoc';
 import CompBizDocRev from './components/bizDocRev/CompBizDocRev';

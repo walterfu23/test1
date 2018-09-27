@@ -138,7 +138,7 @@ class CompBizDocForm extends Component {
             </div>
           </form>
 
-          <ErrorBox />
+          <ErrorBox loc="BizDoc_form"/>
 
           <DialogActionsBar>
             <button

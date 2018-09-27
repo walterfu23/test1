@@ -2,14 +2,14 @@
 import actionError from '../actions/actionError';
 
 const initialState = {
-  error: {},
+  errorInfo: {},
 };
 
 const errorReducer = (prevState = initialState, action) => {
   switch (action.type) {
     case actionError.ERROR_ENCOUNTERED:
       return {
-        error: action.payload,
+        errorInfo: action.payload,
       };
     case actionError.ERROR_CLEARED:
       return initialState;

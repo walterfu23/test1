@@ -1,4 +1,35 @@
 
+/* override the font of the Tab title */
+.k-tabstrip-items>.k-item>.k-link {
+  font-size: 24px;
+  font-weight: bolder;
+}
+
+/* override the font for the Grid header */
+.k-grid-header .k-header>.k-link {
+  font-size: 14px;
+  font-weight: bolder;
+}
+
+/* work-around for kendo-theme-default: allow Grid roll-over effect */
+.k-master-row:hover {
+  background-color: rgba(255, 142, 66, 0.2)
+}
+.k-master-row.k-alt:hover {
+  background-color: rgba(255, 142, 66, 0.2)
+}
+
+/* override the current color for a selected row in Grid */
+.k-grid tr.k-state-selected {
+  color: black;
+  background-color: rgba(255, 142, 66, 0.5);
+}
+
+/* work-around for DropdownList being hidden in Dialog */
+.k-animation-container{
+  z-index: 10003
+}
+
 .App {
   text-align: left;
 }
