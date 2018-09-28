@@ -9,7 +9,11 @@
 }
 
 .drp-icon-close {
-  font-size: 22px; /* Sets icon size to 32px */
+  font-size: 22px; /* icon size */
+}
+
+.drp-margin-bottom { 
+  margin-bottom: '1rem';
 }
 
 

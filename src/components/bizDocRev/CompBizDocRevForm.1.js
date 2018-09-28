@@ -10,7 +10,7 @@ import ErrorBox from '../shared/ErrorBox';
 import { createBizDocListSelector } from '../../selectors/selectBizDoc';
 import BizDoc from '../../orm/modelBizDoc';
 import './CompBizDocRev.css';
-import utils from '../../utils/utils';
+
 
 // The form in a dialog to add or edit fields for BizDoc
 // Props passed in that are not in defaultProps:
@@ -21,7 +21,7 @@ class CompBizDocRevForm extends Component {
 
   static defaultProps = {
     // true defaults - props that can be passed in from caller, 
-    creating: true,        // default is for creating a new record
+    creating: true,        // default is creating a new record
     recInEdit: {
       Id: undefined,
       DocId: undefined,
@@ -31,7 +31,6 @@ class CompBizDocRevForm extends Component {
       LangNormalized: undefined,
       RevOrig: undefined,
       RevNormalized: undefined,
-      Comment: undefined,
     },
     EDIT_FIELD_WIDTH: '400px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
@@ -46,7 +45,7 @@ class CompBizDocRevForm extends Component {
         Creator: props.getUserInfo.uid,   // CreateTime added in Api.
         Modifier: props.getUserInfo.uid,
       }
-    };
+    }
     this.state = stateInit;
   }
 
@@ -57,11 +56,7 @@ class CompBizDocRevForm extends Component {
       this.props.createRequested(this.state.recInEdit);
     } else {
       // request to update the record
-      // the web svc model of BizDocRev does not have
-      // the "selected" field. It needs to be wiped out.
-      const recPure = utils.cloneDelProps(this.state.recInEdit,
-        'BizDoc', 'selected');
-      this.props.updateRequested(recPure);
+      this.props.updateRequested(this.state.recInEdit);
     }
   }
 
@@ -102,10 +97,12 @@ class CompBizDocRevForm extends Component {
         DocId,
       },
     }));
+    const i = 123;
   }
 
   // render the dialog
   render() {
+    const DocId = this.state.recInEdit.DocId;
     return (
       <div>
         <Dialog
@@ -124,15 +121,14 @@ class CompBizDocRevForm extends Component {
                 &nbsp;&nbsp;Active
               </label>
             </div>
-            <br />
+            <br/>
             <div className="drp-margin-bottom">
               <DropDownList
                 name="DocId"
-                label="DocNum"
                 data={this.props.listBizDoc}
                 dataItemKey={'Id'}
                 textField={'DocNum'}
-                value={this.state.recInEdit.BizDoc}
+                value={this.state.recInEdit.DocId}
                 onChange={this.handleBizDocDrownDownChange}
                 style={{ width: "100%" }}
                 required={true}
@@ -190,9 +186,9 @@ class CompBizDocRevForm extends Component {
               />
             </div>
 
-            <br />
+            <br/>        
             <ErrorBox loc="BizDocRev_form" />
-            <br />
+            <br/>        
             <button
               className="k-button k-primary"
             >

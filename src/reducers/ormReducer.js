@@ -22,10 +22,7 @@ export default function ormReducer(dbState, action) {
       BizDoc.withId(action.payload.Id).delete();
       break;
     case actionBizDoc.UPDATE_BizDoc_SUCCESSFUL:
-      {
-        const rec = action.payload;
-        BizDoc.withId(rec.Id).update(rec);
-      }
+      BizDoc.withId(action.payload.Id).update(action.payload);
       break;
 
     case actionBizDocRev.FETCH_BizDocRev_SUCCESSFUL:
@@ -38,10 +35,7 @@ export default function ormReducer(dbState, action) {
       BizDocRev.withId(action.payload.Id).delete();
       break;
     case actionBizDocRev.UPDATE_BizDocRev_SUCCESSFUL:
-      {
-        const rec = action.payload;
-        BizDocRev.withId(rec.Id).update(rec);
-      }
+      BizDocRev.withId(action.payload.Id).update(action.payload);
       break;
 
     case actionBizDocRevPage.FETCH_BizDocRevPage_SUCCESSFUL:

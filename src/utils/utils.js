@@ -19,17 +19,28 @@ const objEmpty = (obj) => {
   return true;
 }
 
+// case-insensitive compare two strings
 const strCompare = (str1, str2) => {
   const str1Lower = str1.toLowerCase();
   const str2Lower = str2.toLowerCase();
   return str1Lower.localeCompare(str2Lower);
 }
 
+// clone an object and delete the given properties
+const cloneDelProps = (objOrig, ...props) => {
+  const objClone = Object.assign({}, objOrig);
+  props.forEach(prop => {
+    delete objClone[prop];
+  });
+  return objClone;
+}
+
 // these functions will be made known to potential callers
 const utils = {
+  cloneDelProps: (objOrig, ...props) => cloneDelProps(objOrig, ...props),
   emptyVal: (x) => emptyVal(x),
-  sameVals: (x, y) => sameVals(x, y),
   objEmpty: (obj) => objEmpty(obj),
+  sameVals: (x, y) => sameVals(x, y),
   strCompare: (str1, str2) => strCompare(str1, str2),
 }
 

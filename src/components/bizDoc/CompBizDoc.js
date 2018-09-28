@@ -52,16 +52,16 @@ class CompBizDoc extends Component {
     const selectedDataItem = this.state.selectedDataItem;
     if (!utils.objEmpty(selectedDataItem)) {
       this.props.setShowFormBizDoc(true);  // show the form  
+      // the web svc model of BizDoc does not have
+      // the "selected" field. It needs to be wiped out.
+      const recForEdit = Object.assign({}, selectedDataItem);
+      delete recForEdit.selected;
+
       this.setState((prevState) => {
         return {
           ...prevState,
           creating: false,
-          recInEdit: {
-            ...selectedDataItem,
-            // the web svc model of BizDoc does not have
-            // the "selected" field. It needs to be wiped out.
-            selected: undefined,
-          }
+          recInEdit: recForEdit,
         }
       });
     }
@@ -145,7 +145,7 @@ class CompBizDoc extends Component {
   render() {
     return (
       <div>
-        <ErrorBox loc="BizDoc_main"/>
+        <ErrorBox loc="BizDoc_main" />
         {this.props.getShowLoadingBizDoc && <LoadingPanel />}
 
         <Grid
@@ -170,7 +170,7 @@ class CompBizDoc extends Component {
               title="Add"
               className="k-button k-primary"
               iconClass="k-icon k-i-plus"
-              onClick={this.handleAdd}              
+              onClick={this.handleAdd}
             >
               &nbsp;&nbsp;Add&nbsp;&nbsp;
             </Button>

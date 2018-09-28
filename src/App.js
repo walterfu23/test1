@@ -35,7 +35,6 @@ export class App extends Component {
             <CompBizDoc />
           </TabStripTab>
           <TabStripTab title="Revisions">
-            BizRev tab
             <CompBizDocRev />
           </TabStripTab>
           <TabStripTab title="Pages">

@@ -26,7 +26,7 @@ class CompBizDocRev extends Component {
       },
       sort: [],                // used by the grid to sort
       selectedDataItem: {},    // the selected record
-      docIdForNewRec: undefined, // new BizDocRev will be for this BizDoc.
+      //      docIdForNewRec: undefined, // new BizDocRev will be for this BizDoc.
     }
   }
 
@@ -54,16 +54,11 @@ class CompBizDocRev extends Component {
     if (!utils.objEmpty(selectedDataItem)) {
       this.props.setShowForm(true);  // show the form  
       this.setState((prevState) => {
-        return {
+        const newState = {
           ...prevState,
           creating: false,
-          recInEdit: {
-            ...selectedDataItem,
-            // the web svc model of BizDoc does not have
-            // the "selected" field. It needs to be wiped out.
-            selected: undefined,
-          }
         }
+        return newState;
       });
     }
   }
@@ -134,7 +129,7 @@ class CompBizDocRev extends Component {
   render() {
     return (
       <div>
-        <ErrorBox loc="BizDocRev_main"/>
+        <ErrorBox loc="BizDocRev_main" />
         {this.props.getShowLoading && <LoadingPanel />}
 
         <Grid
@@ -159,7 +154,7 @@ class CompBizDocRev extends Component {
               title="Add"
               className="k-button k-primary"
               iconClass="k-icon k-i-plus"
-              onClick={this.handleAdd}              
+              onClick={this.handleAdd}
             >
               &nbsp;&nbsp;Add&nbsp;&nbsp;
             </Button>
@@ -197,8 +192,8 @@ class CompBizDocRev extends Component {
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
           <GridColumn field="BizDoc.DocNum" title="Doc Num" width="170px" />
           <GridColumn field="RevName" title="Rev Name" />
-          <GridColumn field="LangNormalized" title="LangNorm" filterable={false} width="98px"/>
-          <GridColumn field="RevNormalized" title="RevNorm" filterable={false} width="90px"/>
+          <GridColumn field="LangNormalized" title="Lang N." filterable={false} width="100px" />
+          <GridColumn field="RevNormalized" title="Rev N." filterable={false} width="92px" />
           <GridColumn field="Comment" title="Comment" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>

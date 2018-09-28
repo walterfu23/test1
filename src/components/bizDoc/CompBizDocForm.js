@@ -22,7 +22,7 @@ class CompBizDocForm extends Component {
       Active: true,
       DocNum: undefined,
       DocName: undefined,
-      Comment: undefined,
+      Comment: undefined,        
     },
     EDIT_FIELD_WIDTH: '500px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
@@ -34,16 +34,15 @@ class CompBizDocForm extends Component {
     this.state = {
       recInEdit: {
         ...props.recInEdit,
-        Creator: props.getUserInfo.uid,
-        Modifier: props.getUserInfo.uid,  
+        Creator: props.getUserInfo.uid,  
+        Modifier: props.getUserInfo.uid,
       }
     }
   }
 
 
-  // save button pressed. Save or update the record
-  handleSave = () => {
-;
+  // Save or update the record
+  saveRecord = () => {
     if (this.props.creating) {
       // request to create the record
       this.props.createRequested(this.state.recInEdit);
@@ -54,12 +53,10 @@ class CompBizDocForm extends Component {
     //    this.props.handleCancel();   // close the form
   }
 
-  
-  // Enter key pressed becomes a no-op.
+  // The form is submitted
   handleSubmit = (event) => {
-    console.log('handleSubmit() entered');
-    //    event.preventDefault();
-    this.handleSave();   // treat it the same as the Save button
+    event.preventDefault();
+    this.saveRecord();   // save the record
     console.log('handleSubmit() exiting');
   }
 
@@ -136,24 +133,27 @@ class CompBizDocForm extends Component {
                 style={{ width: "100%" }}
               />
             </div>
+
+            <br />
+            <ErrorBox loc="BizDoc_form" />
+            <br />
+            <div>
+              <button
+                className="k-button k-primary"
+                onClick={this.handleSave}
+              >
+                &nbsp;&nbsp;Save&nbsp;&nbsp;
+              </button>
+              <button
+                className="k-button drp-float-right"
+                onClick={this.props.handleCancel}
+              >
+                &nbsp;&nbsp;Cancel&nbsp;&nbsp;
+              </button>
+            </div>
           </form>
 
-          <ErrorBox loc="BizDoc_form"/>
 
-          <DialogActionsBar>
-            <button
-              className="k-button"
-              onClick={this.props.handleCancel}
-            >
-              Cancel
-              </button>
-            <button
-              className="k-button k-primary"
-              onClick={this.handleSave}
-            >
-              Save
-              </button>
-          </DialogActionsBar>
         </Dialog>
       </div>
     ); // return
