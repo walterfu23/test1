@@ -19,22 +19,19 @@ class CompBizDoc extends Component {
     super(props);
     this.state = {
       creating: undefined,   // true: adding; false: editing.
-      recInEdit: undefined,  // record being edited.
       filter: {
         logic: "and",
         filters: [],
       },
       sort: [],
-      selectedDataItem: {},    // the selected record
     }
-
   }
 
   //==========================================================
 
   // Add pressed: requesting a new record added.
   handleAdd = () => {
-    this.props.setShowFormBizDoc(true);  // show the form
+    this.props.setShowForm(true);  // show the form
     this.setState((prevState) => {
       return {
         ...prevState,
@@ -45,97 +42,75 @@ class CompBizDoc extends Component {
 
   // form's cancel button or form's close button clicked.
   handleFormCancel = () => {
-    this.props.setShowFormBizDoc(false);  // hide the form
+    this.props.setShowFormB(false);  // hide the form
   }
 
+  // Edit button pressed.
   handleEdit = () => {
-    const selectedDataItem = this.state.selectedDataItem;
-    if (!utils.objEmpty(selectedDataItem)) {
-      this.props.setShowFormBizDoc(true);  // show the form  
-      // the web svc model of BizDoc does not have
-      // the "selected" field. It needs to be wiped out.
-      const recForEdit = Object.assign({}, selectedDataItem);
-      delete recForEdit.selected;
-
+    const currentDataItem = this.props.getCurrentRec;
+    if (!utils.objEmpty(currentDataItem)) {
+      this.props.setShowForm(true);  // show the form  
       this.setState((prevState) => {
-        return {
+        const newState = {
           ...prevState,
           creating: false,
-          recInEdit: recForEdit,
         }
+        return newState;
       });
     }
   }
 
-  // record's Edit button pressed.
-  enterEdit = (dataItem) => {
-    this.props.setShowFormBizDoc(true);  // show the form  
-    this.setState((prevState) => {
-      return {
-        ...prevState,
-        creating: false,
-        recInEdit: dataItem,
-      }
-    });
-  }
-
   // remove button pressed
   handleRemove = () => {
-    const selectedDataItem = this.state.selectedDataItem;
-    if (!utils.objEmpty(selectedDataItem) &&
+    const currentDataItem = this.props.getCurrentRec;
+    if (!utils.objEmpty(currentDataItem) &&
       window.confirm(
-        'Confirm deleting: ' + selectedDataItem.DocName)) {
-      this.props.deleteRequested(selectedDataItem);
-      this.setState((prevState) => ({
-        ...prevState,
-        selectedDataItem: {},
-      }));
+        'Confirm deleting: ' + currentDataItem.DocName)) {
+      this.props.deleteRequested(currentDataItem);
     }
   }
 
   //==========================================================
 
-  // a row is clicked
+  // a row is clicked. remember the current record
   handleRowClick = (event) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      selectedDataItem: event.dataItem,
-    }));
+    const currentItem = event.dataItem;
+    this.props.setCurrentRec(currentItem);
   }
 
   // edit group is closed
   handleEditGroupClose = (event) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      selectedDataItem: {},
-    }));
+    this.props.setCurrentRec({});  // no more current record
   }
 
   // filter changed
   handleFilterChange = (event) => {
+    const filter = event.filter;
     this.setState((prevState) => ({
       ...prevState,
-      filter: event.filter,
+      filter,
     }));
   }
 
   // column sort requested
   handleSortChange = (event) => {
+    const sort = event.sort;
     this.setState((prevState) => ({
       ...prevState,
-      sort: event.sort,
+      sort,
     }));
   }
 
   // data to use, after filtering, sorting, and selected marker
   dataToUse = () => {
-    const listBizDoc = this.props.listBizDoc;
-    const filteredData = filterBy(listBizDoc, this.state.filter);
+    const listRecs = this.props.listRecs;
+    const filteredData = filterBy(listRecs, this.state.filter);
     const sortedFilteredData = orderBy(filteredData, this.state.sort);
-
+    const currentRec = this.props.getCurrentRec;
+    const currentRecId = currentRec && currentRec.Id;
     const dataWithSelectedItem = sortedFilteredData.map(item => ({
       ...item,
-      selected: item.Id === this.state.selectedDataItem.Id,
+      selected: item.Id === currentRecId,
     }));
     return dataWithSelectedItem;
   }
@@ -143,10 +118,11 @@ class CompBizDoc extends Component {
   //==========================================================
   // render for CompBizDoc
   render() {
+    const hasCurrentRec = !utils.objEmpty(this.props.getCurrentRec);
     return (
       <div>
         <ErrorBox loc="BizDoc_main" />
-        {this.props.getShowLoadingBizDoc && <LoadingPanel />}
+        {this.props.getShowLoading && <LoadingPanel />}
 
         <Grid
           style={{ height: '420px' }}
@@ -176,7 +152,7 @@ class CompBizDoc extends Component {
             </Button>
             &nbsp;&nbsp;
             {
-              !utils.objEmpty(this.state.selectedDataItem) &&
+              hasCurrentRec &&
               <div className="drp-edit-box drp-float-right">
                 <Button
                   title="Edit"
@@ -212,20 +188,11 @@ class CompBizDoc extends Component {
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
 
-        {this.props.getShowFormBizDoc &&    // show the form if adding or editing
-          (
-            this.state.creating ?
-              <CompBizDocForm
-                creating={this.state.creating}
-                handleCancel={this.handleFormCancel}
-              />
-              :
-              <CompBizDocForm
-                creating={this.state.creating}
-                recInEdit={this.state.recInEdit}
-                handleCancel={this.handleFormCancel}
-              />
-          )
+        {this.props.getShowForm &&    // show the form if adding or editing
+          <CompBizDocForm
+            creating={this.state.creating}
+            handleCancel={this.handleFormCancel}
+          />
         }
       </div>
     );
@@ -233,23 +200,27 @@ class CompBizDoc extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  const listBizDoc = createBizDocListSelector(state);
+  const listRecs = createBizDocListSelector(state);
   return {
-    listBizDoc,
-    getShowLoadingBizDoc: actionControl.getShowLoadingBizDoc(state),
-    getShowFormBizDoc: actionControl.getShowFormBizDoc(state),
+    listRecs,
+    getShowLoading: actionControl.getShowLoadingBizDoc(state),
+    getShowForm: actionControl.getShowFormBizDoc(state),
+    getCurrentRec: actionControl.getCurrentBizDoc(state),
   }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    setShowFormBizDoc: (showFlag) => dispatch(
+    setShowForm: (showFlag) => dispatch(
       actionControl.setShowFormBizDoc(showFlag)),
     createRequested: (rec) => dispatch(
       actionGen(actionBizDoc.CREATE_BizDoc_REQUESTED, rec)
     ),
     deleteRequested: (rec) => dispatch(
       actionGen(actionBizDoc.DELETE_BizDoc_REQUESTED, rec)
+    ),
+    setCurrentRec: (rec) => dispatch(
+      actionControl.setCurrentBizDoc(rec)
     ),
   }
 }

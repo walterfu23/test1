@@ -10,8 +10,12 @@ const sameVals = (x, y) => {
   return (!emptyVal(x)) && (!emptyVal(y)) && (x === y);
 }
 
-// returns true if obj is an empty object
+// returns true if obj is undefined or an empty object
 const objEmpty = (obj) => {
+  if (emptyVal(obj)) {
+    return true;
+  }
+
   for (var key in obj) {
     if (obj.hasOwnProperty(key))
       return false;

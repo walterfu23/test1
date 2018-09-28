@@ -4,8 +4,9 @@ import { Input, Switch } from '@progress/kendo-react-inputs';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
 import actionBizDoc from '../../actions/actionBizDoc';
-import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
+import { Dialog } from '@progress/kendo-react-dialogs';
 import ErrorBox from '../shared/ErrorBox';
+import './CompBizDoc.css';
 
 // The form in a dialog to add or edit fields for BizDoc
 // Props passed in that are not in defaultProps:
@@ -15,15 +16,7 @@ import ErrorBox from '../shared/ErrorBox';
 class CompBizDocForm extends Component {
 
   static defaultProps = {
-    // true defaults - props that can be passed in from caller, 
     creating: true,        // default is creating a new record
-    recInEdit: {
-      Id: undefined,
-      Active: true,
-      DocNum: undefined,
-      DocName: undefined,
-      Comment: undefined,        
-    },
     EDIT_FIELD_WIDTH: '500px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
     TEXTAREA_ROWS: 3,       // rows in a textarea
@@ -31,13 +24,26 @@ class CompBizDocForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
+    const recEmpty = {
+      Id: undefined,
+      Active: true,
+      DocNum: undefined,
+      DocName: undefined,
+      Comment: undefined,
+      Creator: props.getUserInfo.uid,   // CreateTime added in Api.
+    };
+
+    const recInEditToUse =
+      props.creating ? recEmpty : props.getCurrentRec;
+    const dialogTitle = props.creating ? 'Add BizDoc' : 'Edit BizDoc';
+    const stateInit = {
+      dialogTitle,           // title of the dialog box
       recInEdit: {
-        ...props.recInEdit,
-        Creator: props.getUserInfo.uid,  
+        ...recInEditToUse,
         Modifier: props.getUserInfo.uid,
       }
-    }
+    };
+    this.state = stateInit;
   }
 
 
@@ -50,36 +56,25 @@ class CompBizDocForm extends Component {
       // request to update the record
       this.props.updateRequested(this.state.recInEdit);
     }
-    //    this.props.handleCancel();   // close the form
   }
 
   // The form is submitted
   handleSubmit = (event) => {
     event.preventDefault();
     this.saveRecord();   // save the record
-    console.log('handleSubmit() exiting');
   }
-
-  // title of the diaglog box
-  dialogTitle = () => {
-    return this.props.creating ? 'Add BizDoc' : 'Edit BizDoc';
-  }
-
-  // return a clone of the record
-  cloneRec = rec => Object.assign({}, rec);
 
   // record the form field changes to state
   onDialogInputChange = (event) => {
     const target = event.target;
     const fieldVal = target.type === 'checkbox' ? target.checked : target.value;
     const fieldName = target.props ? target.props.name : target.name;
-    const recEdited = this.cloneRec(this.state.recInEdit);
+    const recEdited = Object.assign({}, this.state.recInEdit);
     recEdited[fieldName] = fieldVal;
-    this.setState(
-      {
-        recInEdit: recEdited
-      }
-    );
+    this.setState(prevState => ({
+      ...prevState,
+      recInEdit: recEdited,
+    }));
   }
 
   // render the dialog
@@ -87,14 +82,14 @@ class CompBizDocForm extends Component {
     return (
       <div>
         <Dialog
-          title={this.dialogTitle()}
+          title={this.state.dialogTitle}
           onClose={this.props.handleCancel}
           width={this.props.EDIT_FIELD_WIDTH}
         >
           <form
             onSubmit={this.handleSubmit}
           >
-            <div style={{ marginBottom: '1rem' }}>
+            <div className="drp-margin-bottom">
               <label>
                 <Switch
                   name="Active"
@@ -104,7 +99,7 @@ class CompBizDocForm extends Component {
                 &nbsp;&nbsp;Active
               </label>
             </div>
-            <div style={{ marginBottom: '1rem' }}>
+            <div className="drp-margin-bottom">
               <Input
                 name="DocNum"
                 label="Document Number"
@@ -114,7 +109,7 @@ class CompBizDocForm extends Component {
                 style={{ width: "100%" }}
               />
             </div>
-            <div style={{ marginBottom: '1rem' }}>
+            <div className="drp-margin-bottom">
               <Input
                 name="DocName"
                 label="Document Name"
@@ -124,7 +119,7 @@ class CompBizDocForm extends Component {
                 style={{ width: "100%" }}
               />
             </div>
-            <div style={{ marginBottom: '1rem' }}>
+            <div className="drp-margin-bottom">
               <Input
                 name="Comment"
                 label="Comment"
@@ -152,8 +147,6 @@ class CompBizDocForm extends Component {
               </button>
             </div>
           </form>
-
-
         </Dialog>
       </div>
     ); // return
@@ -163,6 +156,7 @@ class CompBizDocForm extends Component {
 //const mapStateToProps = null;  // no need to get redux state info
 const mapStateToProps = (state, ownProps) => ({
   getUserInfo: actionControl.getUserInfo(state),
+  getCurrentRec: actionControl.getCurrentBizDoc(state),
 });
 
 const mapDispatchToProps = (dispatch, props) => {

@@ -19,14 +19,11 @@ class CompBizDocRev extends Component {
     super(props);
     this.state = {
       creating: undefined,    // true: adding; false: editing.
-      recInEdit: undefined,   // record being edited.
       filter: {               // used by the grid to filter
         logic: "and",
         filters: [],
       },
       sort: [],                // used by the grid to sort
-      selectedDataItem: {},    // the selected record
-      //      docIdForNewRec: undefined, // new BizDocRev will be for this BizDoc.
     }
   }
 
@@ -50,8 +47,8 @@ class CompBizDocRev extends Component {
 
   // Edit button pressed.
   handleEdit = () => {
-    const selectedDataItem = this.state.selectedDataItem;
-    if (!utils.objEmpty(selectedDataItem)) {
+    const currentDataItem = this.props.getCurrentRec;
+    if (!utils.objEmpty(currentDataItem)) {
       this.props.setShowForm(true);  // show the form  
       this.setState((prevState) => {
         const newState = {
@@ -65,49 +62,42 @@ class CompBizDocRev extends Component {
 
   // remove button pressed
   handleRemove = () => {
-    const selectedDataItem = this.state.selectedDataItem;
-    if (!utils.objEmpty(selectedDataItem) &&
+    const currentDataItem = this.props.getCurrentRec;
+    if (!utils.objEmpty(currentDataItem) &&
       window.confirm(
-        'Confirm deleting: ' + selectedDataItem.RevName)) {
-      this.props.deleteRequested(selectedDataItem);
-      this.setState((prevState) => ({
-        ...prevState,
-        selectedDataItem: {},
-      }));
+        'Confirm deleting: ' + currentDataItem.RevName)) {
+      this.props.deleteRequested(currentDataItem);
     }
   }
 
   //==========================================================
 
-  // a row is clicked
+  // a row is clicked. remember the current record
   handleRowClick = (event) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      selectedDataItem: event.dataItem,
-    }));
+    const currentItem = event.dataItem;
+    this.props.setCurrentRec(currentItem);
   }
 
   // edit group is closed
   handleEditGroupClose = (event) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      selectedDataItem: {},
-    }));
+    this.props.setCurrentRec({});  // no more current record
   }
 
   // filter changed
   handleFilterChange = (event) => {
+    const filter = event.filter;
     this.setState((prevState) => ({
       ...prevState,
-      filter: event.filter,
+      filter,
     }));
   }
 
   // column sort requested
   handleSortChange = (event) => {
+    const sort = event.sort;
     this.setState((prevState) => ({
       ...prevState,
-      sort: event.sort,
+      sort,
     }));
   }
 
@@ -116,10 +106,11 @@ class CompBizDocRev extends Component {
     const listRecs = this.props.listRecs;
     const filteredData = filterBy(listRecs, this.state.filter);
     const sortedFilteredData = orderBy(filteredData, this.state.sort);
-
+    const currentRec = this.props.getCurrentRec;
+    const currentRecId = currentRec && currentRec.Id;
     const dataWithSelectedItem = sortedFilteredData.map(item => ({
       ...item,
-      selected: item.Id === this.state.selectedDataItem.Id,
+      selected: item.Id === currentRecId,
     }));
     return dataWithSelectedItem;
   }
@@ -127,6 +118,7 @@ class CompBizDocRev extends Component {
   //==========================================================
   // render for CompBizDocRev
   render() {
+    const hasCurrentRec = !utils.objEmpty(this.props.getCurrentRec);
     return (
       <div>
         <ErrorBox loc="BizDocRev_main" />
@@ -160,7 +152,7 @@ class CompBizDocRev extends Component {
             </Button>
             &nbsp;&nbsp;&nbsp;&nbsp;
             {
-              !utils.objEmpty(this.state.selectedDataItem) &&
+              hasCurrentRec &&
               <div className="drp-edit-box drp-float-right">
                 <Button
                   title="Edit"
@@ -199,19 +191,10 @@ class CompBizDocRev extends Component {
         </Grid>
 
         {this.props.getShowForm &&    // show the form if adding or editing
-          (
-            this.state.creating ?
-              <CompBizDocRevForm
-                creating={this.state.creating}
-                handleCancel={this.handleFormCancel}
-              />
-              :
-              <CompBizDocRevForm
-                creating={this.state.creating}
-                recInEdit={this.state.recInEdit}
-                handleCancel={this.handleFormCancel}
-              />
-          )
+          <CompBizDocRevForm
+            creating={this.state.creating}
+            handleCancel={this.handleFormCancel}
+          />
         }
       </div>
     );
@@ -224,6 +207,7 @@ const mapStateToProps = (state, props) => {
     listRecs,       // list of BizDocRev's
     getShowLoading: actionControl.getShowLoadingBizDocRev(state),
     getShowForm: actionControl.getShowFormBizDocRev(state),
+    getCurrentRec: actionControl.getCurrentBizDocRev(state),
   }
 }
 
@@ -236,6 +220,9 @@ const mapDispatchToProps = (dispatch, props) => {
     ),
     deleteRequested: (rec) => dispatch(
       actionGen(actionBizDocRev.DELETE_BizDocRev_REQUESTED, rec)
+    ),
+    setCurrentRec: (rec) => dispatch(
+      actionControl.setCurrentBizDocRev(rec)
     ),
   }
 }

@@ -2,10 +2,14 @@ import actionGen from './actionGen';
 
 // action types 
 const LOAD_USER_INFO = 'LOAD_USER_INFO';
+
 const SHOW_LOADING_BizDoc = 'SHOW_LOADING_BizDoc';
 const SHOW_FORM_BizDoc = 'SHOW_FORM_BizDoc';
+const CTRL_UPD_CRNT_BizDoc = 'CTRL_UPD_CRNT_BizDoc';
+
 const SHOW_LOADING_BizDocRev = 'SHOW_LOADING_BizDocRev';
 const SHOW_FORM_BizDocRev = 'SHOW_FORM_BizDocRev';
+const CTRL_UPD_CRNT_BizDocRev = 'CTRL_UPD_CRNT_BizDocRev';
 
 // user info
 const getUserInfo = (state) => {
@@ -45,26 +49,51 @@ const setShowFormBizDocRev = (showFlag) => {
   return actionGen(SHOW_FORM_BizDocRev, showFlag);
 }
 
+// update the current record
+const getCurrentBizDoc = (state) => {
+  return state.control.BizDoc.current;
+}
+const setCurrentBizDoc = (bizDoc) => {
+  return actionGen(CTRL_UPD_CRNT_BizDoc, bizDoc);
+}
+
+const getCurrentBizDocRev = (state) => {
+  return state.control.BizDocRev.current;
+}
+const setCurrentBizDocRev = (bizDocRev) => {
+  return actionGen(CTRL_UPD_CRNT_BizDocRev, bizDocRev);
+}
+
 // things exported thru the default
-const actionControl = {
+const actionControl = {  
   LOAD_USER_INFO,
-  SHOW_LOADING_BizDoc,
-  SHOW_FORM_BizDoc,
-  SHOW_LOADING_BizDocRev,
-  SHOW_FORM_BizDocRev,
-  
   getUserInfo: (state) => getUserInfo(state),
   setUserInfo: (userInfo) => setUserInfo(userInfo),
 
+  SHOW_LOADING_BizDoc,
   getShowLoadingBizDoc: (state) => getShowLoadingBizDoc(state),
   setShowLoadingBizDoc: (showFlag) => setShowLoadingBizDoc(showFlag),
+
+  SHOW_LOADING_BizDocRev,
   getShowLoadingBizDocRev: (state) => getShowLoadingBizDocRev(state),
   setShowLoadingBizDocRev: (showFlag) => setShowLoadingBizDocRev(showFlag),
 
+  SHOW_FORM_BizDoc,
   getShowFormBizDoc: (state) => getShowFormBizDoc(state),
   setShowFormBizDoc: (showFlag) => setShowFormBizDoc(showFlag),
+
+  SHOW_FORM_BizDocRev,
   getShowFormBizDocRev: (state) => getShowFormBizDocRev(state),
   setShowFormBizDocRev: (showFlag) => setShowFormBizDocRev(showFlag),
+
+  CTRL_UPD_CRNT_BizDoc,
+  getCurrentBizDoc: (state) => getCurrentBizDoc(state),
+  setCurrentBizDoc: (bizDoc) => setCurrentBizDoc(bizDoc),
+
+  CTRL_UPD_CRNT_BizDocRev,
+  getCurrentBizDocRev: (state) => getCurrentBizDocRev(state),
+  setCurrentBizDocRev: (bizDocRev) => setCurrentBizDocRev(bizDocRev),
+
 }
 
 export default actionControl;

@@ -5,12 +5,11 @@ import { DropDownList } from '@progress/kendo-react-dropdowns';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
 import actionBizDocRev from '../../actions/actionBizDocRev';
-import { Dialog, DialogActionsBar } from '@progress/kendo-react-dialogs';
+import { Dialog } from '@progress/kendo-react-dialogs';
 import ErrorBox from '../shared/ErrorBox';
 import { createBizDocListSelector } from '../../selectors/selectBizDoc';
 import BizDoc from '../../orm/modelBizDoc';
 import './CompBizDocRev.css';
-import utils from '../../utils/utils';
 
 // The form in a dialog to add or edit fields for BizDoc
 // Props passed in that are not in defaultProps:
@@ -20,9 +19,15 @@ import utils from '../../utils/utils';
 class CompBizDocRevForm extends Component {
 
   static defaultProps = {
-    // true defaults - props that can be passed in from caller, 
     creating: true,        // default is for creating a new record
-    recInEdit: {
+    EDIT_FIELD_WIDTH: '400px',       // width of edit fields
+    TEXTAREA_COLS: 47,      // cols in a textarea
+    TEXTAREA_ROWS: 3,       // rows in a textarea
+  };
+
+  constructor(props) {
+    super(props);
+    const recEmpty = {
       Id: undefined,
       DocId: undefined,
       Active: true,
@@ -32,18 +37,16 @@ class CompBizDocRevForm extends Component {
       RevOrig: undefined,
       RevNormalized: undefined,
       Comment: undefined,
-    },
-    EDIT_FIELD_WIDTH: '400px',       // width of edit fields
-    TEXTAREA_COLS: 47,      // cols in a textarea
-    TEXTAREA_ROWS: 3,       // rows in a textarea
-  };
-
-  constructor(props) {
-    super(props);
+      Creator: props.getUserInfo.uid,   // CreateTime added in Api.
+    };
+    const recInEditToUse =
+      props.creating ? recEmpty : props.getCurrentRec;
+    const dialogTitle =
+      props.creating ? 'Add BizDocRev' : 'Edit BizDocRev';
     const stateInit = {
+      dialogTitle,      // title of the dialog box
       recInEdit: {
-        ...props.recInEdit,
-        Creator: props.getUserInfo.uid,   // CreateTime added in Api.
+        ...recInEditToUse,
         Modifier: props.getUserInfo.uid,
       }
     };
@@ -57,11 +60,7 @@ class CompBizDocRevForm extends Component {
       this.props.createRequested(this.state.recInEdit);
     } else {
       // request to update the record
-      // the web svc model of BizDocRev does not have
-      // the "selected" field. It needs to be wiped out.
-      const recPure = utils.cloneDelProps(this.state.recInEdit,
-        'BizDoc', 'selected');
-      this.props.updateRequested(recPure);
+      this.props.updateRequested(this.state.recInEdit);
     }
   }
 
@@ -71,20 +70,12 @@ class CompBizDocRevForm extends Component {
     this.saveRecord();   // save the record
   }
 
-  // title of the diaglog box
-  dialogTitle = () => {
-    return this.props.creating ? 'Add BizDocRev' : 'Edit BizDocRev';
-  }
-
-  // return a clone of the record
-  cloneRec = rec => Object.assign({}, rec);
-
   // record the form field changes to state
   onDialogInputChange = (event) => {
     const target = event.target;
     const fieldVal = target.type === 'checkbox' ? target.checked : target.value;
     const fieldName = target.props ? target.props.name : target.name;
-    const recEdited = this.cloneRec(this.state.recInEdit);
+    const recEdited = Object.assign({}, this.state.recInEdit);
     recEdited[fieldName] = fieldVal;
     this.setState(prevState => ({
       ...prevState,
@@ -109,7 +100,7 @@ class CompBizDocRevForm extends Component {
     return (
       <div>
         <Dialog
-          title={this.dialogTitle()}
+          title={this.state.dialogTitle}
           onClose={this.props.handleCancel}
           width={this.props.EDIT_FIELD_WIDTH}
         >
@@ -136,6 +127,7 @@ class CompBizDocRevForm extends Component {
                 onChange={this.handleBizDocDrownDownChange}
                 style={{ width: "100%" }}
                 required={true}
+                disabled={! this.props.creating}
               />
             </div>
             <div className="drp-margin-bottom">
@@ -218,6 +210,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     listBizDoc,
     getUserInfo: actionControl.getUserInfo(state),
+    getCurrentRec: actionControl.getCurrentBizDocRev(state),
   };
 }
 

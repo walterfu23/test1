@@ -7,10 +7,12 @@ const initialState = {
   BizDoc: {
     showLoading: false,  // true: show the loading panel
     showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
   },
   BizDocRev: {
     showLoading: false,  // true: show the loading panel
     showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
   },
 };
 
@@ -44,7 +46,7 @@ const controlReducer = (prevState = initialState, action) => {
       return {
         ...prevState,
         BizDocRev: {
-          ...prevState.BizDoc,
+          ...prevState.BizDocRev,
           showLoading: action.payload,
         }
       };
@@ -52,10 +54,26 @@ const controlReducer = (prevState = initialState, action) => {
       return {
         ...prevState,
         BizDocRev: {
-          ...prevState.BizDoc,
+          ...prevState.BizDocRev,
           showForm: action.payload,
         }
       };
+    case actionControl.CTRL_UPD_CRNT_BizDoc:
+      return {
+        ...prevState,
+        BizDoc: {
+          ...prevState.BizDoc,
+          current: action.payload,
+        }
+      }
+    case actionControl.CTRL_UPD_CRNT_BizDocRev:
+      return {
+        ...prevState,
+        BizDocRev: {
+          ...prevState.BizDocRev,
+          current: action.payload,
+        }
+      }
     default:
       return prevState;
   }

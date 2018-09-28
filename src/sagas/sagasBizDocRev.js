@@ -4,6 +4,7 @@ import actionError from '../actions/actionError';
 import actionControl from '../actions/actionControl';
 import actionBizDocRev from '../actions/actionBizDocRev';
 import Api from '../apis/Api';
+import utils from '../utils/utils';
 
 //==================================================================
 export function* watchFetchBizDocRevs() {
@@ -46,6 +47,7 @@ function* deleteBizDocRev(action) {
   try {
     yield call(Api.deleteRec, 'BizDocRev', action.payload);
     yield put(actionGen(actionBizDocRev.DELETE_BizDocRev_SUCCESSFUL, action.payload));
+    yield put(actionControl.setCurrentBizDocRev({}));  // update the current rec
   } catch (error) {
     yield put(actionError.reportStateError('BizDocRev_main', error));
   }
@@ -59,8 +61,13 @@ export function* watchUpdateBizDocRev() {
 function* updateBizDocRev(action) {
   try {
     const rec = yield call(Api.updateRecPrep, action.payload);
-    yield call(Api.updateRec, 'BizDocRev', rec);
+    // request to update the record
+    // the web svc model of BizDocRev does not have
+    // the "selected" field. It needs to be wiped out.
+    const recPure = utils.cloneDelProps(rec, 'BizDoc', 'selected');
+    yield call(Api.updateRec, 'BizDocRev', recPure);
     yield put(actionGen(actionBizDocRev.UPDATE_BizDocRev_SUCCESSFUL, rec));
+    yield put(actionControl.setCurrentBizDocRev(rec));  // update the current rec
     yield put(actionControl.setShowFormBizDocRev(false));  // hide the form
   } catch (error) {
     yield put(actionError.reportStateError('BizDocRev_form', error));
