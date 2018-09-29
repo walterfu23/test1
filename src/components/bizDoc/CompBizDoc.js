@@ -42,7 +42,7 @@ class CompBizDoc extends Component {
 
   // form's cancel button or form's close button clicked.
   handleFormCancel = () => {
-    this.props.setShowFormB(false);  // hide the form
+    this.props.setShowForm(false);  // hide the form
   }
 
   // Edit button pressed.
@@ -213,9 +213,6 @@ const mapDispatchToProps = (dispatch, props) => {
   return {
     setShowForm: (showFlag) => dispatch(
       actionControl.setShowFormBizDoc(showFlag)),
-    createRequested: (rec) => dispatch(
-      actionGen(actionBizDoc.CREATE_BizDoc_REQUESTED, rec)
-    ),
     deleteRequested: (rec) => dispatch(
       actionGen(actionBizDoc.DELETE_BizDoc_REQUESTED, rec)
     ),

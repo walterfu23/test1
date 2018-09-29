@@ -4,19 +4,19 @@ import { Input, Switch } from '@progress/kendo-react-inputs';
 import { DropDownList } from '@progress/kendo-react-dropdowns';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
-import actionBizDocRev from '../../actions/actionBizDocRev';
+import actionBizDocRevPage from '../../actions/actionBizDocRevPage';
 import { Dialog } from '@progress/kendo-react-dialogs';
 import ErrorBox from '../shared/ErrorBox';
-import { createBizDocListSelector } from '../../selectors/selectBizDoc';
-import BizDoc from '../../orm/modelBizDoc';
-import './CompBizDocRev.css';
+import { createBizDocRevListSelector } from '../../selectors/selectBizDocRev';
+import BizDocRev from '../../orm/modelBizDocRev';
+import './CompBizDocRevPage.css';
 
-// The form in a dialog to add or edit fields for BizDocRev
+// The form in a dialog to add or edit fields for BizDocRevPage
 // Props passed in that are not in defaultProps:
 // handleCancel - called by the component to tell the caller
 //                to close this component.
 // 
-class CompBizDocRevForm extends Component {
+class CompBizDocRevPageForm extends Component {
 
   static defaultProps = {
     creating: true,        // default is for creating a new record
@@ -29,20 +29,18 @@ class CompBizDocRevForm extends Component {
     super(props);
     const recEmpty = {
       Id: undefined,
-      DocId: undefined,
+      RevId: undefined,
       Active: true,
-      RevName: undefined,
-      LangOrig: undefined,
-      LangNormalized: undefined,
-      RevOrig: undefined,
-      RevNormalized: undefined,
-      Comment: undefined,
+      PgNum: undefined,
+      PgKey1: undefined,
+      PgKey2: undefined,
+      PgType: undefined,
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =
       props.creating ? recEmpty : props.getCurrentRec;
     const dialogTitle =
-      props.creating ? 'Add BizDocRev' : 'Edit BizDocRev';
+      props.creating ? 'Add BizDocRevPage' : 'Edit BizDocRevPage';
     const stateInit = {
       dialogTitle,      // title of the dialog box
       recInEdit: {
@@ -83,14 +81,14 @@ class CompBizDocRevForm extends Component {
     }));
   }
 
-  // BizDoc dropdown value changed
-  handleBizDocDrownDownChange = (event) => {
-    const DocId = event.target.value.Id;
+  // BizDocRev dropdown value changed
+  handleBizDocRevDrownDownChange = (event) => {
+    const RevId = event.target.value.Id;
     this.setState(prevState => ({
       ...prevState,
       recInEdit: {
         ...prevState.recInEdit,
-        DocId,
+        RevId,
       },
     }));
   }
@@ -106,84 +104,69 @@ class CompBizDocRevForm extends Component {
         >
           <form onSubmit={this.handleSubmit}>
             <div className="drp-margin-bottom">
+              <DropDownList
+                name="RevId"
+                label="RevName"
+                data={this.props.listBizDocRev}
+                dataItemKey={'Id'}
+                textField={'RevName'}
+                value={this.state.recInEdit.BizDocRev}
+                onChange={this.handleBizDocRevDrownDownChange}
+                style={{ width: "100%" }}
+                required={true}
+                disabled={!this.props.creating}
+              />
+            </div>
+            <div className="drp-margin-bottom">
               <label>
                 <Switch
                   name="Active"
                   checked={this.state.recInEdit.Active}
                   onChange={this.onDialogInputChange}
+                  style={{ width: "45%", float: "left" }}
                 />
                 &nbsp;&nbsp;Active
               </label>
+              <Input
+                name="PgNum"
+                label="Page Number"
+                required={true}
+                value={this.state.recInEdit.PgNum || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "45%", float: "right" }}
+              />
             </div>
             <br />
             <div className="drp-margin-bottom">
-              <DropDownList
-                name="DocId"
-                label="DocNum"
-                data={this.props.listBizDoc}
-                dataItemKey={'Id'}
-                textField={'DocNum'}
-                value={this.state.recInEdit.BizDoc}
-                onChange={this.handleBizDocDrownDownChange}
-                style={{ width: "100%" }}
-                required={true}
-                disabled={! this.props.creating}
-              />
-            </div>
-            <div className="drp-margin-bottom">
               <Input
-                name="RevName"
-                label="Rev. Name"
-                required={true}
-                value={this.state.recInEdit.RevName || ''}
+                name="PgKey1"
+                label="Key 1"
+                value={this.state.recInEdit.PgKey1 || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />
             </div>
             <div className="drp-margin-bottom">
               <Input
-                name="LangOrig"
-                label="LangOrig"
-                value={this.state.recInEdit.LangOrig || ''}
+                name="PgKey2"
+                label="Key 2"
+                value={this.state.recInEdit.PgKey2 || ''}
                 onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "left" }}
-              />
-              <Input
-                name="LangNormalized"
-                label="LangNorm"
-                value={this.state.recInEdit.LangNormalized || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "right" }}
+                style={{ width: "100%" }}
               />
             </div>
             <div className="drp-margin-bottom">
               <Input
-                name="RevOrig"
-                label="RevOrig"
-                value={this.state.recInEdit.RevOrig || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "left" }}
-              />
-              <Input
-                name="RevNormalized"
-                label="RevNorm"
-                value={this.state.recInEdit.RevNormalized || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "right" }}
-              />
-            </div>
-            <div className="drp-margin-bottom">
-              <Input
-                name="Comment"
-                label="Comment"
-                value={this.state.recInEdit.Comment || ''}
+                name="PgType"
+                label="Page Type"
+                value={this.state.recInEdit.PgType || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />
             </div>
 
             <br />
-            <ErrorBox loc="BizDocRev_form" />
+            <ErrorBox loc="BizDocRevPage_form" />
             <br />
             <button
               className="k-button k-primary"
@@ -201,28 +184,27 @@ class CompBizDocRevForm extends Component {
       </div>
     ); // return
   } // render()
-} // CompBizDocRevForm
+} // CompBizDocRevPageForm
 
-//const mapStateToProps = null;  // no need to get redux state info
 const mapStateToProps = (state, ownProps) => {
-  const listBizDocUnsorted = createBizDocListSelector(state);
-  const listBizDoc = BizDoc.sortByDocNum(listBizDocUnsorted);
+  const listBizDocRevUnsorted = createBizDocRevListSelector(state);
+  const listBizDocRev = BizDocRev.sortByRevName(listBizDocRevUnsorted);
   return {
-    listBizDoc,
+    listBizDocRev,
     getUserInfo: actionControl.getUserInfo(state),
-    getCurrentRec: actionControl.getCurrentBizDocRev(state),
+    getCurrentRec: actionControl.getCurrentBizDocRevPage(state),
   };
 }
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
     createRequested: (rec) => dispatch(
-      actionGen(actionBizDocRev.CREATE_BizDocRev_REQUESTED, rec)
+      actionGen(actionBizDocRevPage.CREATE_BizDocRevPage_REQUESTED, rec)
     ),
     updateRequested: (rec) => dispatch(
-      actionGen(actionBizDocRev.UPDATE_BizDocRev_REQUESTED, rec)
+      actionGen(actionBizDocRevPage.UPDATE_BizDocRevPage_REQUESTED, rec)
     ),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompBizDocRevForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CompBizDocRevPageForm);

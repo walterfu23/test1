@@ -215,9 +215,6 @@ const mapDispatchToProps = (dispatch, props) => {
   return {
     setShowForm: (showFlag) => dispatch(
       actionControl.setShowFormBizDocRev(showFlag)),
-    createRequested: (rec) => dispatch(
-      actionGen(actionBizDocRev.CREATE_BizDocRev_REQUESTED, rec)
-    ),
     deleteRequested: (rec) => dispatch(
       actionGen(actionBizDocRev.DELETE_BizDocRev_REQUESTED, rec)
     ),

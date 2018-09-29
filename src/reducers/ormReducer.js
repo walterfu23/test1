@@ -12,6 +12,7 @@ export default function ormReducer(dbState, action) {
   } = session;
 
   switch (action.type) {
+    //==================== BizDoc ====================
     case actionBizDoc.FETCH_BizDoc_SUCCESSFUL:
       BizDoc.hydrateArray(action.payload.data.value);
       break;
@@ -25,6 +26,7 @@ export default function ormReducer(dbState, action) {
       BizDoc.withId(action.payload.Id).update(action.payload);
       break;
 
+    //==================== BizDocRev ====================
     case actionBizDocRev.FETCH_BizDocRev_SUCCESSFUL:
       BizDocRev.hydrateArray(action.payload.data.value);
       break;
@@ -38,9 +40,21 @@ export default function ormReducer(dbState, action) {
       BizDocRev.withId(action.payload.Id).update(action.payload);
       break;
 
+    //==================== BizDocRevPage ====================
     case actionBizDocRevPage.FETCH_BizDocRevPage_SUCCESSFUL:
       BizDocRevPage.hydrateArray(action.payload.data.value);
       break;
+    case actionBizDocRevPage.CREATE_BizDocRevPage_SUCCESSFUL:
+      BizDocRevPage.hydrate(action.payload.data);
+      break;
+    case actionBizDocRevPage.DELETE_BizDocRevPage_SUCCESSFUL:
+      BizDocRevPage.withId(action.payload.Id).delete();
+      break;
+    case actionBizDocRevPage.UPDATE_BizDocRevPage_SUCCESSFUL:
+      BizDocRevPage.withId(action.payload.Id).update(action.payload);
+      break;
+
+    //==================== default ====================
     default:
       break;
   } // switch

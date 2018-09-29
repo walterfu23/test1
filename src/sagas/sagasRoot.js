@@ -11,7 +11,12 @@ import {
   watchDeleteBizDocRev,
   watchUpdateBizDocRev,
 } from './sagasBizDocRev';
-import watchFetchBizDocRevPages from './sagasBizDocRevPage';
+import { 
+  watchFetchBizDocRevPages, 
+  watchCreateBizDocRevPage,
+  watchDeleteBizDocRevPage,
+  watchUpdateBizDocRevPage,
+} from './sagasBizDocRevPage';
 
 export default function* rootSaga() {
   yield all([
@@ -26,5 +31,9 @@ export default function* rootSaga() {
     watchUpdateBizDocRev(),
 
     watchFetchBizDocRevPages(),
+    watchCreateBizDocRevPage(),
+    watchDeleteBizDocRevPage(),
+    watchUpdateBizDocRevPage(),
+
   ]);
 }

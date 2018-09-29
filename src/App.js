@@ -8,6 +8,7 @@ import "@babel/polyfill";
 import { TabStrip, TabStripTab } from '@progress/kendo-react-layout'
 import CompBizDoc from './components/bizDoc/CompBizDoc';
 import CompBizDocRev from './components/bizDocRev/CompBizDocRev';
+import CompBizDocRevPage from './components/bizDocRevPage/CompBizDocRevPage';
 
 export class App extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ export class App extends Component {
             <CompBizDocRev />
           </TabStripTab>
           <TabStripTab title="Pages">
-            BizRevPage tab
+            <CompBizDocRevPage />
           </TabStripTab>
 
         </TabStrip>

@@ -1,4 +1,5 @@
 import { fk, attr, Model } from 'redux-orm';
+import utils from '../utils/utils';
 
 export default class BizDocRev extends Model {
   static get modelName() {
@@ -53,6 +54,9 @@ export default class BizDocRev extends Model {
       BizDoc: jsonBizDoc,
     };
   }
+
+  static sortByRevName = (list) =>
+    list.sort((rec1, rec2) => utils.strCompare(rec1.RevName, rec2.RevName));
 
 }; // BizDocRev
 

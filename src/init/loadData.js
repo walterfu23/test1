@@ -27,8 +27,12 @@ const loadBizDocRevPage = storeOrm => {
   storeOrm.dispatch(actionGen(actionBizDocRevPage.FETCH_BizDocRevPage_REQUESTED));
 }
 
-const loadUserInfo = store  => {
-  store.dispatch(actionControl.setUserInfo());
+const loadUserInfo = store => {
+  //  store.dispatch(actionControl.fetchUserInfo());
+  const userInfoDef = {
+    uid: 'fuw',
+  }
+  store.dispatch(actionControl.setUserInfo(userInfoDef));
 }
 
 export default loadData;
