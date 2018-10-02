@@ -184,9 +184,9 @@ class CompBizDocRevPage extends Component {
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
           <GridColumn field="BizDocRev.RevName" title="Rev Name" width="170px" />
           <GridColumn field="PgNum" title="Page Number" filter="numeric" width="135px"  />
-          <GridColumn field="PgKey1" title="Key1" />
-          <GridColumn field="PgKey2" title="Key2" />
-          <GridColumn field="PgType" title="PgType" />
+          <GridColumn field="PgKey1" title="Key 1" />
+          <GridColumn field="PgKey2" title="Key 2" />
+          <GridColumn field="PgType" title="Page Type" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
 

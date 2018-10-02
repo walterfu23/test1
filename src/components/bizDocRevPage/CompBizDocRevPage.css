@@ -16,3 +16,14 @@
   margin-bottom: '1rem';
 }
 
+.drp-align-top {
+  vertical-align: top;
+}
+
+.drp-align-center {
+  vertical-align: center;
+}
+
+.drp-align-bottom {
+  vertical-align: bottom;
+}

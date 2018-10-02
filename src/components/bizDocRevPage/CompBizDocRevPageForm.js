@@ -117,24 +117,28 @@ class CompBizDocRevPageForm extends Component {
                 disabled={!this.props.creating}
               />
             </div>
-            <div className="drp-margin-bottom">
-              <label>
+            <div className="drp-align-center">
+              <label style={{ width: "45%", float: "left" }}>
+                <Input
+                  name="PgNum"
+                  label="Page Number"
+                  required={true}
+                  value={this.state.recInEdit.PgNum || ''}
+                  onChange={this.onDialogInputChange}
+
+                />
+                &nbsp;
+              </label>
+              <label style={{width: "10%"}}>&nbsp;</label>
+              <label style={{ width: "45%", float: "right" }}>
+                <br />
                 <Switch
                   name="Active"
                   checked={this.state.recInEdit.Active}
                   onChange={this.onDialogInputChange}
-                  style={{ width: "45%", float: "left" }}
                 />
                 &nbsp;&nbsp;Active
               </label>
-              <Input
-                name="PgNum"
-                label="Page Number"
-                required={true}
-                value={this.state.recInEdit.PgNum || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "right" }}
-              />
             </div>
             <br />
             <div className="drp-margin-bottom">
@@ -160,6 +164,7 @@ class CompBizDocRevPageForm extends Component {
                 name="PgType"
                 label="Page Type"
                 value={this.state.recInEdit.PgType || ''}
+                required={true}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />

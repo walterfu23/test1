@@ -12,6 +12,8 @@ import ErrorBox from '../shared/ErrorBox';
 import LoadingPanel from '../shared/LoadingPanel';
 import utils from '../../utils/utils';
 import './CompBizDocRev.css';
+import CompConfirmDialog from '../shared/CompConfirmDialog';
+import withCompConfirmDialog from '../shared/withCompConfirmDialog';
 
 class CompBizDocRev extends Component {
 
@@ -61,13 +63,30 @@ class CompBizDocRev extends Component {
   }
 
   // remove button pressed
-  handleRemove = () => {
+  handleRemoveOrig = () => {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem) &&
       window.confirm(
         'Confirm deleting: ' + currentDataItem.RevName)) {
       this.props.deleteRequested(currentDataItem);
     }
+  }
+
+  // remove button pressed
+  handleRemove = () => {
+    const currentDataItem = this.props.getCurrentRec;
+    if (!utils.objEmpty(currentDataItem)) {
+      const msgText = 'Please confirm deleting: ' + currentDataItem.RevName;
+      this.props.drpSetProp('msgText', msgText);
+      // currentDataItem will be passed to the yes callback: removeConfirmed()
+      this.props.drpSetProp('yesParam', currentDataItem);
+      this.props.drpSetProp('show', true);  // show the dialog
+    }
+  }
+
+  // user pressed Yes in the confirmation dialog.
+  removeConfirmed = (currentDataItem) => {
+    this.props.deleteRequested(currentDataItem);
   }
 
   //==========================================================
@@ -190,12 +209,21 @@ class CompBizDocRev extends Component {
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
 
+        <CompConfirmDialog
+          getShowConfirm={this.props.drpGenGetProp('show')}
+          setShowConfirm={this.props.drpGenSetProp('show')}
+          msgText={this.props.drpGetProp('msgText')}
+          yesCallback={this.removeConfirmed}
+          yesCallbackParam={this.props.drpGetProp('yesParam')}
+        />
+
         {this.props.getShowForm &&    // show the form if adding or editing
           <CompBizDocRevForm
             creating={this.state.creating}
             handleCancel={this.handleFormCancel}
           />
         }
+
       </div>
     );
   }
@@ -224,4 +252,7 @@ const mapDispatchToProps = (dispatch, props) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompBizDocRev);
+const Comp_confirm = withCompConfirmDialog(CompBizDocRev);
+const Comp_confirm_redux =
+  connect(mapStateToProps, mapDispatchToProps)(Comp_confirm);
+export default Comp_confirm_redux;
