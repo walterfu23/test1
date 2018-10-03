@@ -84,7 +84,8 @@ class CompBizDocRev extends Component {
     }
   }
 
-  // user pressed Yes in the confirmation dialog.
+  // this function will be passed to <CompConfirmDialog/>.
+  // It will be called when user presses Yes in the confirmation dialog.
   removeConfirmed = (currentDataItem) => {
     this.props.deleteRequested(currentDataItem);
   }

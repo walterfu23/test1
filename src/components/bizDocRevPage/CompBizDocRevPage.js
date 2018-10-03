@@ -12,6 +12,8 @@ import ErrorBox from '../shared/ErrorBox';
 import LoadingPanel from '../shared/LoadingPanel';
 import utils from '../../utils/utils';
 import './CompBizDocRevPage.css';
+import CompConfirmDialog from '../shared/CompConfirmDialog';
+import withCompConfirmDialog from '../shared/withCompConfirmDialog';
 
 class CompBizDocRevPage extends Component {
 
@@ -61,13 +63,31 @@ class CompBizDocRevPage extends Component {
   }
 
   // remove button pressed
-  handleRemove = () => {
+  handleRemoveOrig = () => {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem) &&
       window.confirm(
         'Confirm deleting: ' + currentDataItem.PageNum)) {
       this.props.deleteRequested(currentDataItem);
     }
+  }
+
+  // remove button pressed
+  handleRemove = () => {
+    const currentDataItem = this.props.getCurrentRec;
+    if (!utils.objEmpty(currentDataItem)) {
+      const msgText = 'Please confirm deleting: ' + currentDataItem.PgNum;
+      this.props.drpSetProp('msgText', msgText);
+      // currentDataItem will be passed to the yes callback: removeConfirmed()
+      this.props.drpSetProp('yesParam', currentDataItem);
+      this.props.drpSetProp('show', true);  // show the dialog
+    }
+  }
+
+  // this function will be passed to <CompConfirmDialog/>.
+  // It will be called when user presses Yes in the confirmation dialog.
+  removeConfirmed = (currentDataItem) => {
+    this.props.deleteRequested(currentDataItem);
   }
 
   //==========================================================
@@ -182,13 +202,22 @@ class CompBizDocRevPage extends Component {
             }
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
+          <GridColumn field="BizDocRev.BizDoc.DocNum" title="Doc Num" width="140px" />
           <GridColumn field="BizDocRev.RevName" title="Rev Name" width="170px" />
-          <GridColumn field="PgNum" title="Page Number" filter="numeric" width="135px"  />
+          <GridColumn field="PgNum" title="Page Number" filter="numeric" width="135px" />
           <GridColumn field="PgKey1" title="Key 1" />
           <GridColumn field="PgKey2" title="Key 2" />
           <GridColumn field="PgType" title="Page Type" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
+
+        <CompConfirmDialog
+          getShowConfirm={this.props.drpGenGetProp('show')}
+          setShowConfirm={this.props.drpGenSetProp('show')}
+          msgText={this.props.drpGetProp('msgText')}
+          yesCallback={this.removeConfirmed}
+          yesCallbackParam={this.props.drpGetProp('yesParam')}
+        />
 
         {this.props.getShowForm &&    // show the form if adding or editing
           <CompBizDocRevPageForm
@@ -224,4 +253,7 @@ const mapDispatchToProps = (dispatch, props) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompBizDocRevPage);
+const Comp_confirm = withCompConfirmDialog(CompBizDocRevPage);
+const Comp_confirm_redux =
+  connect(mapStateToProps, mapDispatchToProps)(Comp_confirm);
+export default Comp_confirm_redux;
