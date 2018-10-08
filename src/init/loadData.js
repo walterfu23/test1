@@ -3,6 +3,7 @@ import actionControl from '../actions/actionControl';
 import actionBizDoc from '../actions/actionBizDoc';
 import actionBizDocRev from '../actions/actionBizDocRev';
 import actionBizDocRevPage from '../actions/actionBizDocRevPage';
+import actionBizPageField from '../actions/actionBizPageField';
 
 // const action = (store, type) => {
 //   store.dispatch({ type });
@@ -12,6 +13,7 @@ const loadData = store => {
   loadBizDoc(store);
   loadBizDocRev(store);
   loadBizDocRevPage(store);
+  loadBizPageField(store);
   loadUserInfo(store);
 }
 
@@ -25,6 +27,10 @@ const loadBizDocRev = storeOrm => {
 
 const loadBizDocRevPage = storeOrm => {
   storeOrm.dispatch(actionGen(actionBizDocRevPage.FETCH_BizDocRevPage_REQUESTED));
+}
+
+const loadBizPageField = storeOrm => {
+  storeOrm.dispatch(actionGen(actionBizPageField.FETCH_BizPageField_REQUESTED));
 }
 
 const loadUserInfo = store => {

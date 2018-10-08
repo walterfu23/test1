@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createBizDocRevPageListSelector } from '../../selectors/selectBizDocRevPage';
+import { createBizPageFieldListSelector } from '../../selectors/selectBizPageField';
 import { Grid, GridColumn, GridToolbar } from '@progress/kendo-react-grid';
 import { Button } from '@progress/kendo-react-buttons';
 import { filterBy, orderBy } from '@progress/kendo-data-query';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
-import actionBizDocRevPage from '../../actions/actionBizDocRevPage';
-import CompBizDocRevPageForm from './CompBizDocRevPageForm';
+import actionBizPageField from '../../actions/actionBizPageField';
+import CompBizPageFieldForm from './CompBizPageFieldForm';
 import ErrorBox from '../shared/ErrorBox';
 import LoadingPanel from '../shared/LoadingPanel';
 import utils from '../../utils/utils';
-import './CompBizDocRevPage.css';
+import './CompBizPageField.css';
 import CompConfirmDialog from '../shared/CompConfirmDialog';
 import withCompConfirmDialog from '../shared/withCompConfirmDialog';
 import Constants from '../shared/Constants';
 
-class CompBizDocRevPage extends Component {
+class CompBizPageField extends Component {
 
   constructor(props) {
     super(props);
@@ -152,12 +152,12 @@ class CompBizDocRevPage extends Component {
   }
 
   //==========================================================
-  // render for CompBizDocRevPage
+  // render for CompBizPageField
   render() {
     const hasCurrentRec = !utils.objEmpty(this.props.getCurrentRec);
     return (
       <div>
-        <ErrorBox loc="BizDocRevPage_main" />
+        <ErrorBox loc="BizPageField_main" />
         {this.props.getShowLoading && <LoadingPanel />}
 
         <Grid
@@ -227,12 +227,15 @@ class CompBizDocRevPage extends Component {
             }
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
-          <GridColumn field="BizDocRev.BizDoc.DocNum" title="Doc Num" width="140px" />
-          <GridColumn field="BizDocRev.RevName" title="Rev Name" width="170px" />
-          <GridColumn field="PgNum" title="Page Number" filter="numeric" width="135px" />
-          <GridColumn field="PgKey1" title="Key 1" />
-          <GridColumn field="PgKey2" title="Key 2" />
-          <GridColumn field="PgType" title="Page Type" />
+          <GridColumn field="BizDocRevPage.BizDocRev.RevName" title="Rev Name" width="170px" />
+          <GridColumn field="BizDocRevPage.PgNum" title="Page Number" width="135px" />
+          <GridColumn field="Name" title="Name" width="135px" />
+          <GridColumn field="Type" title="Type" />
+          <GridColumn field="RegEx" title="RegEx" filterable={false}/>
+          <GridColumn field="X1" title="X1" filterable={false}/>
+          <GridColumn field="Y1" title="Y1" filterable={false}/>
+          <GridColumn field="X2" title="X2" filterable={false}/>
+          <GridColumn field="Y2" title="Y2" filterable={false}/>
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
 
@@ -245,7 +248,7 @@ class CompBizDocRevPage extends Component {
         />
 
         {this.props.getShowForm &&    // show the form if adding or editing
-          <CompBizDocRevPageForm
+          <CompBizPageFieldForm
             editMode={this.state.editMode}
             handleCancel={this.handleFormCancel}
           />
@@ -256,29 +259,29 @@ class CompBizDocRevPage extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  const listRecs = createBizDocRevPageListSelector(state);
+  const listRecs = createBizPageFieldListSelector(state);
   return {
-    listRecs,       // list of BizDocRev's
-    getShowLoading: actionControl.getShowLoadingBizDocRevPage(state),
-    getShowForm: actionControl.getShowFormBizDocRevPage(state),
-    getCurrentRec: actionControl.getCurrentBizDocRevPage(state),
+    listRecs,       // list of BizPageField's
+    getShowLoading: actionControl.getShowLoadingBizPageField(state),
+    getShowForm: actionControl.getShowFormBizPageField(state),
+    getCurrentRec: actionControl.getCurrentBizPageField(state),
   }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
     setShowForm: (showFlag) => dispatch(
-      actionControl.setShowFormBizDocRevPage(showFlag)),
+      actionControl.setShowFormBizPageField(showFlag)),
     deleteRequested: (rec) => dispatch(
-      actionGen(actionBizDocRevPage.DELETE_BizDocRevPage_REQUESTED, rec)
+      actionGen(actionBizPageField.DELETE_BizPageField_REQUESTED, rec)
     ),
     setCurrentRec: (rec) => dispatch(
-      actionControl.setCurrentBizDocRevPage(rec)
+      actionControl.setCurrentBizPageField(rec)
     ),
   }
 }
 
-const Comp_confirm = withCompConfirmDialog(CompBizDocRevPage);
+const Comp_confirm = withCompConfirmDialog(CompBizPageField);
 const Comp_confirm_redux =
   connect(mapStateToProps, mapDispatchToProps)(Comp_confirm);
 export default Comp_confirm_redux;

@@ -43,7 +43,7 @@ class CompConfirmDialog extends React.Component {
           width={this.props.width}
         >
           <br />
-          <p style={{ margin: "15px", textAlign: "center" }}>
+          <p style={{fontSize:"14pt"}}>
             {this.props.msgText}
           </p>
           <br />

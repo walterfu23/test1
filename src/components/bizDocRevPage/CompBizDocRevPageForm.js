@@ -10,6 +10,7 @@ import ErrorBox from '../shared/ErrorBox';
 import { createBizDocRevListSelector } from '../../selectors/selectBizDocRev';
 import BizDocRev from '../../orm/modelBizDocRev';
 import './CompBizDocRevPage.css';
+import Constants from '../shared/Constants';
 
 // The form in a dialog to add or edit fields for BizDocRevPage
 // Props passed in that are not in defaultProps:
@@ -19,7 +20,7 @@ import './CompBizDocRevPage.css';
 class CompBizDocRevPageForm extends Component {
 
   static defaultProps = {
-    creating: true,        // default is for creating a new record
+    editMode: Constants.EDIT_MODE_ADD, // creating a new record
     EDIT_FIELD_WIDTH: '400px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
     TEXTAREA_ROWS: 3,       // rows in a textarea
@@ -38,22 +39,37 @@ class CompBizDocRevPageForm extends Component {
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =
-      props.creating ? recEmpty : props.getCurrentRec;
-    const dialogTitle =
-      props.creating ? 'Add BizDocRevPage' : 'Edit BizDocRevPage';
+      props.editMode === Constants.EDIT_MODE_ADD ?
+        recEmpty : props.getCurrentRec;
+    const getDialogTitle = () => {
+      switch (props.editMode) {
+        case Constants.EDIT_MODE_ADD:
+          return 'Add BizDocRevPage';
+        case Constants.EDIT_MODE_ADD_SIMILAR:
+          return 'Add Similiar BizDocRevPage';
+        case Constants.EDIT_MODE_EDIT:
+          return 'Edit BizDocRevPage';
+        default:
+          return 'Edit';
+      }
+    }
+    const dialogTitle = getDialogTitle();
+    const adding = props.editMode === Constants.EDIT_MODE_EDIT ?
+      false : true;
     const stateInit = {
+      adding,           // true: adding a new record.
       dialogTitle,      // title of the dialog box
       recInEdit: {
         ...recInEditToUse,
         Modifier: props.getUserInfo.uid,
-      }
+      },
     };
     this.state = stateInit;
   }
 
   // Save or update the record
   saveRecord = () => {
-    if (this.props.creating) {
+    if (this.state.adding) {
       // request to create the record
       this.props.createRequested(this.state.recInEdit);
     } else {
@@ -114,14 +130,14 @@ class CompBizDocRevPageForm extends Component {
                 onChange={this.handleBizDocRevDrownDownChange}
                 style={{ width: "100%" }}
                 required={true}
-                disabled={!this.props.creating}
+                disabled={!this.state.adding}
               />
             </div>
             <div className="drp-align-center">
               <label style={{ width: "45%", float: "left" }}>
                 <Input
-                  name="PgNum"
-                  label="Page Number"
+                  name="dispLabel"
+                  label="Page"
                   required={true}
                   value={this.state.recInEdit.PgNum || ''}
                   onChange={this.onDialogInputChange}
@@ -129,7 +145,7 @@ class CompBizDocRevPageForm extends Component {
                 />
                 &nbsp;
               </label>
-              <label style={{width: "10%"}}>&nbsp;</label>
+              <label style={{ width: "10%" }}>&nbsp;</label>
               <label style={{ width: "45%", float: "right" }}>
                 <br />
                 <Switch

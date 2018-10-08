@@ -14,13 +14,14 @@ import utils from '../../utils/utils';
 import './CompBizDocRev.css';
 import CompConfirmDialog from '../shared/CompConfirmDialog';
 import withCompConfirmDialog from '../shared/withCompConfirmDialog';
+import Constants from '../shared/Constants';
 
 class CompBizDocRev extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      creating: undefined,    // true: adding; false: editing.
+      editMode: undefined,    // 3 EDI_MODE_ choices from Constants
       filter: {               // used by the grid to filter
         logic: "and",
         filters: [],
@@ -33,13 +34,13 @@ class CompBizDocRev extends Component {
 
   // Add pressed: requesting a new record to be added.
   handleAdd = () => {
-    this.props.setShowForm(true);  // show the form
     this.setState((prevState) => {
       return {
         ...prevState,
-        creating: true,
+        editMode: Constants.EDIT_MODE_ADD,
       };
     });
+    this.props.setShowForm(true);  // show the form
   }
 
   // form's cancel button or form's close button clicked.
@@ -47,18 +48,33 @@ class CompBizDocRev extends Component {
     this.props.setShowForm(false);  // hide the form
   }
 
+  // Add Similar button pressed.
+  handleAddSimilar = () => {
+    const currentDataItem = this.props.getCurrentRec;
+    if (!utils.objEmpty(currentDataItem)) {
+      this.setState((prevState) => {
+        const newState = {
+          ...prevState,
+          editMode: Constants.EDIT_MODE_ADD_SIMILAR,
+        }
+        return newState;
+      });
+      this.props.setShowForm(true);  // show the form  
+    }
+  }
+
   // Edit button pressed.
   handleEdit = () => {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem)) {
-      this.props.setShowForm(true);  // show the form  
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          creating: false,
+          editMode: Constants.EDIT_MODE_EDIT,
         }
         return newState;
       });
+      this.props.setShowForm(true);  // show the form  
     }
   }
 
@@ -121,10 +137,11 @@ class CompBizDocRev extends Component {
     }));
   }
 
-  // data to use, after filtering, sorting, with the selected marker
+  // data to use by the grid, 
+  // after filtering, sorting, with the selected marker
   dataToUse = () => {
     const listRecs = this.props.listRecs;
-    const filteredData = filterBy(listRecs, this.state.filter);
+    const filteredData = filterBy(listRecs, this.state.filter);  
     const sortedFilteredData = orderBy(filteredData, this.state.sort);
     const currentRec = this.props.getCurrentRec;
     const currentRecId = currentRec && currentRec.Id;
@@ -175,6 +192,15 @@ class CompBizDocRev extends Component {
               hasCurrentRec &&
               <div className="drp-edit-box drp-float-right">
                 <Button
+                  title="Add Similar"
+                  className="k-button k-primary"
+                  iconClass="k-icon k-i-plus"
+                  onClick={this.handleAddSimilar}
+                >
+                  &nbsp;&nbsp;Add Similar&nbsp;&nbsp;
+                </Button>
+                &nbsp;&nbsp;&nbsp;
+                <Button
                   title="Edit"
                   className="k-button k-primary"
                   iconClass="k-icon k-i-edit"
@@ -220,7 +246,7 @@ class CompBizDocRev extends Component {
 
         {this.props.getShowForm &&    // show the form if adding or editing
           <CompBizDocRevForm
-            creating={this.state.creating}
+            editMode={this.state.editMode}
             handleCancel={this.handleFormCancel}
           />
         }

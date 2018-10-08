@@ -19,6 +19,11 @@ const initialState = {
     showForm: false,     // true: show the Add/Edit form
     current: {},         // currently selected rec
   },
+  BizPageField: {
+    showLoading: false,  // true: show the loading panel
+    showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
+  },
 };
 
 const controlReducer = (prevState = initialState, action) => {
@@ -113,6 +118,32 @@ const controlReducer = (prevState = initialState, action) => {
         ...prevState,
         BizDocRevPage: {
           ...prevState.BizDocRevPage,
+          current: action.payload,
+        }
+      }
+
+    // =============== BizPageField ================  
+    case actionControl.SHOW_LOADING_BizPageField:
+      return {
+        ...prevState,
+        BizPageField: {
+          ...prevState.BizPageField,
+          showLoading: action.payload,
+        }
+      };
+    case actionControl.SHOW_FORM_BizPageField:
+      return {
+        ...prevState,
+        BizPageField: {
+          ...prevState.BizPageField,
+          showForm: action.payload,
+        }
+      };
+    case actionControl.CTRL_UPD_CRNT_BizPageField:
+      return {
+        ...prevState,
+        BizPageField: {
+          ...prevState.BizPageField,
           current: action.payload,
         }
       }

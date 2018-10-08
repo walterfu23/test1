@@ -2,6 +2,7 @@ import orm from '../orm/orm';
 import actionBizDoc from '../actions/actionBizDoc';
 import actionBizDocRev from '../actions/actionBizDocRev';
 import actionBizDocRevPage from '../actions/actionBizDocRevPage';
+import actionBizPageField from '../actions/actionBizPageField';
 
 export default function ormReducer(dbState, action) {
   const session = orm.session(dbState);
@@ -9,6 +10,7 @@ export default function ormReducer(dbState, action) {
     BizDoc,
     BizDocRev,
     BizDocRevPage,
+    BizPageField,
   } = session;
 
   switch (action.type) {
@@ -52,6 +54,20 @@ export default function ormReducer(dbState, action) {
       break;
     case actionBizDocRevPage.UPDATE_BizDocRevPage_SUCCESSFUL:
       BizDocRevPage.withId(action.payload.Id).update(action.payload);
+      break;
+
+    //==================== BizPageField ====================
+    case actionBizPageField.FETCH_BizPageField_SUCCESSFUL:
+      BizPageField.hydrateArray(action.payload.data.value);
+      break;
+    case actionBizPageField.CREATE_BizPageField_SUCCESSFUL:
+      BizPageField.hydrate(action.payload.data);
+      break;
+    case actionBizPageField.DELETE_BizPageField_SUCCESSFUL:
+      BizPageField.withId(action.payload.Id).delete();
+      break;
+    case actionBizPageField.UPDATE_BizPageField_SUCCESSFUL:
+      BizPageField.withId(action.payload.Id).update(action.payload);
       break;
 
     //==================== default ====================

@@ -1,17 +1,17 @@
 import { createSelector } from 'redux-orm';
 import orm from '../orm/orm';
-import BizDocRevPage from '../orm/modelBizDocRevPage';
+import BizPageField from '../orm/modelBizPageField';
 
-export const createBizDocRevPageTreeSelector = createSelector(
+export const createBizPageFieldTreeSelector = createSelector(
   orm,
   state => state.orm,
   session => {
-    const modelBizDocRevPages = session.BizDocRevPage.all().toModelArray();
-    return BizDocRevPage.modelArrayToJson(modelBizDocRevPages);
+    const modelBizPageFields = session.BizPageField.all().toModelArray();
+    return BizPageField.modelArrayToJson(modelBizPageFields);
   }
 );
 
-export const createBizDocRevPageListSelector =  createBizDocRevPageTreeSelector;
+export const createBizPageFieldListSelector =  createBizPageFieldTreeSelector;
 
 // createSelector, //unified selector, that creates ORM selector or selector from reselect
 // createRecordSelector, //to select single record with query info for relations and etc

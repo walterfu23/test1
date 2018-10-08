@@ -1,26 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Input, Switch } from '@progress/kendo-react-inputs';
 import { DropDownList } from '@progress/kendo-react-dropdowns';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
-import actionBizDocRev from '../../actions/actionBizDocRev';
+import actionBizPageField from '../../actions/actionBizPageField';
 import { Dialog } from '@progress/kendo-react-dialogs';
 import ErrorBox from '../shared/ErrorBox';
-import { createBizDocListSelector } from '../../selectors/selectBizDoc';
-import BizDoc from '../../orm/modelBizDoc';
-import './CompBizDocRev.css';
+import { createBizDocRevListSelector } from '../../selectors/selectBizDocRev';
+import { createBizDocRevPageListSelector } from '../../selectors/selectBizDocRevPage';
+import BizDocRev from '../../orm/modelBizDocRev';
+import BizDocRevPage from '../../orm/modelBizDocRevPage';
+import './CompBizPageField.css';
 import Constants from '../shared/Constants';
 
-// The form in a dialog to add or edit fields for BizDocRev
+// The form in a dialog to add or edit fields for BizPageField
 // Props passed in that are not in defaultProps:
 // handleCancel - called by the component to tell the caller
 //                to close this component.
 // 
-class CompBizDocRevForm extends Component {
+class CompBizPageFieldForm extends Component {
 
   static defaultProps = {
-    creating: true,        // default is for creating a new record
+    editMode: Constants.EDIT_MODE_ADD, // creating a new record
     EDIT_FIELD_WIDTH: '400px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
     TEXTAREA_ROWS: 3,       // rows in a textarea
@@ -30,14 +31,12 @@ class CompBizDocRevForm extends Component {
     super(props);
     const recEmpty = {
       Id: undefined,
-      DocId: undefined,
+      RevId: undefined,
       Active: true,
-      RevName: undefined,
-      LangOrig: undefined,
-      LangNormalized: undefined,
-      RevOrig: undefined,
-      RevNormalized: undefined,
-      Comment: undefined,
+      PgNum: undefined,
+      PgKey1: undefined,
+      PgKey2: undefined,
+      PgType: undefined,
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =
@@ -46,11 +45,11 @@ class CompBizDocRevForm extends Component {
     const getDialogTitle = () => {
       switch (props.editMode) {
         case Constants.EDIT_MODE_ADD:
-          return 'Add BizDocRev';
+          return 'Add BizPageField';
         case Constants.EDIT_MODE_ADD_SIMILAR:
-          return 'Add Similiar BizDocRev';
+          return 'Add Similiar BizPageField';
         case Constants.EDIT_MODE_EDIT:
-          return 'Edit BizDocRev';
+          return 'Edit BizPageField';
         default:
           return 'Edit';
       }
@@ -61,10 +60,13 @@ class CompBizDocRevForm extends Component {
     const stateInit = {
       adding,           // true: adding a new record.
       dialogTitle,      // title of the dialog box
+      RevId: undefined, // the selected Rev in its dropdown.
+      PgId: undefined,  // the selected Page in its dropdown.
+      listBizDocRevPage: undefined,  // list of BizDocRevPage entries matching RevId
       recInEdit: {
         ...recInEditToUse,
         Modifier: props.getUserInfo.uid,
-      }
+      },
     };
     this.state = stateInit;
   }
@@ -99,14 +101,28 @@ class CompBizDocRevForm extends Component {
     }));
   }
 
-  // BizDoc dropdown value changed
-  handleBizDocDrownDownChange = (event) => {
-    const DocId = event.target.value.Id;
+  // BizDocRev dropdown value changed
+  handleBizDocRevDrownDownChange = (event) => {
+    const RevId = event.target.value.Id;
+    const listBizDocRevPage =
+      BizDocRevPage.filterByDocRevId(this.props.listBizDocRevPage, RevId);
+    this.setState(prevState => ({
+      ...prevState,
+      RevId,
+      Page: {},
+      listBizDocRevPage,
+
+    }));
+  }
+
+  // BizDocRevPage dropdown value changed
+  handleBizPageFieldDrownDownChange = (event) => {
+    const PgId = event.target.value.Id;
     this.setState(prevState => ({
       ...prevState,
       recInEdit: {
         ...prevState.recInEdit,
-        DocId,
+        PgId,
       },
     }));
   }
@@ -122,84 +138,34 @@ class CompBizDocRevForm extends Component {
         >
           <form onSubmit={this.handleSubmit}>
             <div className="drp-margin-bottom">
-              <label>
-                <Switch
-                  name="Active"
-                  checked={this.state.recInEdit.Active}
-                  onChange={this.onDialogInputChange}
-                />
-                &nbsp;&nbsp;Active
-              </label>
-            </div>
-            <br />
-            <div className="drp-margin-bottom">
               <DropDownList
-                name="DocId"
-                label="DocNum"
-                data={this.props.listBizDoc}
+                name="RevId"
+                label="Revision"
+                data={this.props.listBizDocRev}
                 dataItemKey={'Id'}
-                textField={'DocNum'}
-                value={this.state.recInEdit.BizDoc}
-                onChange={this.handleBizDocDrownDownChange}
+                textField={'dispLabel'}
+                onChange={this.handleBizDocRevDrownDownChange}
                 style={{ width: "100%" }}
                 required={true}
                 disabled={!this.state.adding}
               />
             </div>
             <div className="drp-margin-bottom">
-              <Input
-                name="RevName"
-                label="Rev. Name"
+              <DropDownList
+                label="Page"
+                data={this.state.listBizDocRevPage}
+                dataItemKey={'Id'}
+                textField={'dispLabel'}
+                //                value={this.state.Page}
+                onChange={this.handleBizPageFieldDrownDownChange}
+                style={{ width: "100%" }}
                 required={true}
-                value={this.state.recInEdit.RevName || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "100%" }}
-              />
-            </div>
-            <div className="drp-margin-bottom">
-              <Input
-                name="LangOrig"
-                label="LangOrig"
-                value={this.state.recInEdit.LangOrig || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "left" }}
-              />
-              <Input
-                name="LangNormalized"
-                label="LangNorm"
-                value={this.state.recInEdit.LangNormalized || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "right" }}
-              />
-            </div>
-            <div className="drp-margin-bottom">
-              <Input
-                name="RevOrig"
-                label="RevOrig"
-                value={this.state.recInEdit.RevOrig || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "left" }}
-              />
-              <Input
-                name="RevNormalized"
-                label="RevNorm"
-                value={this.state.recInEdit.RevNormalized || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "45%", float: "right" }}
-              />
-            </div>
-            <div className="drp-margin-bottom">
-              <Input
-                name="Comment"
-                label="Comment"
-                value={this.state.recInEdit.Comment || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "100%" }}
+                disabled={!this.state.adding}
               />
             </div>
 
             <br />
-            <ErrorBox loc="BizDocRev_form" />
+            <ErrorBox loc="BizPageField_form" />
             <br />
             <button
               className="k-button k-primary"
@@ -217,28 +183,34 @@ class CompBizDocRevForm extends Component {
       </div>
     ); // return
   } // render()
-} // CompBizDocRevForm
+} // CompBizPageFieldForm
 
-//const mapStateToProps = null;  // no need to get redux state info
 const mapStateToProps = (state, ownProps) => {
-  const listBizDocUnsorted = createBizDocListSelector(state);
-  const listBizDoc = BizDoc.sortByDocNum(listBizDocUnsorted);
+  const listBizDocRevPageUnsorted = createBizDocRevPageListSelector(state);
+  const listBizDocRevPage = BizDocRevPage.sortByPgNum(listBizDocRevPageUnsorted);
+
+  const listRevsUnsorted = createBizDocRevListSelector(state);
+  const listRevsWithPage = BizDocRev.entriesWithPage(
+    listRevsUnsorted, listBizDocRevPage);
+  const listBizDocRev = BizDocRev.sortByRevName(listRevsWithPage);
+
   return {
-    listBizDoc,
+    listBizDocRev,
+    listBizDocRevPage,
     getUserInfo: actionControl.getUserInfo(state),
-    getCurrentRec: actionControl.getCurrentBizDocRev(state),
+    getCurrentRec: actionControl.getCurrentBizPageField(state),
   };
 }
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
     createRequested: (rec) => dispatch(
-      actionGen(actionBizDocRev.CREATE_BizDocRev_REQUESTED, rec)
+      actionGen(actionBizPageField.CREATE_BizPageField_REQUESTED, rec)
     ),
     updateRequested: (rec) => dispatch(
-      actionGen(actionBizDocRev.UPDATE_BizDocRev_REQUESTED, rec)
+      actionGen(actionBizPageField.UPDATE_BizPageField_REQUESTED, rec)
     ),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompBizDocRevForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CompBizPageFieldForm);

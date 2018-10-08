@@ -7,3 +7,8 @@
   float: right;
 }
 
+.k-dialog-content>.drp-msg-text {
+  margin: "15px";
+  text-align: "center" ;
+  font-size: "24px"   !important;
+}

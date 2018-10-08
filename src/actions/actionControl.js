@@ -91,6 +91,34 @@ const setCurrentBizDocRevPage = (bizDocRevPage) => {
   return actionGen(CTRL_UPD_CRNT_BizDocRevPage, bizDocRevPage);
 }
 
+// ============= BizPageField =================
+const SHOW_LOADING_BizPageField = 'SHOW_LOADING_BizPageField';
+const getShowLoadingBizPageField = (state) => {
+  return state.control.BizPageField.showLoading;
+}
+const setShowLoadingBizPageField = (showFlag) => {
+  return actionGen(SHOW_LOADING_BizPageField, showFlag);
+}
+
+const SHOW_FORM_BizPageField = 'SHOW_FORM_BizPageField';
+const getShowFormBizPageField = (state) => {
+  return state.control.BizPageField.showForm;
+}
+const setShowFormBizPageField = (showFlag) => {
+  return actionGen(SHOW_FORM_BizPageField, showFlag);
+}
+
+const CTRL_UPD_CRNT_BizPageField = 'CTRL_UPD_CRNT_BizPageField';
+const getCurrentBizPageField = (state) => {
+  return state.control.BizPageField.current;
+}
+const setCurrentBizPageField = (bizPageField) => {
+  return actionGen(CTRL_UPD_CRNT_BizPageField, bizPageField);
+}
+
+
+//======================================================
+
 // things exported thru the default
 const actionControl = {
   // ============= UserInfo =================
@@ -141,6 +169,19 @@ const actionControl = {
   CTRL_UPD_CRNT_BizDocRevPage,
   getCurrentBizDocRevPage: (state) => getCurrentBizDocRevPage(state),
   setCurrentBizDocRevPage: (bizDocRevPage) => setCurrentBizDocRevPage(bizDocRevPage),
+
+  // ============= BizPageField =================
+  SHOW_LOADING_BizPageField,
+  getShowLoadingBizPageField: (state) => getShowLoadingBizPageField(state),
+  setShowLoadingBizPageField: (showFlag) => setShowLoadingBizPageField(showFlag),
+
+  SHOW_FORM_BizPageField,
+  getShowFormBizPageField: (state) => getShowFormBizPageField(state),
+  setShowFormBizPageField: (showFlag) => setShowFormBizPageField(showFlag),
+
+  CTRL_UPD_CRNT_BizPageField,
+  getCurrentBizPageField: (state) => getCurrentBizPageField(state),
+  setCurrentBizPageField: (bizPageField) => setCurrentBizPageField(bizPageField),
 
 }; // actionControl
 

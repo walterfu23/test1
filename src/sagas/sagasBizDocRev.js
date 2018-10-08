@@ -30,7 +30,9 @@ export function* watchCreateBizDocRev() {
 function* createBizDocRev(action) {
   try {
     yield put(actionError.clearStateError);
-    const data = yield call(Api.createRec, 'BizDocRev', action.payload);
+    const recPure = utils.cloneDelProps(action.payload,
+      'dispLabel', 'Id', 'BizDoc', 'selected');
+    const data = yield call(Api.createRec, 'BizDocRev', recPure);
     yield put(actionGen(actionBizDocRev.CREATE_BizDocRev_SUCCESSFUL, data));
     yield put(actionControl.setShowFormBizDocRev(false));  // hide the form
   } catch (error) {
@@ -64,7 +66,7 @@ function* updateBizDocRev(action) {
     // request to update the record
     // the web svc model of BizDocRev does not have
     // the "selected" field. It needs to be wiped out.
-    const recPure = utils.cloneDelProps(rec, 'BizDoc', 'selected');
+    const recPure = utils.cloneDelProps(rec, 'dispLabel', 'BizDoc', 'selected');
     yield call(Api.updateRec, 'BizDocRev', recPure);
     yield put(actionGen(actionBizDocRev.UPDATE_BizDocRev_SUCCESSFUL, rec));
     yield put(actionControl.setCurrentBizDocRev(rec));  // update the current rec

@@ -1,23 +1,23 @@
-import { attr, Model } from 'redux-orm';
-import utils from '../utils/utils';
-import BizDocRev from './modelBizDocRev';
+import { fk, attr, Model } from 'redux-orm';
 
-export default class BizDoc extends Model {
-
-  // the model is know by this name. This is the name
-  // used in relationships with other models.
+export default class BizPageField extends Model {
   static get modelName() {
-    return 'BizDoc';
+    return 'BizPageField';
   }
 
-  // fields
   static get fields() {
     return {
+      PgId: fk('BizDocRevPage', 'fields'),
+
       Id: attr(),
       Active: attr(),
-      DocName: attr(),
-      DocNum: attr(),
-      Comment: attr(),
+      Name: attr(),
+      Type: attr(),
+      RegEx: attr(),
+      X1: attr(),
+      Y1: attr(),
+      X2: attr(),
+      Y2: attr(),
 
       Creator: attr(),
       CreateTime: attr(),
@@ -56,23 +56,23 @@ export default class BizDoc extends Model {
     return jsonArray;
   }
 
+  // get only field's own props. Do not get its parent.
+  // getting the parent will lead to infinite loop when PgId.toJson() is called.
+  static modelArrayToJsonShallow = (modelArray) => {
+    const jsonArray = modelArray.map(
+      model => model.ref
+    );
+    return jsonArray;
+  }
+
   // convert the model to json
   toJson = () => {
-    const revModelArray = this.revs.toModelArray();
-    const revsDown = BizDocRev.modelArrayToJson(revModelArray);
-    const revs = revsDown.map(revDown=>({
-        ...revDown,
-        BizDoc: this.ref,       // the parent
-    }))
+    const jsonBizDocRevPage = this.PgId ? this.PgId.toJson() : undefined;
     const json = {
       ...this.ref,
-      revs,
-    }
+      BizDocRevPage: jsonBizDocRevPage,
+    };
     return json;
   }
 
-  static sortByDocNum = (list) =>
-    list.sort((rec1, rec2) => utils.strCompare(rec1.DocNum, rec2.DocNum));
-
-};
-
+}; 

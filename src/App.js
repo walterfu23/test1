@@ -9,6 +9,7 @@ import { TabStrip, TabStripTab } from '@progress/kendo-react-layout'
 import CompBizDoc from './components/bizDoc/CompBizDoc';
 import CompBizDocRev from './components/bizDocRev/CompBizDocRev';
 import CompBizDocRevPage from './components/bizDocRevPage/CompBizDocRevPage';
+import CompBizPageField from './components/bizPageField/CompBizPageField';
 
 export class App extends Component {
   constructor(props) {
@@ -40,6 +41,9 @@ export class App extends Component {
           </TabStripTab>
           <TabStripTab title="Pages">
             <CompBizDocRevPage />
+          </TabStripTab>
+          <TabStripTab title="Fields">
+            <CompBizPageField />
           </TabStripTab>
 
         </TabStrip>

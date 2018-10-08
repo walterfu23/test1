@@ -30,7 +30,13 @@ export function* watchCreateBizDocRevPage() {
 function* createBizDocRevPage(action) {
   try {
     yield put(actionError.clearStateError);
-    const data = yield call(Api.createRec, 'BizDocRevPage', action.payload);
+    // request to create the record. 
+    // The next line is needed for Add Similar:
+    // the web svc model of BizDocRevPage does not have
+    // the "selected" field. It needs to be wiped out, along with others.
+    // all these could be there because of "Add Similar"
+    const recPure = utils.cloneDelProps(action.payload, 'dispLabel', 'Id', 'BizDocRev', 'selected');
+    const data = yield call(Api.createRec, 'BizDocRevPage', recPure);
     yield put(actionGen(actionBizDocRevPage.CREATE_BizDocRevPage_SUCCESSFUL, data));
     yield put(actionControl.setShowFormBizDocRevPage(false));  // hide the form
   } catch (error) {
@@ -64,7 +70,7 @@ function* updateBizDocRevPage(action) {
     // request to update the record
     // the web svc model of BizDocRev does not have
     // the "selected" field. It needs to be wiped out.
-    const recPure = utils.cloneDelProps(rec, 'BizDocRev', 'selected');
+    const recPure = utils.cloneDelProps(rec, 'dispLabel', 'BizDocRev', 'selected');
     yield call(Api.updateRec, 'BizDocRevPage', recPure);
     yield put(actionGen(actionBizDocRevPage.UPDATE_BizDocRevPage_SUCCESSFUL, rec));
     yield put(actionControl.setCurrentBizDocRevPage(rec));  // update the current rec

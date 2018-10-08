@@ -17,6 +17,12 @@ import {
   watchDeleteBizDocRevPage,
   watchUpdateBizDocRevPage,
 } from './sagasBizDocRevPage';
+import { 
+  watchFetchBizPageFields, 
+  watchCreateBizPageField,
+  watchDeleteBizPageField,
+  watchUpdateBizPageField,
+} from './sagasBizPageField';
 
 export default function* rootSaga() {
   yield all([
@@ -34,6 +40,11 @@ export default function* rootSaga() {
     watchCreateBizDocRevPage(),
     watchDeleteBizDocRevPage(),
     watchUpdateBizDocRevPage(),
+
+    watchFetchBizPageFields(),
+    watchCreateBizPageField(),
+    watchDeleteBizPageField(),
+    watchUpdateBizPageField(),
 
   ]);
 }

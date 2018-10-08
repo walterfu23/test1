@@ -1,4 +1,5 @@
 import { fk, attr, Model } from 'redux-orm';
+import BizPageField from './modelBizPageField';
 
 export default class BizDocRevPage extends Model {
   static get modelName() {
@@ -45,13 +46,57 @@ export default class BizDocRevPage extends Model {
     dataArray.map(data => this.hydrate(data));
   }
 
-  // convert the model to json
-  toJson = () => {
-    const jsonBizDocRev = this.RevId ? this.RevId.toJson() : undefined;
-    return {
-      ...this.ref,
-      BizDocRev: jsonBizDocRev,
-    };
+  // convert modelArray to json array
+  static modelArrayToJson = (modelArray) => {
+    const jsonArray = modelArray.map(
+      model => model.toJson()
+    );
+    return jsonArray;
   }
 
-}; 
+  // convert the model to json
+  toJson = () => {
+    // get the children array ready. Children are fields.
+    const childModelArray = this.fields.toModelArray();
+    const childrenDown = BizPageField.modelArrayToJsonShallow(childModelArray);
+    const children = childrenDown.map(childDown => ({
+      ...childDown,
+      BizDocRevPage: this.ref,     // the parent
+    }))
+
+    // compose the json to return
+    const BizDocRev = this.RevId.ref;
+    const dispLabel = this.getDispLabel();
+    const json = {
+      ...this.ref,
+      BizDocRev,
+      dispLabel,
+      fields: children,
+    };
+    return json;
+  }
+
+  getDispLabel = () => {
+    const jsonBizDocRev = this.RevId ? this.RevId.ref : undefined;
+    const revDispLabelToUse = jsonBizDocRev ? this.RevId.getDispLabel() : '';
+    const pgNumToUse = this.ref.PgNum;
+    const dispLabel = revDispLabelToUse + '-' + pgNumToUse;
+    return dispLabel;
+  }
+
+  // sort list by PgNum value
+  static sortByPgNum = (list) =>
+    list.sort((rec1, rec2) => rec1.PgNum - rec2.PgNum);
+
+  // filter list to get entries with the given docRevId
+  static filterByDocRevId = (list, docRevId) =>
+    list.filter(bizDocRevPage => bizDocRevPage.BizDocRev.Id === docRevId);
+
+  // return BizDocRev if one of the page entries in the list
+  // has the BizDocRev.Id matching the given bizDocRevId value.
+  static findBizDocRev = (list, bizDocRevId) => {
+    const recFound = list.find(bizDocRevPage =>
+      bizDocRevPage.BizDocRev.Id === bizDocRevId);
+    return recFound;
+  }
+}; // BizDocRevPage
