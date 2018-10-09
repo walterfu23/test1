@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { DropDownList } from '@progress/kendo-react-dropdowns';
+import { Input, Switch } from '@progress/kendo-react-inputs';
 import actionGen from '../../actions/actionGen';
 import actionControl from '../../actions/actionControl';
 import actionBizPageField from '../../actions/actionBizPageField';
@@ -11,7 +12,7 @@ import { createBizDocRevPageListSelector } from '../../selectors/selectBizDocRev
 import BizDocRev from '../../orm/modelBizDocRev';
 import BizDocRevPage from '../../orm/modelBizDocRevPage';
 import './CompBizPageField.css';
-import Constants from '../shared/Constants';
+import CompConst from '../shared/CompConst';
 
 // The form in a dialog to add or edit fields for BizPageField
 // Props passed in that are not in defaultProps:
@@ -21,7 +22,7 @@ import Constants from '../shared/Constants';
 class CompBizPageFieldForm extends Component {
 
   static defaultProps = {
-    editMode: Constants.EDIT_MODE_ADD, // creating a new record
+    editMode: CompConst.EDIT_MODE_ADD, // creating a new record
     EDIT_FIELD_WIDTH: '400px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
     TEXTAREA_ROWS: 3,       // rows in a textarea
@@ -40,29 +41,45 @@ class CompBizPageFieldForm extends Component {
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =
-      props.editMode === Constants.EDIT_MODE_ADD ?
+      props.editMode === CompConst.EDIT_MODE_ADD ?
         recEmpty : props.getCurrentRec;
+
+    let addNew = false;
+    let adding = false;
     const getDialogTitle = () => {
       switch (props.editMode) {
-        case Constants.EDIT_MODE_ADD:
+        case CompConst.EDIT_MODE_ADD:
+          addNew = true;
+          adding = true;
           return 'Add BizPageField';
-        case Constants.EDIT_MODE_ADD_SIMILAR:
+        case CompConst.EDIT_MODE_ADD_SIMILAR:
+          addNew = false;
+          adding = true;
           return 'Add Similiar BizPageField';
-        case Constants.EDIT_MODE_EDIT:
+        case CompConst.EDIT_MODE_EDIT:
+          addNew = false;
+          adding = false;
           return 'Edit BizPageField';
         default:
           return 'Edit';
       }
     }
-    const dialogTitle = getDialogTitle();
-    const adding = props.editMode === Constants.EDIT_MODE_EDIT ?
-      false : true;
+
+    const dialogTitle = getDialogTitle();  // this must be called first
+    const selectedPage = (addNew || !recInEditToUse) ?
+      undefined : recInEditToUse.BizDocRevPage;
+    const selectedRev = (addNew || !selectedPage) ?
+      undefined : selectedPage.BizDocRev;
+    const selectedRevId = selectedRev && selectedRev.Id;
+    const listBizDocRevPage = selectedRevId &&
+      BizDocRevPage.filterByDocRevId(props.listBizDocRevPage, selectedRevId);
+
     const stateInit = {
       adding,           // true: adding a new record.
       dialogTitle,      // title of the dialog box
-      RevId: undefined, // the selected Rev in its dropdown.
-      PgId: undefined,  // the selected Page in its dropdown.
-      listBizDocRevPage: undefined,  // list of BizDocRevPage entries matching RevId
+      selectedRev, // the selected Rev in its dropdown.
+      selectedPage,  // the selected Page in its dropdown.
+      listBizDocRevPage,  // list of BizDocRevPage entries matching RevId
       recInEdit: {
         ...recInEditToUse,
         Modifier: props.getUserInfo.uid,
@@ -103,27 +120,29 @@ class CompBizPageFieldForm extends Component {
 
   // BizDocRev dropdown value changed
   handleBizDocRevDrownDownChange = (event) => {
-    const RevId = event.target.value.Id;
+    const selectedRev = event.target.value;
+    const selectedRevId = selectedRev.Id;
     const listBizDocRevPage =
-      BizDocRevPage.filterByDocRevId(this.props.listBizDocRevPage, RevId);
+      BizDocRevPage.filterByDocRevId(this.props.listBizDocRevPage, selectedRevId);
     this.setState(prevState => ({
       ...prevState,
-      RevId,
-      Page: {},
+      selectedRev,
+      selectedPage: null,   // wipe out the previous page selection
       listBizDocRevPage,
-
     }));
   }
 
   // BizDocRevPage dropdown value changed
   handleBizPageFieldDrownDownChange = (event) => {
-    const PgId = event.target.value.Id;
+    const selectedPage = event.target.value;
+    const PgId = selectedPage.Id;
     this.setState(prevState => ({
       ...prevState,
       recInEdit: {
         ...prevState.recInEdit,
         PgId,
       },
+      selectedPage,
     }));
   }
 
@@ -144,6 +163,7 @@ class CompBizPageFieldForm extends Component {
                 data={this.props.listBizDocRev}
                 dataItemKey={'Id'}
                 textField={'dispLabel'}
+                value={this.state.selectedRev}
                 onChange={this.handleBizDocRevDrownDownChange}
                 style={{ width: "100%" }}
                 required={true}
@@ -156,11 +176,94 @@ class CompBizPageFieldForm extends Component {
                 data={this.state.listBizDocRevPage}
                 dataItemKey={'Id'}
                 textField={'dispLabel'}
-                //                value={this.state.Page}
+                value={this.state.selectedPage}
                 onChange={this.handleBizPageFieldDrownDownChange}
                 style={{ width: "100%" }}
                 required={true}
                 disabled={!this.state.adding}
+              />
+            </div>
+            <div className="drp-align-center">
+              <label style={{ width: "45%", float: "left" }}>
+                <br />
+                <Switch
+                  name="Active"
+                  checked={this.state.recInEdit.Active}
+                  onChange={this.onDialogInputChange}
+                />
+                &nbsp;&nbsp;Active
+              </label>
+              <Input
+                name="Type"
+                label="Type"
+                value={this.state.recInEdit.Type || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "45%", float: "right" }} />
+              &nbsp;
+            </div>
+            <br />
+            <div className="drp-margin-bottom">
+              <Input
+                name="Name"
+                label="Name"
+                value={this.state.recInEdit.Name || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "100%" }}
+                required={true}
+              />
+            </div>
+            <div className="drp-margin-bottom">
+              <Input
+                name="RegEx"
+                label="RegEx"
+                value={this.state.recInEdit.RegEx || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "100%" }}
+              />
+            </div>
+            <div className="drp-margin-bottom">
+              <div style={{ width: "40%", float: "left" }}>
+                <Input
+                  name="X1"
+                  label="X1"
+                  value={this.state.recInEdit.X1 || ''}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "40%", float: "left" }}
+                />
+                &nbsp;
+                <Input
+                  name="Y1"
+                  label="Y1"
+                  value={this.state.recInEdit.Y1 || ''}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "40%", float: "right" }}
+                />
+              </div>
+              <div style={{ width: "40%", float: "right" }}>
+                <Input
+                  name="X2"
+                  label="X2"
+                  value={this.state.recInEdit.X2 || ''}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "40%", float: "left" }}
+                />
+                &nbsp;
+                <Input
+                  name="Y2"
+                  label="Y2"
+                  value={this.state.recInEdit.Y2 || ''}
+                  onChange={this.onDialogInputChange}
+                  style={{ width: "40%", float: "right" }}
+                />
+              </div>
+            </div>
+            <div className="drp-margin-bottom">
+              <Input
+                name="Comment"
+                label="Comment"
+                value={this.state.recInEdit.Comment || ''}
+                onChange={this.onDialogInputChange}
+                style={{ width: "100%" }}
               />
             </div>
 
@@ -180,7 +283,7 @@ class CompBizPageFieldForm extends Component {
             </button>
           </form>
         </Dialog>
-      </div>
+      </div >
     ); // return
   } // render()
 } // CompBizPageFieldForm
@@ -190,9 +293,8 @@ const mapStateToProps = (state, ownProps) => {
   const listBizDocRevPage = BizDocRevPage.sortByPgNum(listBizDocRevPageUnsorted);
 
   const listRevsUnsorted = createBizDocRevListSelector(state);
-  const listRevsWithPage = BizDocRev.entriesWithPage(
-    listRevsUnsorted, listBizDocRevPage);
-  const listBizDocRev = BizDocRev.sortByRevName(listRevsWithPage);
+  const listRevsWithPage = BizDocRev.entriesWithPage(listRevsUnsorted);
+  const listBizDocRev = BizDocRev.sortByRevDispLabel(listRevsWithPage);
 
   return {
     listBizDocRev,

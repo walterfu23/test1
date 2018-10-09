@@ -10,7 +10,7 @@ import ErrorBox from '../shared/ErrorBox';
 import { createBizDocRevListSelector } from '../../selectors/selectBizDocRev';
 import BizDocRev from '../../orm/modelBizDocRev';
 import './CompBizDocRevPage.css';
-import Constants from '../shared/Constants';
+import CompConst from '../shared/CompConst';
 
 // The form in a dialog to add or edit fields for BizDocRevPage
 // Props passed in that are not in defaultProps:
@@ -20,7 +20,7 @@ import Constants from '../shared/Constants';
 class CompBizDocRevPageForm extends Component {
 
   static defaultProps = {
-    editMode: Constants.EDIT_MODE_ADD, // creating a new record
+    editMode: CompConst.EDIT_MODE_ADD, // creating a new record
     EDIT_FIELD_WIDTH: '400px',       // width of edit fields
     TEXTAREA_COLS: 47,      // cols in a textarea
     TEXTAREA_ROWS: 3,       // rows in a textarea
@@ -39,22 +39,22 @@ class CompBizDocRevPageForm extends Component {
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =
-      props.editMode === Constants.EDIT_MODE_ADD ?
+      props.editMode === CompConst.EDIT_MODE_ADD ?
         recEmpty : props.getCurrentRec;
     const getDialogTitle = () => {
       switch (props.editMode) {
-        case Constants.EDIT_MODE_ADD:
+        case CompConst.EDIT_MODE_ADD:
           return 'Add BizDocRevPage';
-        case Constants.EDIT_MODE_ADD_SIMILAR:
+        case CompConst.EDIT_MODE_ADD_SIMILAR:
           return 'Add Similiar BizDocRevPage';
-        case Constants.EDIT_MODE_EDIT:
+        case CompConst.EDIT_MODE_EDIT:
           return 'Edit BizDocRevPage';
         default:
           return 'Edit';
       }
     }
     const dialogTitle = getDialogTitle();
-    const adding = props.editMode === Constants.EDIT_MODE_EDIT ?
+    const adding = props.editMode === CompConst.EDIT_MODE_EDIT ?
       false : true;
     const stateInit = {
       adding,           // true: adding a new record.
@@ -122,29 +122,28 @@ class CompBizDocRevPageForm extends Component {
             <div className="drp-margin-bottom">
               <DropDownList
                 name="RevId"
-                label="RevName"
+                label="Revision"
                 data={this.props.listBizDocRev}
                 dataItemKey={'Id'}
-                textField={'RevName'}
+                textField={'dispLabel'}
                 value={this.state.recInEdit.BizDocRev}
                 onChange={this.handleBizDocRevDrownDownChange}
                 style={{ width: "100%" }}
                 required={true}
-                disabled={!this.state.adding}
+              //                disabled={!this.state.adding}
               />
             </div>
             <div className="drp-align-center">
               <label style={{ width: "45%", float: "left" }}>
                 <Input
-                  name="dispLabel"
-                  label="Page"
-                  required={true}
+                  name="PgNum"
+                  label="Page No."
                   value={this.state.recInEdit.PgNum || ''}
                   onChange={this.onDialogInputChange}
-
+                  style={{ width: "100%" }}
                 />
-                &nbsp;
               </label>
+              &nbsp;
               <label style={{ width: "10%" }}>&nbsp;</label>
               <label style={{ width: "45%", float: "right" }}>
                 <br />
@@ -180,7 +179,6 @@ class CompBizDocRevPageForm extends Component {
                 name="PgType"
                 label="Page Type"
                 value={this.state.recInEdit.PgType || ''}
-                required={true}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />
@@ -209,7 +207,7 @@ class CompBizDocRevPageForm extends Component {
 
 const mapStateToProps = (state, ownProps) => {
   const listBizDocRevUnsorted = createBizDocRevListSelector(state);
-  const listBizDocRev = BizDocRev.sortByRevName(listBizDocRevUnsorted);
+  const listBizDocRev = BizDocRev.sortByRevDispLabel(listBizDocRevUnsorted);
   return {
     listBizDocRev,
     getUserInfo: actionControl.getUserInfo(state),

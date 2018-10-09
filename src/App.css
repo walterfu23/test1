@@ -11,6 +11,11 @@
   font-weight: bolder;
 }
 
+/* make the left body line up with tab strip in IE */
+.k-tabstrip>.k-content {
+  padding-left: 0px;
+}
+
 /* work-around for kendo-theme-default: allow Grid roll-over effect */
 .k-master-row:hover {
   background-color: rgba(255, 142, 66, 0.2)

@@ -13,7 +13,6 @@ export default class BizDocRev extends Model {
 
       Id: attr(),
       Active: attr(),
-      RevName: attr(),
       LangOrig: attr(),
       LangNormalized: attr(),
       RevOrig: attr(),
@@ -65,11 +64,13 @@ export default class BizDocRev extends Model {
       BizDocRev: this.ref,     // the parent
     }))
 
+    const BizDoc = this.DocId.ref;
     const dispLabel = this.getDispLabel();
 
     // now compose the json
     const json = {
       ...this.ref,
+      BizDoc,
       dispLabel,
       pages: children,
     }
@@ -86,9 +87,9 @@ export default class BizDocRev extends Model {
   }
 
 
-  // sort the list by RevName 
-  static sortByRevName = (list) =>
-    list.sort((rec1, rec2) => utils.strCompare(rec1.RevName, rec2.RevName));
+  // sort the list by dispLabel 
+  static sortByRevDispLabel = (list) =>
+    list.sort((rec1, rec2) => utils.strCompare(rec1.dispLabel, rec2.dispLabel));
 
   // filter the list for entries with at least one page
   static entriesWithPage = (list) => {

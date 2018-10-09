@@ -5,6 +5,7 @@ import actionControl from '../actions/actionControl';
 import actionBizPageField from '../actions/actionBizPageField';
 import Api from '../apis/Api';
 import utils from '../utils/utils';
+import AppConst from '../utils/AppConst';
 
 //==================================================================
 export function* watchFetchBizPageFields() {
@@ -30,11 +31,7 @@ export function* watchCreateBizPageField() {
 function* createBizPageField(action) {
   try {
     yield put(actionError.clearStateError);
-    // request to create the record. 
-    // The next line is needed for Add Similar:
-    // the web svc model of BizPageField does not have
-    // the "selected" field. It needs to be wiped out, along with Id and BizDocRevPage.
-    const recPure = utils.cloneDelProps(action.payload, 'Id', 'BizDocRevPage', 'selected');
+    const recPure = utils.cloneDelProps(action.payload, 'Id', ...AppConst.ADDED_FIELDS);
     const data = yield call(Api.createRec, 'BizPageField', recPure);
     yield put(actionGen(actionBizPageField.CREATE_BizPageField_SUCCESSFUL, data));
     yield put(actionControl.setShowFormBizPageField(false));  // hide the form
@@ -50,11 +47,7 @@ export function* watchDeleteBizPageField() {
 
 function* deleteBizPageField(action) {
   try {
-    // request to update the record
-    // the web svc model of BizDocRev does not have
-    // the "selected" field. It needs to be wiped out.
-    const recPure = utils.cloneDelProps(action.payload, 'BizDocRevPage', 'selected');
-    yield call(Api.deleteRec, 'BizPageField', recPure);
+    yield call(Api.deleteRec, 'BizPageField', action.payload);
     yield put(actionGen(actionBizPageField.DELETE_BizPageField_SUCCESSFUL, action.payload));
     yield put(actionControl.setCurrentBizPageField({}));  // update the current rec
   } catch (error) {
@@ -70,10 +63,7 @@ export function* watchUpdateBizPageField() {
 function* updateBizPageField(action) {
   try {
     const rec = yield call(Api.updateRecPrep, action.payload);
-    // request to update the record
-    // the web svc model of BizDocRev does not have
-    // the "selected" field. It needs to be wiped out.
-    const recPure = utils.cloneDelProps(rec, 'dispLabel', 'BizDocRevPage', 'selected');
+    const recPure = utils.cloneDelProps(rec, ...AppConst.ADDED_FIELDS);
     yield call(Api.updateRec, 'BizPageField', recPure);
     yield put(actionGen(actionBizPageField.UPDATE_BizPageField_SUCCESSFUL, rec));
     yield put(actionControl.setCurrentBizPageField(rec));  // update the current rec

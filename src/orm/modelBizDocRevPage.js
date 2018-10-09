@@ -65,11 +65,13 @@ export default class BizDocRevPage extends Model {
     }))
 
     // compose the json to return
-    const BizDocRev = this.RevId.ref;
+    const bizDocRevRef = this.RevId.ref;
+    const bizDocRevDispLabel = this.RevId.getDispLabel();
+    bizDocRevRef.dispLabel = bizDocRevDispLabel;
     const dispLabel = this.getDispLabel();
     const json = {
       ...this.ref,
-      BizDocRev,
+      BizDocRev: bizDocRevRef,
       dispLabel,
       fields: children,
     };

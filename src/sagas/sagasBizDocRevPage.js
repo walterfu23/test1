@@ -5,6 +5,7 @@ import actionControl from '../actions/actionControl';
 import actionBizDocRevPage from '../actions/actionBizDocRevPage';
 import Api from '../apis/Api';
 import utils from '../utils/utils';
+import AppConst from '../utils/AppConst';
 
 //==================================================================
 export function* watchFetchBizDocRevPages() {
@@ -30,12 +31,7 @@ export function* watchCreateBizDocRevPage() {
 function* createBizDocRevPage(action) {
   try {
     yield put(actionError.clearStateError);
-    // request to create the record. 
-    // The next line is needed for Add Similar:
-    // the web svc model of BizDocRevPage does not have
-    // the "selected" field. It needs to be wiped out, along with others.
-    // all these could be there because of "Add Similar"
-    const recPure = utils.cloneDelProps(action.payload, 'dispLabel', 'Id', 'BizDocRev', 'selected');
+    const recPure = utils.cloneDelProps(action.payload, 'Id', ...AppConst.ADDED_FIELDS);
     const data = yield call(Api.createRec, 'BizDocRevPage', recPure);
     yield put(actionGen(actionBizDocRevPage.CREATE_BizDocRevPage_SUCCESSFUL, data));
     yield put(actionControl.setShowFormBizDocRevPage(false));  // hide the form
@@ -67,10 +63,7 @@ export function* watchUpdateBizDocRevPage() {
 function* updateBizDocRevPage(action) {
   try {
     const rec = yield call(Api.updateRecPrep, action.payload);
-    // request to update the record
-    // the web svc model of BizDocRev does not have
-    // the "selected" field. It needs to be wiped out.
-    const recPure = utils.cloneDelProps(rec, 'dispLabel', 'BizDocRev', 'selected');
+    const recPure = utils.cloneDelProps(rec, ...AppConst.ADDED_FIELDS);
     yield call(Api.updateRec, 'BizDocRevPage', recPure);
     yield put(actionGen(actionBizDocRevPage.UPDATE_BizDocRevPage_SUCCESSFUL, rec));
     yield put(actionControl.setCurrentBizDocRevPage(rec));  // update the current rec

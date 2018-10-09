@@ -5,6 +5,7 @@ import actionControl from '../actions/actionControl';
 import actionBizDoc from '../actions/actionBizDoc';
 import Api from '../apis/Api';
 import utils from '../utils/utils';
+import AppConst from '../utils/AppConst';
 
 //==================================================================
 export function* watchFetchBizDocs() {
@@ -30,7 +31,8 @@ export function* watchCreateBizDoc() {
 function* createBizDoc(action) {
   try {
     yield put(actionError.clearStateError);
-    const data = yield call(Api.createRec, 'BizDoc', action.payload);
+    const recPure = utils.cloneDelProps(action.payload, 'Id', ...AppConst.ADDED_FIELDS);
+    const data = yield call(Api.createRec, 'BizDoc', recPure);
     yield put(actionGen(actionBizDoc.CREATE_BizDoc_SUCCESSFUL, data));
     yield put(actionControl.setShowFormBizDoc(false));  // hide the form
   } catch (error) {
@@ -61,10 +63,7 @@ export function* watchUpdateBizDoc() {
 function* updateBizDoc(action) {
   try {
     const rec = yield call(Api.updateRecPrep, action.payload);
-    // request to update the record
-    // the web svc model of BizDocRev does not have
-    // the "selected" field. It needs to be wiped out.
-    const recPure = utils.cloneDelProps(rec, 'selected');
+    const recPure = utils.cloneDelProps(rec, ...AppConst.ADDED_FIELDS);
     yield call(Api.updateRec, 'BizDoc', recPure);
     yield put(actionGen(actionBizDoc.UPDATE_BizDoc_SUCCESSFUL, rec));
     yield put(actionControl.setCurrentBizDoc(rec));  // update the current rec

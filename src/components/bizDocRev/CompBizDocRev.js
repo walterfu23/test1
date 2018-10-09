@@ -14,14 +14,14 @@ import utils from '../../utils/utils';
 import './CompBizDocRev.css';
 import CompConfirmDialog from '../shared/CompConfirmDialog';
 import withCompConfirmDialog from '../shared/withCompConfirmDialog';
-import Constants from '../shared/Constants';
+import CompConst from '../shared/CompConst';
 
 class CompBizDocRev extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      editMode: undefined,    // 3 EDI_MODE_ choices from Constants
+      editMode: undefined,    // 3 EDI_MODE_ choices from CompConst
       filter: {               // used by the grid to filter
         logic: "and",
         filters: [],
@@ -37,7 +37,7 @@ class CompBizDocRev extends Component {
     this.setState((prevState) => {
       return {
         ...prevState,
-        editMode: Constants.EDIT_MODE_ADD,
+        editMode: CompConst.EDIT_MODE_ADD,
       };
     });
     this.props.setShowForm(true);  // show the form
@@ -55,7 +55,7 @@ class CompBizDocRev extends Component {
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          editMode: Constants.EDIT_MODE_ADD_SIMILAR,
+          editMode: CompConst.EDIT_MODE_ADD_SIMILAR,
         }
         return newState;
       });
@@ -70,7 +70,7 @@ class CompBizDocRev extends Component {
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          editMode: Constants.EDIT_MODE_EDIT,
+          editMode: CompConst.EDIT_MODE_EDIT,
         }
         return newState;
       });
@@ -83,7 +83,7 @@ class CompBizDocRev extends Component {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem) &&
       window.confirm(
-        'Confirm deleting: ' + currentDataItem.RevName)) {
+        'Confirm deleting: ' + currentDataItem.dispLabel)) {
       this.props.deleteRequested(currentDataItem);
     }
   }
@@ -92,7 +92,7 @@ class CompBizDocRev extends Component {
   handleRemove = () => {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem)) {
-      const msgText = 'Please confirm deleting: ' + currentDataItem.RevName;
+      const msgText = 'Please confirm deleting: ' + currentDataItem.dispLabel;
       this.props.drpSetProp('msgText', msgText);
       // currentDataItem will be passed to the yes callback: removeConfirmed()
       this.props.drpSetProp('yesParam', currentDataItem);
@@ -228,10 +228,9 @@ class CompBizDocRev extends Component {
             }
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
-          <GridColumn field="BizDoc.DocNum" title="Doc Num" width="170px" />
-          <GridColumn field="RevName" title="Rev Name" />
-          <GridColumn field="LangNormalized" title="Lang N." filterable={false} width="100px" />
-          <GridColumn field="RevNormalized" title="Rev N." filterable={false} width="92px" />
+          <GridColumn field="BizDoc.DocNum" title="Doc Num" width="200px" />
+          <GridColumn field="LangNormalized" title="Lang. Norm." filterable={true} width="135px" />
+          <GridColumn field="RevNormalized" title="Rev. Norm." filterable={true} width="135px" />
           <GridColumn field="Comment" title="Comment" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>

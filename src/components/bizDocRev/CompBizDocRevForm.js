@@ -10,7 +10,7 @@ import ErrorBox from '../shared/ErrorBox';
 import { createBizDocListSelector } from '../../selectors/selectBizDoc';
 import BizDoc from '../../orm/modelBizDoc';
 import './CompBizDocRev.css';
-import Constants from '../shared/Constants';
+import CompConst from '../shared/CompConst';
 
 // The form in a dialog to add or edit fields for BizDocRev
 // Props passed in that are not in defaultProps:
@@ -32,7 +32,6 @@ class CompBizDocRevForm extends Component {
       Id: undefined,
       DocId: undefined,
       Active: true,
-      RevName: undefined,
       LangOrig: undefined,
       LangNormalized: undefined,
       RevOrig: undefined,
@@ -41,22 +40,22 @@ class CompBizDocRevForm extends Component {
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =
-      props.editMode === Constants.EDIT_MODE_ADD ?
+      props.editMode === CompConst.EDIT_MODE_ADD ?
         recEmpty : props.getCurrentRec;
     const getDialogTitle = () => {
       switch (props.editMode) {
-        case Constants.EDIT_MODE_ADD:
+        case CompConst.EDIT_MODE_ADD:
           return 'Add BizDocRev';
-        case Constants.EDIT_MODE_ADD_SIMILAR:
+        case CompConst.EDIT_MODE_ADD_SIMILAR:
           return 'Add Similiar BizDocRev';
-        case Constants.EDIT_MODE_EDIT:
+        case CompConst.EDIT_MODE_EDIT:
           return 'Edit BizDocRev';
         default:
           return 'Edit';
       }
     }
     const dialogTitle = getDialogTitle();
-    const adding = props.editMode === Constants.EDIT_MODE_EDIT ?
+    const adding = props.editMode === CompConst.EDIT_MODE_EDIT ?
       false : true;
     const stateInit = {
       adding,           // true: adding a new record.
@@ -144,16 +143,6 @@ class CompBizDocRevForm extends Component {
                 style={{ width: "100%" }}
                 required={true}
                 disabled={!this.state.adding}
-              />
-            </div>
-            <div className="drp-margin-bottom">
-              <Input
-                name="RevName"
-                label="Rev. Name"
-                required={true}
-                value={this.state.recInEdit.RevName || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "100%" }}
               />
             </div>
             <div className="drp-margin-bottom">

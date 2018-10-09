@@ -14,14 +14,14 @@ import utils from '../../utils/utils';
 import './CompBizPageField.css';
 import CompConfirmDialog from '../shared/CompConfirmDialog';
 import withCompConfirmDialog from '../shared/withCompConfirmDialog';
-import Constants from '../shared/Constants';
+import CompConst from '../shared/CompConst';
 
 class CompBizPageField extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      editMode: undefined,    // 3 EDI_MODE_ choices from Constants
+      editMode: undefined,    // 3 EDI_MODE_ choices from CompConst
       filter: {               // used by the grid to filter
         logic: "and",
         filters: [],
@@ -37,7 +37,7 @@ class CompBizPageField extends Component {
     this.setState((prevState) => {
       return {
         ...prevState,
-        editMode: Constants.EDIT_MODE_ADD,
+        editMode: CompConst.EDIT_MODE_ADD,
       };
     });
     this.props.setShowForm(true);  // show the form
@@ -55,7 +55,7 @@ class CompBizPageField extends Component {
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          editMode: Constants.EDIT_MODE_ADD_SIMILAR,
+          editMode: CompConst.EDIT_MODE_ADD_SIMILAR,
         }
         return newState;
       });
@@ -70,7 +70,7 @@ class CompBizPageField extends Component {
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          editMode: Constants.EDIT_MODE_EDIT,
+          editMode: CompConst.EDIT_MODE_EDIT,
         }
         return newState;
       });
@@ -227,15 +227,14 @@ class CompBizPageField extends Component {
             }
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
-          <GridColumn field="BizDocRevPage.BizDocRev.RevName" title="Rev Name" width="170px" />
-          <GridColumn field="BizDocRevPage.PgNum" title="Page Number" width="135px" />
+          <GridColumn field="BizDocRevPage.dispLabel" title="Page" width="190px" />
           <GridColumn field="Name" title="Name" width="135px" />
           <GridColumn field="Type" title="Type" />
-          <GridColumn field="RegEx" title="RegEx" filterable={false}/>
-          <GridColumn field="X1" title="X1" filterable={false}/>
-          <GridColumn field="Y1" title="Y1" filterable={false}/>
-          <GridColumn field="X2" title="X2" filterable={false}/>
-          <GridColumn field="Y2" title="Y2" filterable={false}/>
+          <GridColumn field="RegEx" title="RegEx" filterable={true}/>
+          <GridColumn field="X1" title="X1" filterable={false} sortable={false} width="50px"/>
+          <GridColumn field="Y1" title="Y1" filterable={false} sortable={false} width="50px"/>
+          <GridColumn field="X2" title="X2" filterable={false} sortable={false} width="50px"/>
+          <GridColumn field="Y2" title="Y2" filterable={false} sortable={false} width="50px"/>
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
 

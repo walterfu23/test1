@@ -14,14 +14,14 @@ import utils from '../../utils/utils';
 import './CompBizDocRevPage.css';
 import CompConfirmDialog from '../shared/CompConfirmDialog';
 import withCompConfirmDialog from '../shared/withCompConfirmDialog';
-import Constants from '../shared/Constants';
+import CompConst from '../shared/CompConst';
 
 class CompBizDocRevPage extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      editMode: undefined,    // 3 EDI_MODE_ choices from Constants
+      editMode: undefined,    // 3 EDI_MODE_ choices from CompConst
       filter: {               // used by the grid to filter
         logic: "and",
         filters: [],
@@ -37,7 +37,7 @@ class CompBizDocRevPage extends Component {
     this.setState((prevState) => {
       return {
         ...prevState,
-        editMode: Constants.EDIT_MODE_ADD,
+        editMode: CompConst.EDIT_MODE_ADD,
       };
     });
     this.props.setShowForm(true);  // show the form
@@ -55,7 +55,7 @@ class CompBizDocRevPage extends Component {
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          editMode: Constants.EDIT_MODE_ADD_SIMILAR,
+          editMode: CompConst.EDIT_MODE_ADD_SIMILAR,
         }
         return newState;
       });
@@ -70,7 +70,7 @@ class CompBizDocRevPage extends Component {
       this.setState((prevState) => {
         const newState = {
           ...prevState,
-          editMode: Constants.EDIT_MODE_EDIT,
+          editMode: CompConst.EDIT_MODE_EDIT,
         }
         return newState;
       });
@@ -79,20 +79,10 @@ class CompBizDocRevPage extends Component {
   }
 
   // remove button pressed
-  handleRemoveOrig = () => {
-    const currentDataItem = this.props.getCurrentRec;
-    if (!utils.objEmpty(currentDataItem) &&
-      window.confirm(
-        'Confirm deleting: ' + currentDataItem.PageNum)) {
-      this.props.deleteRequested(currentDataItem);
-    }
-  }
-
-  // remove button pressed
   handleRemove = () => {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem)) {
-      const msgText = 'Please confirm deleting: ' + currentDataItem.PgNum;
+      const msgText = 'Please confirm deleting: ' + currentDataItem.dispLabel;
       this.props.drpSetProp('msgText', msgText);
       // currentDataItem will be passed to the yes callback: removeConfirmed()
       this.props.drpSetProp('yesParam', currentDataItem);
@@ -227,9 +217,8 @@ class CompBizDocRevPage extends Component {
             }
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
-          <GridColumn field="BizDocRev.BizDoc.DocNum" title="Doc Num" width="140px" />
-          <GridColumn field="BizDocRev.RevName" title="Rev Name" width="170px" />
-          <GridColumn field="PgNum" title="Page Number" filter="numeric" width="135px" />
+          <GridColumn field="BizDocRev.dispLabel" title="Revision" width="190px" />
+          <GridColumn field="PgNum" title="Page No." filter="numeric" width="135px" />
           <GridColumn field="PgKey1" title="Key 1" />
           <GridColumn field="PgKey2" title="Key 2" />
           <GridColumn field="PgType" title="Page Type" />
@@ -258,7 +247,7 @@ class CompBizDocRevPage extends Component {
 const mapStateToProps = (state, props) => {
   const listRecs = createBizDocRevPageListSelector(state);
   return {
-    listRecs,       // list of BizDocRev's
+    listRecs,       // list of BizDocRevPage's
     getShowLoading: actionControl.getShowLoadingBizDocRevPage(state),
     getShowForm: actionControl.getShowFormBizDocRevPage(state),
     getCurrentRec: actionControl.getCurrentBizDocRevPage(state),
