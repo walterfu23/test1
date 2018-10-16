@@ -11,6 +11,7 @@ import { createBizDocRevListSelector } from '../../selectors/selectBizDocRev';
 import BizDocRev from '../../orm/modelBizDocRev';
 import './CompBizDocRevPage.css';
 import CompConst from '../shared/CompConst';
+import DRPDraggable from '../../utils/DRPDraggable';
 
 // The form in a dialog to add or edit fields for BizDocRevPage
 // Props passed in that are not in defaultProps:
@@ -35,36 +36,52 @@ class CompBizDocRevPageForm extends Component {
       PgNum: undefined,
       PgKey1: undefined,
       PgKey2: undefined,
-      PgType: undefined,
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =
       props.editMode === CompConst.EDIT_MODE_ADD ?
         recEmpty : props.getCurrentRec;
+
+    let addNew = false;
+    let adding = false;
     const getDialogTitle = () => {
       switch (props.editMode) {
         case CompConst.EDIT_MODE_ADD:
+          addNew = true;
+          adding = true;
           return 'Add BizDocRevPage';
         case CompConst.EDIT_MODE_ADD_SIMILAR:
+          addNew = false;
+          adding = true;
           return 'Add Similiar BizDocRevPage';
         case CompConst.EDIT_MODE_EDIT:
+          addNew = false;
+          adding = false;
           return 'Edit BizDocRevPage';
         default:
           return 'Edit';
       }
     }
     const dialogTitle = getDialogTitle();
-    const adding = props.editMode === CompConst.EDIT_MODE_EDIT ?
-      false : true;
+    const selectedRev = (addNew || !recInEditToUse) ?
+      undefined : recInEditToUse.BizDocRev;
+
+
     const stateInit = {
       adding,           // true: adding a new record.
       dialogTitle,      // title of the dialog box
+      selectedRev,      // the selected rev in the rev dropdown
       recInEdit: {
         ...recInEditToUse,
         Modifier: props.getUserInfo.uid,
       },
     };
     this.state = stateInit;
+    this.draggable = DRPDraggable.draggableObj;
+  } // constructor
+
+  componentWillUnMount() {
+    this.draggable.destroy();
   }
 
   // Save or update the record
@@ -99,9 +116,11 @@ class CompBizDocRevPageForm extends Component {
 
   // BizDocRev dropdown value changed
   handleBizDocRevDrownDownChange = (event) => {
-    const RevId = event.target.value.Id;
+    const selectedRev = event.target.value;
+    const RevId = selectedRev.Id;
     this.setState(prevState => ({
       ...prevState,
+      selectedRev,
       recInEdit: {
         ...prevState.recInEdit,
         RevId,
@@ -109,12 +128,23 @@ class CompBizDocRevPageForm extends Component {
     }));
   }
 
+  getDialogTitle = () => {
+    return (<span
+      ref={(element) =>
+        DRPDraggable.setupDraggable(this.draggable, element)
+      }
+    >
+      {this.state.dialogTitle}
+    </span>
+    );
+  }
+
   // render the dialog
   render() {
     return (
       <div>
         <Dialog
-          title={this.state.dialogTitle}
+          title={this.getDialogTitle()}
           onClose={this.props.handleCancel}
           width={this.props.EDIT_FIELD_WIDTH}
         >
@@ -126,11 +156,11 @@ class CompBizDocRevPageForm extends Component {
                 data={this.props.listBizDocRev}
                 dataItemKey={'Id'}
                 textField={'dispLabel'}
-                value={this.state.recInEdit.BizDocRev}
+                value={this.state.selectedRev}
                 onChange={this.handleBizDocRevDrownDownChange}
                 style={{ width: "100%" }}
                 required={true}
-              //                disabled={!this.state.adding}
+                disabled={!this.state.adding}
               />
             </div>
             <div className="drp-align-center">
@@ -170,15 +200,6 @@ class CompBizDocRevPageForm extends Component {
                 name="PgKey2"
                 label="Key 2"
                 value={this.state.recInEdit.PgKey2 || ''}
-                onChange={this.onDialogInputChange}
-                style={{ width: "100%" }}
-              />
-            </div>
-            <div className="drp-margin-bottom">
-              <Input
-                name="PgType"
-                label="Page Type"
-                value={this.state.recInEdit.PgType || ''}
                 onChange={this.onDialogInputChange}
                 style={{ width: "100%" }}
               />

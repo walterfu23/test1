@@ -71,6 +71,11 @@ export default class BizDoc extends Model {
     return json;
   }
 
+  // sort the list by its id in reverse order
+  static sortByIdDesc = (list) =>
+    list.sort((rec1, rec2) => rec2.Id - rec1.Id);
+
+  // sort the list by its doc number
   static sortByDocNum = (list) =>
     list.sort((rec1, rec2) => utils.strCompare(rec1.DocNum, rec2.DocNum));
 

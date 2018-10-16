@@ -14,6 +14,7 @@ import utils from '../../utils/utils';
 import './CompBizDoc.css';
 import CompConfirmDialog from '../shared/CompConfirmDialog';
 import withCompConfirmDialog from '../shared/withCompConfirmDialog';
+import BizDoc from '../../orm/modelBizDoc';
 
 class CompBizDoc extends Component {
 
@@ -145,7 +146,7 @@ class CompBizDoc extends Component {
         {this.props.getShowLoading && <LoadingPanel />}
 
         <Grid
-          style={{ height: '420px' }}
+          style={{ height: '580px' }}
           reorderable
           data={this.dataToUse()}
           selectedField="selected"
@@ -228,7 +229,8 @@ class CompBizDoc extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  const listRecs = createBizDocListSelector(state);
+  const listRecsUnsorted = createBizDocListSelector(state);
+  const listRecs = BizDoc.sortByIdDesc(listRecsUnsorted);
   return {
     listRecs,
     getShowLoading: actionControl.getShowLoadingBizDoc(state),

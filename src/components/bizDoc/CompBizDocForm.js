@@ -7,6 +7,7 @@ import actionBizDoc from '../../actions/actionBizDoc';
 import { Dialog } from '@progress/kendo-react-dialogs';
 import ErrorBox from '../shared/ErrorBox';
 import './CompBizDoc.css';
+import DRPDraggable from '../../utils/DRPDraggable';
 
 // The form in a dialog to add or edit fields for BizDoc
 // Props passed in that are not in defaultProps:
@@ -44,8 +45,13 @@ class CompBizDocForm extends Component {
       }
     };
     this.state = stateInit;
-  }
 
+    this.draggable = DRPDraggable.draggableObj;
+  } // constructor
+
+  componentWillUnMount() {
+    this.draggable.destroy();
+  }
 
   // Save or update the record
   saveRecord = () => {
@@ -77,12 +83,23 @@ class CompBizDocForm extends Component {
     }));
   }
 
+  getDialogTitle = () => {
+    return (<span
+      ref={(element) =>
+        DRPDraggable.setupDraggable(this.draggable, element)
+      }
+    >
+      {this.state.dialogTitle}
+    </span>
+    );
+  }
+
   // render the dialog
   render() {
     return (
       <div>
         <Dialog
-          title={this.state.dialogTitle}
+          title={this.getDialogTitle()}
           onClose={this.props.handleCancel}
           width={this.props.EDIT_FIELD_WIDTH}
         >

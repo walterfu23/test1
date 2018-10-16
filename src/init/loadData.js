@@ -36,7 +36,7 @@ const loadBizPageField = storeOrm => {
 const loadUserInfo = store => {
   //  store.dispatch(actionControl.fetchUserInfo());
   const userInfoDef = {
-    uid: 'fuw',
+    uid: window.drpUid || 'fuw0',    // drpUid is the variable defined in the asp.net
   }
   store.dispatch(actionControl.setUserInfo(userInfoDef));
 }

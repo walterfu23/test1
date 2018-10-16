@@ -15,7 +15,6 @@ export default class BizDocRevPage extends Model {
       PgNum: attr(),
       PgKey1: attr(),
       PgKey2: attr(),
-      PgType: attr(),
 
       Creator: attr(),
       CreateTime: attr(),
@@ -85,6 +84,10 @@ export default class BizDocRevPage extends Model {
     const dispLabel = revDispLabelToUse + '-' + pgNumToUse;
     return dispLabel;
   }
+
+  // sort the list by its id in reverse order
+  static sortByIdDesc = (list) =>
+    list.sort((rec1, rec2) => rec2.Id - rec1.Id);
 
   // sort list by PgNum value
   static sortByPgNum = (list) =>

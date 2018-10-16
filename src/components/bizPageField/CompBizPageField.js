@@ -15,6 +15,7 @@ import './CompBizPageField.css';
 import CompConfirmDialog from '../shared/CompConfirmDialog';
 import withCompConfirmDialog from '../shared/withCompConfirmDialog';
 import CompConst from '../shared/CompConst';
+import BizPageField from '../../orm/modelBizPageField';
 
 class CompBizPageField extends Component {
 
@@ -92,7 +93,9 @@ class CompBizPageField extends Component {
   handleRemove = () => {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem)) {
-      const msgText = 'Please confirm deleting: ' + currentDataItem.PgNum;
+      const itemLabel = currentDataItem.BizDocRevPage.dispLabel +
+        ', ' + currentDataItem.Name;
+      const msgText = 'Please confirm deleting: ' + itemLabel;
       this.props.drpSetProp('msgText', msgText);
       // currentDataItem will be passed to the yes callback: removeConfirmed()
       this.props.drpSetProp('yesParam', currentDataItem);
@@ -161,7 +164,7 @@ class CompBizPageField extends Component {
         {this.props.getShowLoading && <LoadingPanel />}
 
         <Grid
-          style={{ height: '420px' }}
+          style={{ height: '580px' }}
           reorderable
           data={this.dataToUse()}
           selectedField="selected"
@@ -227,14 +230,14 @@ class CompBizPageField extends Component {
             }
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
-          <GridColumn field="BizDocRevPage.dispLabel" title="Page" width="190px" />
-          <GridColumn field="Name" title="Name" width="135px" />
-          <GridColumn field="Type" title="Type" />
-          <GridColumn field="RegEx" title="RegEx" filterable={true}/>
-          <GridColumn field="X1" title="X1" filterable={false} sortable={false} width="50px"/>
-          <GridColumn field="Y1" title="Y1" filterable={false} sortable={false} width="50px"/>
-          <GridColumn field="X2" title="X2" filterable={false} sortable={false} width="50px"/>
-          <GridColumn field="Y2" title="Y2" filterable={false} sortable={false} width="50px"/>
+          <GridColumn field="BizDocRevPage.dispLabel" title="Page" />
+          <GridColumn field="Name" title="Field Name" width="135px" />
+          <GridColumn field="Type" title="Field Type" width="130px" />
+          <GridColumn field="RegEx" title="RegEx" filterable={true} />
+          <GridColumn field="X1" title="X1" filterable={false} sortable={false} width="50px" />
+          <GridColumn field="Y1" title="Y1" filterable={false} sortable={false} width="50px" />
+          <GridColumn field="X2" title="X2" filterable={false} sortable={false} width="50px" />
+          <GridColumn field="Y2" title="Y2" filterable={false} sortable={false} width="50px" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
 
@@ -258,7 +261,8 @@ class CompBizPageField extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  const listRecs = createBizPageFieldListSelector(state);
+  const listRecsUnsorted = createBizPageFieldListSelector(state);
+  const listRecs = BizPageField.sortByIdDesc(listRecsUnsorted);
   return {
     listRecs,       // list of BizPageField's
     getShowLoading: actionControl.getShowLoadingBizPageField(state),

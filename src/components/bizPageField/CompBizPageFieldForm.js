@@ -13,6 +13,7 @@ import BizDocRev from '../../orm/modelBizDocRev';
 import BizDocRevPage from '../../orm/modelBizDocRevPage';
 import './CompBizPageField.css';
 import CompConst from '../shared/CompConst';
+import DRPDraggable from '../../utils/DRPDraggable';
 
 // The form in a dialog to add or edit fields for BizPageField
 // Props passed in that are not in defaultProps:
@@ -37,7 +38,6 @@ class CompBizPageFieldForm extends Component {
       PgNum: undefined,
       PgKey1: undefined,
       PgKey2: undefined,
-      PgType: undefined,
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =
@@ -86,6 +86,11 @@ class CompBizPageFieldForm extends Component {
       },
     };
     this.state = stateInit;
+    this.draggable = DRPDraggable.draggableObj;
+  } // constructor
+
+  componentWillUnMount() {
+    this.draggable.destroy();
   }
 
   // Save or update the record
@@ -146,12 +151,23 @@ class CompBizPageFieldForm extends Component {
     }));
   }
 
+  getDialogTitle = () => {
+    return (<span
+      ref={(element) =>
+        DRPDraggable.setupDraggable(this.draggable, element)
+      }
+    >
+      {this.state.dialogTitle}
+    </span>
+    );
+  }
+
   // render the dialog
   render() {
     return (
       <div>
         <Dialog
-          title={this.state.dialogTitle}
+          title={this.getDialogTitle()}
           onClose={this.props.handleCancel}
           width={this.props.EDIT_FIELD_WIDTH}
         >

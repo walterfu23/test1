@@ -10,6 +10,7 @@ import CompBizDoc from './components/bizDoc/CompBizDoc';
 import CompBizDocRev from './components/bizDocRev/CompBizDocRev';
 import CompBizDocRevPage from './components/bizDocRevPage/CompBizDocRevPage';
 import CompBizPageField from './components/bizPageField/CompBizPageField';
+import CompFooter from './components/misc/CompFooter';
 
 export class App extends Component {
   constructor(props) {
@@ -32,6 +33,7 @@ export class App extends Component {
         <TabStrip
           selected={this.state.tabSelected}
           onSelect={this.handleTabSelected}
+          animation={false}
         >
           <TabStripTab title="Documents">
             <CompBizDoc />
@@ -47,6 +49,7 @@ export class App extends Component {
           </TabStripTab>
 
         </TabStrip>
+        <CompFooter ver="0.11"/>
       </div>
     );
   }

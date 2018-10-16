@@ -15,6 +15,7 @@ import './CompBizDocRevPage.css';
 import CompConfirmDialog from '../shared/CompConfirmDialog';
 import withCompConfirmDialog from '../shared/withCompConfirmDialog';
 import CompConst from '../shared/CompConst';
+import BizDocRevPage from '../../orm/modelBizDocRevPage';
 
 class CompBizDocRevPage extends Component {
 
@@ -82,7 +83,8 @@ class CompBizDocRevPage extends Component {
   handleRemove = () => {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem)) {
-      const msgText = 'Please confirm deleting: ' + currentDataItem.dispLabel;
+      const msgText = 'Please confirm deleting: ' +
+        currentDataItem.BizDocRev.dispLabel + ', ' + currentDataItem.PgNum;
       this.props.drpSetProp('msgText', msgText);
       // currentDataItem will be passed to the yes callback: removeConfirmed()
       this.props.drpSetProp('yesParam', currentDataItem);
@@ -151,7 +153,7 @@ class CompBizDocRevPage extends Component {
         {this.props.getShowLoading && <LoadingPanel />}
 
         <Grid
-          style={{ height: '420px' }}
+          style={{ height: '580px' }}
           reorderable
           data={this.dataToUse()}
           selectedField="selected"
@@ -221,7 +223,6 @@ class CompBizDocRevPage extends Component {
           <GridColumn field="PgNum" title="Page No." filter="numeric" width="135px" />
           <GridColumn field="PgKey1" title="Key 1" />
           <GridColumn field="PgKey2" title="Key 2" />
-          <GridColumn field="PgType" title="Page Type" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>
 
@@ -245,7 +246,8 @@ class CompBizDocRevPage extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  const listRecs = createBizDocRevPageListSelector(state);
+  const listRecsUnsorted = createBizDocRevPageListSelector(state);
+  const listRecs = BizDocRevPage.sortByIdDesc(listRecsUnsorted);
   return {
     listRecs,       // list of BizDocRevPage's
     getShowLoading: actionControl.getShowLoadingBizDocRevPage(state),

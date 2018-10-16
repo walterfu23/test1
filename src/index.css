@@ -1,8 +1,12 @@
 
 body {
   margin: 0;
-  padding: 5pt;
+  padding: 2pt 10pt 10pt 10pt;
   font-family: sans-serif;
-	background-color: #eef;
+	background-color: rgba(248, 241, 179, 0.302); 
 }
+
+/* 
+yellow: #f8f1b34d;
+*/
 

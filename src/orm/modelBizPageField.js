@@ -75,4 +75,8 @@ export default class BizPageField extends Model {
     return json;
   }
 
+  // sort the list by its id in reverse order
+  static sortByIdDesc = (list) =>
+    list.sort((rec1, rec2) => rec2.Id - rec1.Id);
+
 }; 
