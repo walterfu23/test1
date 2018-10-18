@@ -1,28 +1,52 @@
 import { all } from 'redux-saga/effects';
-import { 
-  watchFetchBizDocs, 
+import {
+  watchFetchBizDocs,
   watchCreateBizDoc,
   watchDeleteBizDoc,
   watchUpdateBizDoc,
 } from './sagasBizDoc';
-import { 
-  watchFetchBizDocRevs, 
+import {
+  watchFetchBizDocRevs,
   watchCreateBizDocRev,
   watchDeleteBizDocRev,
   watchUpdateBizDocRev,
 } from './sagasBizDocRev';
-import { 
-  watchFetchBizDocRevPages, 
+import {
+  watchFetchBizDocRevPages,
   watchCreateBizDocRevPage,
   watchDeleteBizDocRevPage,
   watchUpdateBizDocRevPage,
 } from './sagasBizDocRevPage';
-import { 
-  watchFetchBizPageFields, 
+import {
+  watchFetchBizPageFields,
   watchCreateBizPageField,
   watchDeleteBizPageField,
   watchUpdateBizPageField,
 } from './sagasBizPageField';
+import {
+  watchFetchTopLevelLists,
+  watchCreateTopLevelList,
+  watchDeleteTopLevelList,
+  watchUpdateTopLevelList,
+} from './sagasTopLevelList';
+import {
+  watchFetchJobs,
+  watchCreateJob,
+  watchDeleteJob,
+  watchUpdateJob,
+} from './sagasJob';
+import {
+  watchFetchCategorys,
+  watchCreateCategory,
+  watchDeleteCategory,
+  watchUpdateCategory,
+} from './sagasCategory';
+import {
+  watchFetchSubCategorys,
+  watchCreateSubCategory,
+  watchDeleteSubCategory,
+  watchUpdateSubCategory,
+} from './sagasSubCategory';
 
 export default function* rootSaga() {
   yield all([
@@ -45,6 +69,26 @@ export default function* rootSaga() {
     watchCreateBizPageField(),
     watchDeleteBizPageField(),
     watchUpdateBizPageField(),
+
+    watchFetchTopLevelLists(),
+    watchCreateTopLevelList(),
+    watchDeleteTopLevelList(),
+    watchUpdateTopLevelList(),
+
+    watchFetchJobs(),
+    watchCreateJob(),
+    watchDeleteJob(),
+    watchUpdateJob(),
+
+    watchFetchCategorys(),
+    watchCreateCategory(),
+    watchDeleteCategory(),
+    watchUpdateCategory(),
+
+    watchFetchSubCategorys(),
+    watchCreateSubCategory(),
+    watchDeleteSubCategory(),
+    watchUpdateSubCategory(),
 
   ]);
 }

@@ -11,6 +11,9 @@ const ADDED_FIELDS = [
   'BizDoc',
   'BizDocRev',
   'BizDocRevPage',
+  'TopLevelList',
+  'Category',
+  
 ];
 
 export default {

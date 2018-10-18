@@ -24,6 +24,26 @@ const initialState = {
     showForm: false,     // true: show the Add/Edit form
     current: {},         // currently selected rec
   },
+  TopLevelList: {
+    showLoading: false,  // true: show the loading panel
+    showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
+  },
+  Job: {
+    showLoading: false,  // true: show the loading panel
+    showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
+  },
+  Category: {
+    showLoading: false,  // true: show the loading panel
+    showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
+  },
+  SubCategory: {
+    showLoading: false,  // true: show the loading panel
+    showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
+  },
 };
 
 const controlReducer = (prevState = initialState, action) => {
@@ -61,7 +81,7 @@ const controlReducer = (prevState = initialState, action) => {
           showForm: action.payload,
         }
       };
-      case actionControl.CTRL_UPD_CRNT_BizDoc:
+    case actionControl.CTRL_UPD_CRNT_BizDoc:
       return {
         ...prevState,
         BizDoc: {
@@ -144,6 +164,110 @@ const controlReducer = (prevState = initialState, action) => {
         ...prevState,
         BizPageField: {
           ...prevState.BizPageField,
+          current: action.payload,
+        }
+      }
+
+    // =============== TopLevelList ================  
+    case actionControl.SHOW_LOADING_TopLevelList:
+      return {
+        ...prevState,
+        TopLevelList: {
+          ...prevState.TopLevelList,
+          showLoading: action.payload,
+        }
+      };
+    case actionControl.SHOW_FORM_TopLevelList:
+      return {
+        ...prevState,
+        TopLevelList: {
+          ...prevState.TopLevelList,
+          showForm: action.payload,
+        }
+      };
+    case actionControl.CTRL_UPD_CRNT_TopLevelList:
+      return {
+        ...prevState,
+        TopLevelList: {
+          ...prevState.TopLevelList,
+          current: action.payload,
+        }
+      }
+
+    // =============== Job ================  
+    case actionControl.SHOW_LOADING_Job:
+      return {
+        ...prevState,
+        Job: {
+          ...prevState.Job,
+          showLoading: action.payload,
+        }
+      };
+    case actionControl.SHOW_FORM_Job:
+      return {
+        ...prevState,
+        Job: {
+          ...prevState.Job,
+          showForm: action.payload,
+        }
+      };
+    case actionControl.CTRL_UPD_CRNT_Job:
+      return {
+        ...prevState,
+        Job: {
+          ...prevState.Job,
+          current: action.payload,
+        }
+      }
+
+    // =============== Category ================  
+    case actionControl.SHOW_LOADING_Category:
+      return {
+        ...prevState,
+        Category: {
+          ...prevState.Category,
+          showLoading: action.payload,
+        }
+      };
+    case actionControl.SHOW_FORM_Category:
+      return {
+        ...prevState,
+        Category: {
+          ...prevState.Category,
+          showForm: action.payload,
+        }
+      };
+    case actionControl.CTRL_UPD_CRNT_Category:
+      return {
+        ...prevState,
+        Category: {
+          ...prevState.Category,
+          current: action.payload,
+        }
+      }
+
+    // =============== SubCategory ================  
+    case actionControl.SHOW_LOADING_SubCategory:
+      return {
+        ...prevState,
+        SubCategory: {
+          ...prevState.SubCategory,
+          showLoading: action.payload,
+        }
+      };
+    case actionControl.SHOW_FORM_SubCategory:
+      return {
+        ...prevState,
+        SubCategory: {
+          ...prevState.SubCategory,
+          showForm: action.payload,
+        }
+      };
+    case actionControl.CTRL_UPD_CRNT_SubCategory:
+      return {
+        ...prevState,
+        SubCategory: {
+          ...prevState.SubCategory,
           current: action.payload,
         }
       }

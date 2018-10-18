@@ -116,6 +116,106 @@ const setCurrentBizPageField = (bizPageField) => {
   return actionGen(CTRL_UPD_CRNT_BizPageField, bizPageField);
 }
 
+// ============= TopLevelList =================
+const SHOW_LOADING_TopLevelList = 'SHOW_LOADING_TopLevelList';
+const getShowLoadingTopLevelList = (state) => {
+  return state.control.TopLevelList.showLoading;
+}
+const setShowLoadingTopLevelList = (showFlag) => {
+  return actionGen(SHOW_LOADING_TopLevelList, showFlag);
+}
+
+const SHOW_FORM_TopLevelList = 'SHOW_FORM_TopLevelList';
+const getShowFormTopLevelList = (state) => {
+  return state.control.TopLevelList.showForm;
+}
+const setShowFormTopLevelList = (showFlag) => {
+  return actionGen(SHOW_FORM_TopLevelList, showFlag);
+}
+
+const CTRL_UPD_CRNT_TopLevelList = 'CTRL_UPD_CRNT_TopLevelList';
+const getCurrentTopLevelList = (state) => {
+  return state.control.TopLevelList.current;
+}
+const setCurrentTopLevelList = (bizDoc) => {
+  return actionGen(CTRL_UPD_CRNT_TopLevelList, bizDoc);
+}
+
+// ============= Job =================
+const SHOW_LOADING_Job = 'SHOW_LOADING_Job';
+const getShowLoadingJob = (state) => {
+  return state.control.Job.showLoading;
+}
+const setShowLoadingJob = (showFlag) => {
+  return actionGen(SHOW_LOADING_Job, showFlag);
+}
+
+const SHOW_FORM_Job = 'SHOW_FORM_Job';
+const getShowFormJob = (state) => {
+  return state.control.Job.showForm;
+}
+const setShowFormJob = (showFlag) => {
+  return actionGen(SHOW_FORM_Job, showFlag);
+}
+
+const CTRL_UPD_CRNT_Job = 'CTRL_UPD_CRNT_Job';
+const getCurrentJob = (state) => {
+  return state.control.Job.current;
+}
+const setCurrentJob = (Job) => {
+  return actionGen(CTRL_UPD_CRNT_Job, Job);
+}
+
+// ============= Category =================
+const SHOW_LOADING_Category = 'SHOW_LOADING_Category';
+const getShowLoadingCategory = (state) => {
+  return state.control.Category.showLoading;
+}
+const setShowLoadingCategory = (showFlag) => {
+  return actionGen(SHOW_LOADING_Category, showFlag);
+}
+
+const SHOW_FORM_Category = 'SHOW_FORM_Category';
+const getShowFormCategory = (state) => {
+  return state.control.Category.showForm;
+}
+const setShowFormCategory = (showFlag) => {
+  return actionGen(SHOW_FORM_Category, showFlag);
+}
+
+const CTRL_UPD_CRNT_Category = 'CTRL_UPD_CRNT_Category';
+const getCurrentCategory = (state) => {
+  return state.control.Category.current;
+}
+const setCurrentCategory = (category) => {
+  return actionGen(CTRL_UPD_CRNT_Category, category);
+}
+
+// ============= SubCategory =================
+const SHOW_LOADING_SubCategory = 'SHOW_LOADING_SubCategory';
+const getShowLoadingSubCategory = (state) => {
+  return state.control.SubCategory.showLoading;
+}
+const setShowLoadingSubCategory = (showFlag) => {
+  return actionGen(SHOW_LOADING_SubCategory, showFlag);
+}
+
+const SHOW_FORM_SubCategory = 'SHOW_FORM_SubCategory';
+const getShowFormSubCategory = (state) => {
+  return state.control.SubCategory.showForm;
+}
+const setShowFormSubCategory = (showFlag) => {
+  return actionGen(SHOW_FORM_SubCategory, showFlag);
+}
+
+const CTRL_UPD_CRNT_SubCategory = 'CTRL_UPD_CRNT_SubCategory';
+const getCurrentSubCategory = (state) => {
+  return state.control.SubCategory.current;
+}
+const setCurrentSubCategory = (subCategory) => {
+  return actionGen(CTRL_UPD_CRNT_SubCategory, subCategory);
+}
+
 
 //======================================================
 
@@ -182,6 +282,59 @@ const actionControl = {
   CTRL_UPD_CRNT_BizPageField,
   getCurrentBizPageField: (state) => getCurrentBizPageField(state),
   setCurrentBizPageField: (bizPageField) => setCurrentBizPageField(bizPageField),
+
+  // ============= TopLevelList =================
+  SHOW_LOADING_TopLevelList,
+  getShowLoadingTopLevelList: (state) => getShowLoadingTopLevelList(state),
+  setShowLoadingTopLevelList: (showFlag) => setShowLoadingTopLevelList(showFlag),
+
+  SHOW_FORM_TopLevelList,
+  getShowFormTopLevelList: (state) => getShowFormTopLevelList(state),
+  setShowFormTopLevelList: (showFlag) => setShowFormTopLevelList(showFlag),
+
+  CTRL_UPD_CRNT_TopLevelList,
+  getCurrentTopLevelList: (state) => getCurrentTopLevelList(state),
+  setCurrentTopLevelList: (bizDoc) => setCurrentTopLevelList(bizDoc),
+
+  // ============= Job =================  
+  SHOW_LOADING_Job,
+  getShowLoadingJob: (state) => getShowLoadingJob(state),
+  setShowLoadingJob: (showFlag) => setShowLoadingJob(showFlag),
+
+  SHOW_FORM_Job,
+  getShowFormJob: (state) => getShowFormJob(state),
+  setShowFormJob: (showFlag) => setShowFormJob(showFlag),
+
+  CTRL_UPD_CRNT_Job,
+  getCurrentJob: (state) => getCurrentJob(state),
+  setCurrentJob: (job) => setCurrentJob(job),
+
+  // ============= Category =================
+  SHOW_LOADING_Category,
+  getShowLoadingCategory: (state) => getShowLoadingCategory(state),
+  setShowLoadingCategory: (showFlag) => setShowLoadingCategory(showFlag),
+
+  SHOW_FORM_Category,
+  getShowFormCategory: (state) => getShowFormCategory(state),
+  setShowFormCategory: (showFlag) => setShowFormCategory(showFlag),
+
+  CTRL_UPD_CRNT_Category,
+  getCurrentCategory: (state) => getCurrentCategory(state),
+  setCurrentCategory: (category) => setCurrentCategory(category),
+
+  // ============= SubCategory =================
+  SHOW_LOADING_SubCategory,
+  getShowLoadingSubCategory: (state) => getShowLoadingSubCategory(state),
+  setShowLoadingSubCategory: (showFlag) => setShowLoadingSubCategory(showFlag),
+
+  SHOW_FORM_SubCategory,
+  getShowFormSubCategory: (state) => getShowFormSubCategory(state),
+  setShowFormSubCategory: (showFlag) => setShowFormSubCategory(showFlag),
+
+  CTRL_UPD_CRNT_SubCategory,
+  getCurrentSubCategory: (state) => getCurrentSubCategory(state),
+  setCurrentSubCategory: (subCategory) => setCurrentSubCategory(subCategory),
+
 
 }; // actionControl
 

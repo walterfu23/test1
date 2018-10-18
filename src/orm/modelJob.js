@@ -1,22 +1,21 @@
 import { fk, attr, Model } from 'redux-orm';
 import utils from '../utils/utils';
-import BizDocRevPage from './modelBizDocRevPage';
 
-export default class BizDocRev extends Model {
+export default class Job extends Model {
   static get modelName() {
-    return 'BizDocRev';
+    return 'Job';
   }
 
   static get fields() {
     return {
-      DocId: fk('BizDoc', 'revs'),
+      ListId: fk('TopLevelList', 'jobs'),
 
       Id: attr(),
       Active: attr(),
-      LangOrig: attr(),
-      LangNormalized: attr(),
-      RevOrig: attr(),
-      RevNormalized: attr(),
+      Name: attr(),
+      Label: attr(),
+      DispOrder: attr(),
+      Comment: attr(),
 
       Creator: attr(),
       CreateTime: attr(),
@@ -55,44 +54,43 @@ export default class BizDocRev extends Model {
     return jsonArray;
   }
 
-  // convert the model to json
   toJson = () => {
     // get the children array ready
-    const childModelArray = this.pages.toModelArray();
-    const childrenDown = BizDocRevPage.modelArrayToJson(childModelArray);
-    const children = childrenDown.map(childDown => ({
-      ...childDown,
-      BizDocRev: this.ref,     // the parent
-    }));
+    // const childModelArray = this.pages.toModelArray();
+    // const childrenDown = JobPage.modelArrayToJson(childModelArray);
+    // const children = childrenDown.map(childDown => ({
+    //   ...childDown,
+    //   Job: this.ref,     // the parent
+    // }))
 
-    const BizDoc = this.DocId.ref;
+    const TopLevelList = this.ListId.ref;
     const dispLabel = this.getDispLabel();
 
     // now compose the json
     const json = {
       ...this.ref,
-      BizDoc,
+      TopLevelList,
       dispLabel,
-      pages: children,
+      //      pages: children,
     }
     return json;
   }
 
   getDispLabel = () => {
-    const jsonBizDoc = this.DocId ? this.DocId.ref : undefined;
-    const docNumToUse = jsonBizDoc ? jsonBizDoc.DocNum : '';
-    const langToUse = this.ref.LangNormalized;
-    const revToUse = this.ref.RevNormalized;
-    const dispLabel = docNumToUse + '-' + langToUse + '-' + revToUse;
-    return dispLabel;
+    const listLabelToUse = this.ListId ? this.ListId.getDispLabel() : '';
+    return listLabelToUse;
   }
+
+  // sort the list by DispOrder 
+  static sortByDispOrder = (list) =>
+    list.sort((rec1, rec2) => rec1.DispOrder - rec2.DispOrder);
 
   // sort the list by its id in reverse order
   static sortByIdDesc = (list) =>
-  list.sort((rec1, rec2) => rec2.Id - rec1.Id);
+    list.sort((rec1, rec2) => rec2.Id - rec1.Id);
 
   // sort the list by dispLabel 
-  static sortByRevDispLabel = (list) =>
+  static sortByDispLabel = (list) =>
     list.sort((rec1, rec2) => utils.strCompare(rec1.dispLabel, rec2.dispLabel));
 
   // filter the list for entries with at least one page
@@ -100,14 +98,6 @@ export default class BizDocRev extends Model {
     const filteredList = list.filter(rev => rev.pages.length > 0);
     return filteredList;
   }
-  static entriesWithPageOrig = (list, listPages) => {
-    const gotPage = (rev) => {
-      const entry = BizDocRevPage.findBizDocRev(listPages, rev.Id);
-      return entry ? true : false;
-    }
-    const filteredList = list.filter(rev => gotPage(rev));
-    return filteredList;
-  }
 
-}; // BizDocRev
+}; // Job
 

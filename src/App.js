@@ -6,11 +6,15 @@ import './App.css';
 import "@babel/polyfill";
 
 import { TabStrip, TabStripTab } from '@progress/kendo-react-layout'
+import CompFooter from './components/misc/CompFooter';
 import CompBizDoc from './components/bizDoc/CompBizDoc';
 import CompBizDocRev from './components/bizDocRev/CompBizDocRev';
 import CompBizDocRevPage from './components/bizDocRevPage/CompBizDocRevPage';
 import CompBizPageField from './components/bizPageField/CompBizPageField';
-import CompFooter from './components/misc/CompFooter';
+import CompTopLevelList from './components/topLevelList/CompTopLevelList';
+import CompJob from './components/job/CompJob';
+import CompCategory from './components/category/CompCategory';
+import CompSubCategory from './components/subCategory/CompSubCategory';
 
 export class App extends Component {
   constructor(props) {
@@ -35,10 +39,10 @@ export class App extends Component {
           onSelect={this.handleTabSelected}
           animation={false}
         >
-          <TabStripTab title="Documents">
+          <TabStripTab title="Docs">
             <CompBizDoc />
           </TabStripTab>
-          <TabStripTab title="Revisions">
+          <TabStripTab title="Revs">
             <CompBizDocRev />
           </TabStripTab>
           <TabStripTab title="Pages">
@@ -46,6 +50,18 @@ export class App extends Component {
           </TabStripTab>
           <TabStripTab title="Fields">
             <CompBizPageField />
+          </TabStripTab>
+          <TabStripTab title="Lists">
+            <CompTopLevelList />
+          </TabStripTab>
+          <TabStripTab title="Jobs">
+            <CompJob />
+          </TabStripTab>
+          <TabStripTab title="Cats">
+            <CompCategory />
+          </TabStripTab>
+          <TabStripTab title="SubCats">
+            <CompSubCategory />
           </TabStripTab>
 
         </TabStrip>

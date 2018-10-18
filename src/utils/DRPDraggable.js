@@ -41,9 +41,6 @@ const setupDraggable = (draggableObj, element) => {
     }
   }
 }
-const setupDraggableNoop = (draggableObj, element) => {
-  // Draggable is not stable. Let's skip it
-}
 
 const DRPDraggable = {
   draggableObj,

@@ -1,0 +1,41 @@
+.drp-float-right {
+  float: right;  
+}
+
+.drp-edit-box {
+  border: 1px solid #c7c6c6;
+  padding: 1px 2px 1px 10px;
+  margin: 0px 5px 0px 0px;
+}
+
+.drp-icon-close {
+  font-size: 22px; /* icon size */
+}
+
+.drp-margin-bottom { 
+  margin-bottom: '1rem';
+}
+
+
+/*
+.k-link {
+  font-size: large;
+  font-weight: bolder;
+}
+
+.k-grid-table
+.k-grid table {
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    border-width: 0;
+    border-color: inherit;
+    border-collapse: separate;
+    border-spacing: 0;
+    empty-cells: show;
+    outline: 0;
+}
+
+.k-master-row
+
+*/
