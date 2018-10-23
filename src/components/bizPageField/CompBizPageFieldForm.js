@@ -33,11 +33,11 @@ class CompBizPageFieldForm extends Component {
     super(props);
     const recEmpty = {
       Id: undefined,
-      RevId: undefined,
+//      RevId: undefined,
       Active: true,
-      PgNum: undefined,
-      PgKey1: undefined,
-      PgKey2: undefined,
+//      PgNum: undefined,
+//      PgKey1: undefined,
+//      PgKey2: undefined,
       Creator: props.getUserInfo.uid,   // CreateTime added in Api.
     };
     const recInEditToUse =

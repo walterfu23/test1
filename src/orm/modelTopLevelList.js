@@ -81,6 +81,17 @@ export default class TopLevelList extends Model {
     return filteredList;
   }
 
+  // filter list to get rid of entries that contain "job" 
+  static filterSansJob = (list) => {
+    const filteredList = list.filter(listItem => {
+      const nameLower = listItem.ListName.toLowerCase();
+      const jobLoc = nameLower.indexOf("job");
+      return jobLoc === -1;  // the item does not contain job. Retain it.
+    });
+    return filteredList;
+  }
+
+
   // sort the list by its id in reverse order
   static sortByIdDesc = (list) =>
     list.sort((rec1, rec2) => rec2.Id - rec1.Id);

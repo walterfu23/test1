@@ -4,9 +4,10 @@ import actionBizDocRev from '../actions/actionBizDocRev';
 import actionBizDocRevPage from '../actions/actionBizDocRevPage';
 import actionBizPageField from '../actions/actionBizPageField';
 import actionTopLevelList from '../actions/actionTopLevelList';
-import actionJob from '../actions/actionJob';
 import actionCategory from '../actions/actionCategory';
 import actionSubCategory from '../actions/actionSubCategory';
+import actionJob from '../actions/actionJob';
+import actionJobTopLevelList from '../actions/actionJobTopLevelList';
 
 export default function ormReducer(dbState, action) {
   const session = orm.session(dbState);
@@ -16,9 +17,10 @@ export default function ormReducer(dbState, action) {
     BizDocRevPage,
     BizPageField,
     TopLevelList,
-    Job,
     Category,
     SubCategory,
+    Job,
+    JobTopLevelList,
   } = session;
 
   switch (action.type) {
@@ -92,20 +94,6 @@ export default function ormReducer(dbState, action) {
       TopLevelList.withId(action.payload.Id).update(action.payload);
       break;
 
-    //==================== Job ====================
-    case actionJob.FETCH_Job_SUCCESSFUL:
-      Job.hydrateArray(action.payload.data.value);
-      break;
-    case actionJob.CREATE_Job_SUCCESSFUL:
-      Job.hydrate(action.payload.data);
-      break;
-    case actionJob.DELETE_Job_SUCCESSFUL:
-      Job.withId(action.payload.Id).delete();
-      break;
-    case actionJob.UPDATE_Job_SUCCESSFUL:
-      Job.withId(action.payload.Id).update(action.payload);
-      break;
-
     //==================== Category ====================
     case actionCategory.FETCH_Category_SUCCESSFUL:
       Category.hydrateArray(action.payload.data.value);
@@ -132,6 +120,34 @@ export default function ormReducer(dbState, action) {
       break;
     case actionSubCategory.UPDATE_SubCategory_SUCCESSFUL:
       SubCategory.withId(action.payload.Id).update(action.payload);
+      break;
+
+    //==================== Job ====================
+    case actionJob.FETCH_Job_SUCCESSFUL:
+      Job.hydrateArray(action.payload.data.value);
+      break;
+    case actionJob.CREATE_Job_SUCCESSFUL:
+      Job.hydrate(action.payload.data);
+      break;
+    case actionJob.DELETE_Job_SUCCESSFUL:
+      Job.withId(action.payload.Id).delete();
+      break;
+    case actionJob.UPDATE_Job_SUCCESSFUL:
+      Job.withId(action.payload.Id).update(action.payload);
+      break;
+
+    //==================== JobTopLevelList ====================
+    case actionJobTopLevelList.FETCH_JobTopLevelList_SUCCESSFUL:
+      JobTopLevelList.hydrateArray(action.payload.data.value);
+      break;
+    case actionJobTopLevelList.CREATE_JobTopLevelList_SUCCESSFUL:
+      JobTopLevelList.hydrate(action.payload.data);
+      break;
+    case actionJobTopLevelList.DELETE_JobTopLevelList_SUCCESSFUL:
+      JobTopLevelList.withId(action.payload.Id).delete();
+      break;
+    case actionJobTopLevelList.UPDATE_JobTopLevelList_SUCCESSFUL:
+      JobTopLevelList.withId(action.payload.Id).update(action.payload);
       break;
 
 

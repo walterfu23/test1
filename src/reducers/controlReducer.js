@@ -29,17 +29,22 @@ const initialState = {
     showForm: false,     // true: show the Add/Edit form
     current: {},         // currently selected rec
   },
-  Job: {
-    showLoading: false,  // true: show the loading panel
-    showForm: false,     // true: show the Add/Edit form
-    current: {},         // currently selected rec
-  },
   Category: {
     showLoading: false,  // true: show the loading panel
     showForm: false,     // true: show the Add/Edit form
     current: {},         // currently selected rec
   },
   SubCategory: {
+    showLoading: false,  // true: show the loading panel
+    showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
+  },
+  Job: {
+    showLoading: false,  // true: show the loading panel
+    showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
+  },
+  JobTopLevelList: {
     showLoading: false,  // true: show the loading panel
     showForm: false,     // true: show the Add/Edit form
     current: {},         // currently selected rec
@@ -194,32 +199,6 @@ const controlReducer = (prevState = initialState, action) => {
         }
       }
 
-    // =============== Job ================  
-    case actionControl.SHOW_LOADING_Job:
-      return {
-        ...prevState,
-        Job: {
-          ...prevState.Job,
-          showLoading: action.payload,
-        }
-      };
-    case actionControl.SHOW_FORM_Job:
-      return {
-        ...prevState,
-        Job: {
-          ...prevState.Job,
-          showForm: action.payload,
-        }
-      };
-    case actionControl.CTRL_UPD_CRNT_Job:
-      return {
-        ...prevState,
-        Job: {
-          ...prevState.Job,
-          current: action.payload,
-        }
-      }
-
     // =============== Category ================  
     case actionControl.SHOW_LOADING_Category:
       return {
@@ -268,6 +247,58 @@ const controlReducer = (prevState = initialState, action) => {
         ...prevState,
         SubCategory: {
           ...prevState.SubCategory,
+          current: action.payload,
+        }
+      }
+
+    // =============== Job ================  
+    case actionControl.SHOW_LOADING_Job:
+      return {
+        ...prevState,
+        Job: {
+          ...prevState.Job,
+          showLoading: action.payload,
+        }
+      };
+    case actionControl.SHOW_FORM_Job:
+      return {
+        ...prevState,
+        Job: {
+          ...prevState.Job,
+          showForm: action.payload,
+        }
+      };
+    case actionControl.CTRL_UPD_CRNT_Job:
+      return {
+        ...prevState,
+        Job: {
+          ...prevState.Job,
+          current: action.payload,
+        }
+      }
+
+    // =============== JobTopLevelList ================  
+    case actionControl.SHOW_LOADING_JobTopLevelList:
+      return {
+        ...prevState,
+        JobTopLevelList: {
+          ...prevState.JobTopLevelList,
+          showLoading: action.payload,
+        }
+      };
+    case actionControl.SHOW_FORM_JobTopLevelList:
+      return {
+        ...prevState,
+        JobTopLevelList: {
+          ...prevState.JobTopLevelList,
+          showForm: action.payload,
+        }
+      };
+    case actionControl.CTRL_UPD_CRNT_JobTopLevelList:
+      return {
+        ...prevState,
+        JobTopLevelList: {
+          ...prevState.JobTopLevelList,
           current: action.payload,
         }
       }

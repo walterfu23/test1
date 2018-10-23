@@ -100,14 +100,6 @@ export default class BizDocRev extends Model {
     const filteredList = list.filter(rev => rev.pages.length > 0);
     return filteredList;
   }
-  static entriesWithPageOrig = (list, listPages) => {
-    const gotPage = (rev) => {
-      const entry = BizDocRevPage.findBizDocRev(listPages, rev.Id);
-      return entry ? true : false;
-    }
-    const filteredList = list.filter(rev => gotPage(rev));
-    return filteredList;
-  }
 
 }; // BizDocRev
 

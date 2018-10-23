@@ -4,9 +4,10 @@ import BizDocRev from './modelBizDocRev';
 import BizDocRevPage from './modelBizDocRevPage';
 import BizPageField from './modelBizPageField';
 import TopLevelList from './modelTopLevelList';
-import Job from './modelJob';
 import Category from './modelCategory';
 import SubCategory from './modelSubCategory';
+import Job from './modelJob';
+import JobTopLevelList from './modelJobTopLevelList';
 
 const orm = new ORM();
 orm.register(
@@ -15,9 +16,10 @@ orm.register(
   BizDocRevPage,
   BizPageField, 
   TopLevelList,
-  Job,
   Category,
   SubCategory,
+  Job,
+  JobTopLevelList,
 );
 
 export default orm;

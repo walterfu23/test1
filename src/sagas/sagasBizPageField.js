@@ -64,6 +64,7 @@ function* updateBizPageField(action) {
   try {
     const rec = yield call(Api.updateRecPrep, action.payload);
     const recPure = utils.cloneDelProps(rec, ...AppConst.ADDED_FIELDS);
+    console.log('recPure', recPure);
     yield call(Api.updateRec, 'BizPageField', recPure);
     yield put(actionGen(actionBizPageField.UPDATE_BizPageField_SUCCESSFUL, rec));
     yield put(actionControl.setCurrentBizPageField(rec));  // update the current rec

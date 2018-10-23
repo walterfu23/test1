@@ -80,16 +80,6 @@ class CompBizDocRev extends Component {
   }
 
   // remove button pressed
-  handleRemoveOrig = () => {
-    const currentDataItem = this.props.getCurrentRec;
-    if (!utils.objEmpty(currentDataItem) &&
-      window.confirm(
-        'Confirm deleting: ' + currentDataItem.dispLabel)) {
-      this.props.deleteRequested(currentDataItem);
-    }
-  }
-
-  // remove button pressed
   handleRemove = () => {
     const currentDataItem = this.props.getCurrentRec;
     if (!utils.objEmpty(currentDataItem)) {

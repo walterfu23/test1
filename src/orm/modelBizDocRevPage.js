@@ -97,11 +97,4 @@ export default class BizDocRevPage extends Model {
   static filterByDocRevId = (list, docRevId) =>
     list.filter(bizDocRevPage => bizDocRevPage.BizDocRev.Id === docRevId);
 
-  // return BizDocRev if one of the page entries in the list
-  // has the BizDocRev.Id matching the given bizDocRevId value.
-  static findBizDocRev = (list, bizDocRevId) => {
-    const recFound = list.find(bizDocRevPage =>
-      bizDocRevPage.BizDocRev.Id === bizDocRevId);
-    return recFound;
-  }
 }; // BizDocRevPage

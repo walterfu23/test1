@@ -1,9 +1,9 @@
 import axios from 'axios';
 import moment from 'moment';
 
-//const urlBase = 'http://localhost:57097/odata/';
+const urlBase = 'http://localhost:57097/odata/';
 //const urlBase = 'http://localhost/DRPOData/odata/';
-const urlBase = 'http://ssasvstgapp1/DRPOData/odata/';
+//const urlBase = 'http://ssasvstgapp1/DRPOData/odata/';
 
 // get all records
 const getRecs = (modelName) => {

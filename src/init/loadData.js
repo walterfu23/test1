@@ -5,9 +5,10 @@ import actionBizDocRev from '../actions/actionBizDocRev';
 import actionBizDocRevPage from '../actions/actionBizDocRevPage';
 import actionBizPageField from '../actions/actionBizPageField';
 import actionTopLevelList from '../actions/actionTopLevelList';
-import actionJob from '../actions/actionJob';
 import actionCategory from '../actions/actionCategory';
 import actionSubCategory from '../actions/actionSubCategory';
+import actionJob from '../actions/actionJob';
+import actionJobTopLevelList from '../actions/actionJobTopLevelList';
 
 // const action = (store, type) => {
 //   store.dispatch({ type });
@@ -20,9 +21,10 @@ const loadData = store => {
   loadBizPageField(store);
   loadUserInfo(store);
   loadTopLevelList(store);
-  loadJob(store);
   loadCategory(store);
   loadSubCategory(store);
+  loadJob(store);
+  loadJobTopLevelList(store);
 }
 
 const loadBizDoc = storeOrm => {
@@ -53,16 +55,20 @@ const loadTopLevelList = storeOrm => {
   storeOrm.dispatch(actionGen(actionTopLevelList.FETCH_TopLevelList_REQUESTED));
 }
 
-const loadJob = storeOrm => {
-  storeOrm.dispatch(actionGen(actionJob.FETCH_Job_REQUESTED));
-}
-
 const loadCategory = storeOrm => {
   storeOrm.dispatch(actionGen(actionCategory.FETCH_Category_REQUESTED));
 }
 
 const loadSubCategory = storeOrm => {
   storeOrm.dispatch(actionGen(actionSubCategory.FETCH_SubCategory_REQUESTED));
+}
+
+const loadJob = storeOrm => {
+  storeOrm.dispatch(actionGen(actionJob.FETCH_Job_REQUESTED));
+}
+
+const loadJobTopLevelList = storeOrm => {
+  storeOrm.dispatch(actionGen(actionJobTopLevelList.FETCH_JobTopLevelList_REQUESTED));
 }
 
 export default loadData;

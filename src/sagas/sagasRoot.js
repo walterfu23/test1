@@ -30,12 +30,6 @@ import {
   watchUpdateTopLevelList,
 } from './sagasTopLevelList';
 import {
-  watchFetchJobs,
-  watchCreateJob,
-  watchDeleteJob,
-  watchUpdateJob,
-} from './sagasJob';
-import {
   watchFetchCategorys,
   watchCreateCategory,
   watchDeleteCategory,
@@ -47,6 +41,18 @@ import {
   watchDeleteSubCategory,
   watchUpdateSubCategory,
 } from './sagasSubCategory';
+import {
+  watchFetchJobs,
+  watchCreateJob,
+  watchDeleteJob,
+  watchUpdateJob,
+} from './sagasJob';
+import {
+  watchFetchJobTopLevelLists,
+  watchCreateJobTopLevelList,
+  watchDeleteJobTopLevelList,
+  watchUpdateJobTopLevelList,
+} from './sagasJobTopLevelList';
 
 export default function* rootSaga() {
   yield all([
@@ -75,11 +81,6 @@ export default function* rootSaga() {
     watchDeleteTopLevelList(),
     watchUpdateTopLevelList(),
 
-    watchFetchJobs(),
-    watchCreateJob(),
-    watchDeleteJob(),
-    watchUpdateJob(),
-
     watchFetchCategorys(),
     watchCreateCategory(),
     watchDeleteCategory(),
@@ -89,6 +90,16 @@ export default function* rootSaga() {
     watchCreateSubCategory(),
     watchDeleteSubCategory(),
     watchUpdateSubCategory(),
+
+    watchFetchJobs(),
+    watchCreateJob(),
+    watchDeleteJob(),
+    watchUpdateJob(),
+
+    watchFetchJobTopLevelLists(),
+    watchCreateJobTopLevelList(),
+    watchDeleteJobTopLevelList(),
+    watchUpdateJobTopLevelList(),
 
   ]);
 }

@@ -12,9 +12,10 @@ import CompBizDocRev from './components/bizDocRev/CompBizDocRev';
 import CompBizDocRevPage from './components/bizDocRevPage/CompBizDocRevPage';
 import CompBizPageField from './components/bizPageField/CompBizPageField';
 import CompTopLevelList from './components/topLevelList/CompTopLevelList';
-import CompJob from './components/job/CompJob';
 import CompCategory from './components/category/CompCategory';
 import CompSubCategory from './components/subCategory/CompSubCategory';
+import CompJob from './components/job/CompJob';
+import CompJobTopLevelList from './components/jobTopLevelList/CompJobTopLevelList';
 
 export class App extends Component {
   constructor(props) {
@@ -54,18 +55,21 @@ export class App extends Component {
           <TabStripTab title="Lists">
             <CompTopLevelList />
           </TabStripTab>
-          <TabStripTab title="Jobs">
-            <CompJob />
-          </TabStripTab>
           <TabStripTab title="Cats">
             <CompCategory />
           </TabStripTab>
           <TabStripTab title="SubCats">
             <CompSubCategory />
           </TabStripTab>
+          <TabStripTab title="Jobs">
+            <CompJob />
+          </TabStripTab>
+          <TabStripTab title="Job-Lists">
+            <CompJobTopLevelList />
+          </TabStripTab>
 
         </TabStrip>
-        <CompFooter ver="0.11"/>
+        <CompFooter ver="0.12"/>
       </div>
     );
   }

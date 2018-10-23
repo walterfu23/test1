@@ -141,31 +141,6 @@ const setCurrentTopLevelList = (bizDoc) => {
   return actionGen(CTRL_UPD_CRNT_TopLevelList, bizDoc);
 }
 
-// ============= Job =================
-const SHOW_LOADING_Job = 'SHOW_LOADING_Job';
-const getShowLoadingJob = (state) => {
-  return state.control.Job.showLoading;
-}
-const setShowLoadingJob = (showFlag) => {
-  return actionGen(SHOW_LOADING_Job, showFlag);
-}
-
-const SHOW_FORM_Job = 'SHOW_FORM_Job';
-const getShowFormJob = (state) => {
-  return state.control.Job.showForm;
-}
-const setShowFormJob = (showFlag) => {
-  return actionGen(SHOW_FORM_Job, showFlag);
-}
-
-const CTRL_UPD_CRNT_Job = 'CTRL_UPD_CRNT_Job';
-const getCurrentJob = (state) => {
-  return state.control.Job.current;
-}
-const setCurrentJob = (Job) => {
-  return actionGen(CTRL_UPD_CRNT_Job, Job);
-}
-
 // ============= Category =================
 const SHOW_LOADING_Category = 'SHOW_LOADING_Category';
 const getShowLoadingCategory = (state) => {
@@ -216,6 +191,55 @@ const setCurrentSubCategory = (subCategory) => {
   return actionGen(CTRL_UPD_CRNT_SubCategory, subCategory);
 }
 
+// ============= Job =================
+const SHOW_LOADING_Job = 'SHOW_LOADING_Job';
+const getShowLoadingJob = (state) => {
+  return state.control.Job.showLoading;
+}
+const setShowLoadingJob = (showFlag) => {
+  return actionGen(SHOW_LOADING_Job, showFlag);
+}
+
+const SHOW_FORM_Job = 'SHOW_FORM_Job';
+const getShowFormJob = (state) => {
+  return state.control.Job.showForm;
+}
+const setShowFormJob = (showFlag) => {
+  return actionGen(SHOW_FORM_Job, showFlag);
+}
+
+const CTRL_UPD_CRNT_Job = 'CTRL_UPD_CRNT_Job';
+const getCurrentJob = (state) => {
+  return state.control.Job.current;
+}
+const setCurrentJob = (Job) => {
+  return actionGen(CTRL_UPD_CRNT_Job, Job);
+}
+
+// ============= JobTopLevelList =================
+const SHOW_LOADING_JobTopLevelList = 'SHOW_LOADING_JobTopLevelList';
+const getShowLoadingJobTopLevelList = (state) => {
+  return state.control.JobTopLevelList.showLoading;
+}
+const setShowLoadingJobTopLevelList = (showFlag) => {
+  return actionGen(SHOW_LOADING_JobTopLevelList, showFlag);
+}
+
+const SHOW_FORM_JobTopLevelList = 'SHOW_FORM_JobTopLevelList';
+const getShowFormJobTopLevelList = (state) => {
+  return state.control.JobTopLevelList.showForm;
+}
+const setShowFormJobTopLevelList = (showFlag) => {
+  return actionGen(SHOW_FORM_JobTopLevelList, showFlag);
+}
+
+const CTRL_UPD_CRNT_JobTopLevelList = 'CTRL_UPD_CRNT_JobTopLevelList';
+const getCurrentJobTopLevelList = (state) => {
+  return state.control.JobTopLevelList.current;
+}
+const setCurrentJobTopLevelList = (JobTopLevelList) => {
+  return actionGen(CTRL_UPD_CRNT_JobTopLevelList, JobTopLevelList);
+}
 
 //======================================================
 
@@ -296,19 +320,6 @@ const actionControl = {
   getCurrentTopLevelList: (state) => getCurrentTopLevelList(state),
   setCurrentTopLevelList: (bizDoc) => setCurrentTopLevelList(bizDoc),
 
-  // ============= Job =================  
-  SHOW_LOADING_Job,
-  getShowLoadingJob: (state) => getShowLoadingJob(state),
-  setShowLoadingJob: (showFlag) => setShowLoadingJob(showFlag),
-
-  SHOW_FORM_Job,
-  getShowFormJob: (state) => getShowFormJob(state),
-  setShowFormJob: (showFlag) => setShowFormJob(showFlag),
-
-  CTRL_UPD_CRNT_Job,
-  getCurrentJob: (state) => getCurrentJob(state),
-  setCurrentJob: (job) => setCurrentJob(job),
-
   // ============= Category =================
   SHOW_LOADING_Category,
   getShowLoadingCategory: (state) => getShowLoadingCategory(state),
@@ -334,6 +345,32 @@ const actionControl = {
   CTRL_UPD_CRNT_SubCategory,
   getCurrentSubCategory: (state) => getCurrentSubCategory(state),
   setCurrentSubCategory: (subCategory) => setCurrentSubCategory(subCategory),
+
+  // ============= Job =================  
+  SHOW_LOADING_Job,
+  getShowLoadingJob: (state) => getShowLoadingJob(state),
+  setShowLoadingJob: (showFlag) => setShowLoadingJob(showFlag),
+
+  SHOW_FORM_Job,
+  getShowFormJob: (state) => getShowFormJob(state),
+  setShowFormJob: (showFlag) => setShowFormJob(showFlag),
+
+  CTRL_UPD_CRNT_Job,
+  getCurrentJob: (state) => getCurrentJob(state),
+  setCurrentJob: (job) => setCurrentJob(job),
+
+  // ============= JobTopLevelList =================  
+  SHOW_LOADING_JobTopLevelList,
+  getShowLoadingJobTopLevelList: (state) => getShowLoadingJobTopLevelList(state),
+  setShowLoadingJobTopLevelList: (showFlag) => setShowLoadingJobTopLevelList(showFlag),
+
+  SHOW_FORM_JobTopLevelList,
+  getShowFormJobTopLevelList: (state) => getShowFormJobTopLevelList(state),
+  setShowFormJobTopLevelList: (showFlag) => setShowFormJobTopLevelList(showFlag),
+
+  CTRL_UPD_CRNT_JobTopLevelList,
+  getCurrentJobTopLevelList: (state) => getCurrentJobTopLevelList(state),
+  setCurrentJobTopLevelList: (JobTopLevelList) => setCurrentJobTopLevelList(JobTopLevelList),
 
 
 }; // actionControl
