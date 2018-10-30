@@ -8,6 +8,7 @@ import Category from './modelCategory';
 import SubCategory from './modelSubCategory';
 import Job from './modelJob';
 import JobTopLevelList from './modelJobTopLevelList';
+import JobSubcatDoc from './modelJobSubcatDoc';
 
 const orm = new ORM();
 orm.register(
@@ -20,6 +21,7 @@ orm.register(
   SubCategory,
   Job,
   JobTopLevelList,
+  JobSubcatDoc,
 );
 
 export default orm;

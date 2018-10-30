@@ -8,6 +8,7 @@ import actionCategory from '../actions/actionCategory';
 import actionSubCategory from '../actions/actionSubCategory';
 import actionJob from '../actions/actionJob';
 import actionJobTopLevelList from '../actions/actionJobTopLevelList';
+import actionJobSubcatDoc from '../actions/actionJobSubcatDoc';
 
 export default function ormReducer(dbState, action) {
   const session = orm.session(dbState);
@@ -21,6 +22,7 @@ export default function ormReducer(dbState, action) {
     SubCategory,
     Job,
     JobTopLevelList,
+    JobSubcatDoc,
   } = session;
 
   switch (action.type) {
@@ -148,6 +150,20 @@ export default function ormReducer(dbState, action) {
       break;
     case actionJobTopLevelList.UPDATE_JobTopLevelList_SUCCESSFUL:
       JobTopLevelList.withId(action.payload.Id).update(action.payload);
+      break;
+
+    //==================== JobSubcatDoc ====================
+    case actionJobSubcatDoc.FETCH_JobSubcatDoc_SUCCESSFUL:
+      JobSubcatDoc.hydrateArray(action.payload.data.value);
+      break;
+    case actionJobSubcatDoc.CREATE_JobSubcatDoc_SUCCESSFUL:
+      JobSubcatDoc.hydrate(action.payload.data);
+      break;
+    case actionJobSubcatDoc.DELETE_JobSubcatDoc_SUCCESSFUL:
+      JobSubcatDoc.withId(action.payload.Id).delete();
+      break;
+    case actionJobSubcatDoc.UPDATE_JobSubcatDoc_SUCCESSFUL:
+      JobSubcatDoc.withId(action.payload.Id).update(action.payload);
       break;
 
 

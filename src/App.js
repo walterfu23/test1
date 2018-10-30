@@ -16,6 +16,7 @@ import CompCategory from './components/category/CompCategory';
 import CompSubCategory from './components/subCategory/CompSubCategory';
 import CompJob from './components/job/CompJob';
 import CompJobTopLevelList from './components/jobTopLevelList/CompJobTopLevelList';
+import CompJobSubcatDoc from './components/jobSubcatDoc/CompJobSubcatDoc';
 
 export class App extends Component {
   constructor(props) {
@@ -66,6 +67,9 @@ export class App extends Component {
           </TabStripTab>
           <TabStripTab title="Job-Lists">
             <CompJobTopLevelList />
+          </TabStripTab>
+          <TabStripTab title="Job-SubCat-Doc">
+            <CompJobSubcatDoc />
           </TabStripTab>
 
         </TabStrip>

@@ -241,6 +241,31 @@ const setCurrentJobTopLevelList = (JobTopLevelList) => {
   return actionGen(CTRL_UPD_CRNT_JobTopLevelList, JobTopLevelList);
 }
 
+// ============= JobSubcatDoc =================
+const SHOW_LOADING_JobSubcatDoc = 'SHOW_LOADING_JobSubcatDoc';
+const getShowLoadingJobSubcatDoc = (state) => {
+  return state.control.JobSubcatDoc.showLoading;
+}
+const setShowLoadingJobSubcatDoc = (showFlag) => {
+  return actionGen(SHOW_LOADING_JobSubcatDoc, showFlag);
+}
+
+const SHOW_FORM_JobSubcatDoc = 'SHOW_FORM_JobSubcatDoc';
+const getShowFormJobSubcatDoc = (state) => {
+  return state.control.JobSubcatDoc.showForm;
+}
+const setShowFormJobSubcatDoc = (showFlag) => {
+  return actionGen(SHOW_FORM_JobSubcatDoc, showFlag);
+}
+
+const CTRL_UPD_CRNT_JobSubcatDoc = 'CTRL_UPD_CRNT_JobSubcatDoc';
+const getCurrentJobSubcatDoc = (state) => {
+  return state.control.JobSubcatDoc.current;
+}
+const setCurrentJobSubcatDoc = (JobSubcatDoc) => {
+  return actionGen(CTRL_UPD_CRNT_JobSubcatDoc, JobSubcatDoc);
+}
+
 //======================================================
 
 // things exported thru the default
@@ -371,6 +396,19 @@ const actionControl = {
   CTRL_UPD_CRNT_JobTopLevelList,
   getCurrentJobTopLevelList: (state) => getCurrentJobTopLevelList(state),
   setCurrentJobTopLevelList: (JobTopLevelList) => setCurrentJobTopLevelList(JobTopLevelList),
+
+  // ============= JobSubcatDoc =================  
+  SHOW_LOADING_JobSubcatDoc,
+  getShowLoadingJobSubcatDoc: (state) => getShowLoadingJobSubcatDoc(state),
+  setShowLoadingJobSubcatDoc: (showFlag) => setShowLoadingJobSubcatDoc(showFlag),
+
+  SHOW_FORM_JobSubcatDoc,
+  getShowFormJobSubcatDoc: (state) => getShowFormJobSubcatDoc(state),
+  setShowFormJobSubcatDoc: (showFlag) => setShowFormJobSubcatDoc(showFlag),
+
+  CTRL_UPD_CRNT_JobSubcatDoc,
+  getCurrentJobSubcatDoc: (state) => getCurrentJobSubcatDoc(state),
+  setCurrentJobSubcatDoc: (JobSubcatDoc) => setCurrentJobSubcatDoc(JobSubcatDoc),
 
 
 }; // actionControl

@@ -124,6 +124,7 @@ class CompBizPageFieldForm extends Component {
   }
 
   // BizDocRev dropdown value changed
+  // listBizDocRevPage will follow the selected rev
   handleBizDocRevDrownDownChange = (event) => {
     const selectedRev = event.target.value;
     const selectedRevId = selectedRev.Id;

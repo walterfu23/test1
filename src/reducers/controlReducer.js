@@ -49,6 +49,11 @@ const initialState = {
     showForm: false,     // true: show the Add/Edit form
     current: {},         // currently selected rec
   },
+  JobSubcatDoc: {
+    showLoading: false,  // true: show the loading panel
+    showForm: false,     // true: show the Add/Edit form
+    current: {},         // currently selected rec
+  },
 };
 
 const controlReducer = (prevState = initialState, action) => {
@@ -299,6 +304,32 @@ const controlReducer = (prevState = initialState, action) => {
         ...prevState,
         JobTopLevelList: {
           ...prevState.JobTopLevelList,
+          current: action.payload,
+        }
+      }
+
+    // =============== JobSubcatDoc ================  
+    case actionControl.SHOW_LOADING_JobSubcatDoc:
+      return {
+        ...prevState,
+        JobSubcatDoc: {
+          ...prevState.JobSubcatDoc,
+          showLoading: action.payload,
+        }
+      };
+    case actionControl.SHOW_FORM_JobSubcatDoc:
+      return {
+        ...prevState,
+        JobSubcatDoc: {
+          ...prevState.JobSubcatDoc,
+          showForm: action.payload,
+        }
+      };
+    case actionControl.CTRL_UPD_CRNT_JobSubcatDoc:
+      return {
+        ...prevState,
+        JobSubcatDoc: {
+          ...prevState.JobSubcatDoc,
           current: action.payload,
         }
       }

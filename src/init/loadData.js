@@ -9,6 +9,7 @@ import actionCategory from '../actions/actionCategory';
 import actionSubCategory from '../actions/actionSubCategory';
 import actionJob from '../actions/actionJob';
 import actionJobTopLevelList from '../actions/actionJobTopLevelList';
+import actionJobSubcatDoc from '../actions/actionJobSubcatDoc';
 
 // const action = (store, type) => {
 //   store.dispatch({ type });
@@ -25,6 +26,7 @@ const loadData = store => {
   loadSubCategory(store);
   loadJob(store);
   loadJobTopLevelList(store);
+  loadJobSubcatDoc(store);
 }
 
 const loadBizDoc = storeOrm => {
@@ -69,6 +71,10 @@ const loadJob = storeOrm => {
 
 const loadJobTopLevelList = storeOrm => {
   storeOrm.dispatch(actionGen(actionJobTopLevelList.FETCH_JobTopLevelList_REQUESTED));
+}
+
+const loadJobSubcatDoc = storeOrm => {
+  storeOrm.dispatch(actionGen(actionJobSubcatDoc.FETCH_JobSubcatDoc_REQUESTED));
 }
 
 export default loadData;

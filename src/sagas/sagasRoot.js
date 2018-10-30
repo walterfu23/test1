@@ -53,6 +53,12 @@ import {
   watchDeleteJobTopLevelList,
   watchUpdateJobTopLevelList,
 } from './sagasJobTopLevelList';
+import {
+  watchFetchJobSubcatDocs,
+  watchCreateJobSubcatDoc,
+  watchDeleteJobSubcatDoc,
+  watchUpdateJobSubcatDoc,
+} from './sagasJobSubcatDoc';
 
 export default function* rootSaga() {
   yield all([
@@ -100,6 +106,11 @@ export default function* rootSaga() {
     watchCreateJobTopLevelList(),
     watchDeleteJobTopLevelList(),
     watchUpdateJobTopLevelList(),
+
+    watchFetchJobSubcatDocs(),
+    watchCreateJobSubcatDoc(),
+    watchDeleteJobSubcatDoc(),
+    watchUpdateJobSubcatDoc(),
 
   ]);
 }
