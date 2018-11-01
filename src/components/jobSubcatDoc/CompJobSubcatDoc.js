@@ -220,9 +220,9 @@ class CompJobSubcatDoc extends Component {
           </GridToolbar>
           <GridColumn field="Id" title="Id" width="70px" editable={false} filterable={false} />
           <GridColumn field="Job.dispLabel" title="Job" />
-          <GridColumn field="Subcat.Category.dispLabel" title="Cat" />
-          <GridColumn field="Subcat.dispLabel" title="SubCat" />
-          <GridColumn field="BizDoc.dispLabel" title="Doc" />
+          <GridColumn field="SubCategory.Category.Name" title="Category" />
+          <GridColumn field="SubCategory.Name" title="SubCategory" />
+          <GridColumn field="BizDoc.DocNum" title="Document" />
           <GridColumn field="Comment" title="Comment" />
           <GridColumn field="Active" title="Active" width="95px" filter="boolean" />
         </Grid>

@@ -68,12 +68,12 @@ export class App extends Component {
           <TabStripTab title="Job-Lists">
             <CompJobTopLevelList />
           </TabStripTab>
-          <TabStripTab title="Job-SubCat-Doc">
+          <TabStripTab title="SubCat-Doc">
             <CompJobSubcatDoc />
           </TabStripTab>
 
         </TabStrip>
-        <CompFooter ver="0.12"/>
+        <CompFooter ver="0.13"/>
       </div>
     );
   }

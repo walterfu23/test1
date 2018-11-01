@@ -39,15 +39,6 @@ class CompJobSubcatDocForm extends Component {
 
   constructor(props) {
     super(props);
-    const recEmpty = {
-      Id: undefined,
-      Active: true,
-      Comment: undefined,
-      Creator: props.getUserInfo.uid,   // CreateTime added in Api.
-    };
-    const recInEditToUse =
-      props.editMode === CompConst.EDIT_MODE_ADD ?
-        recEmpty : props.getCurrentRec;
 
     let addNew = false;
     let adding = false;
@@ -71,28 +62,65 @@ class CompJobSubcatDocForm extends Component {
     }
 
     const dialogTitle = getDialogTitle();  // this must be called first
-    const selectedPage = (addNew || !recInEditToUse) ?
-      undefined : recInEditToUse.Job;
-    const selectedRev = (addNew || !selectedPage) ?
-      undefined : selectedPage.SubCategory;
-    const selectedRevId = selectedRev && selectedRev.Id;
-    const listJob = selectedRevId &&
-      Job.filterByDocRevId(props.listJob, selectedRevId);
-
-    const stateInit = {
-      adding,           // true: adding a new record.
+    this.state = {
+      adding,           // true: add-new or add-similar record.
+      addNew,           // true: add-new
       dialogTitle,      // title of the dialog box
-      selectedRev, // the selected Rev in its dropdown.
-      selectedPage,  // the selected Page in its dropdown.
-      listJob,  // list of Job entries matching RevId
-      recInEdit: {
-        ...recInEditToUse,
-        Modifier: props.getUserInfo.uid,
-      },
     };
-    this.state = stateInit;
     this.draggable = DRPDraggable.draggableObj;
   } // constructor
+
+  componentWillMount() {
+    const recEmpty = {
+      Id: undefined,
+      Active: true,
+      Comment: undefined,
+      Creator: this.props.getUserInfo.uid,   // CreateTime added in Api.
+    };
+
+    const recInEditToUse = this.props.editMode === CompConst.EDIT_MODE_ADD ?
+      recEmpty : this.props.getCurrentRec;
+
+    const state = this.state;
+    let selectedJob = undefined;
+    let selectedBizDoc = undefined;
+    let selectedTopLevelList = undefined;
+    let selectedCategory = undefined;
+    let selectedSubCategory = undefined;
+    if (!state.addNew) {
+      selectedJob = recInEditToUse.Job;
+      if (selectedJob) {
+        this.jobChanged(selectedJob);
+      }
+      selectedSubCategory = recInEditToUse.SubCategory;
+      if (selectedSubCategory) {
+        selectedCategory = selectedSubCategory.Category;
+        if (selectedCategory) {
+          selectedTopLevelList = selectedCategory.TopLevelList;
+          if (selectedTopLevelList) {
+            this.topLevelListChanged(selectedTopLevelList);
+          }
+          this.categoryChanged(selectedCategory);
+        }
+        this.subCategoryChanged(selectedSubCategory);
+      }
+      selectedBizDoc = recInEditToUse.BizDoc;
+    }
+
+    this.setState(prevState => ({
+      ...prevState,
+      selectedJob,
+      selectedTopLevelList,
+      selectedCategory,
+      selectedSubCategory,
+      selectedBizDoc,
+      recInEdit: {
+        ...recInEditToUse,
+        Modifier: this.props.getUserInfo.uid,  // ModTime set in Api.
+      },
+    }));
+
+  }
 
   componentWillUnMount() {
     this.draggable.destroy();
@@ -132,15 +160,30 @@ class CompJobSubcatDocForm extends Component {
   // listTopLevelList will follow the selected Job value
   handleJobDrownDownChange = (event) => {
     const selectedJob = event.target.value;
+    this.jobChanged(selectedJob);
+  }
+
+  // Job value changed to selectedJob.
+  // listTopLevelList will follow the selected Job value
+  jobChanged = (selectedJob) => {
     const selectedJobId = selectedJob.Id;
+
+    // listJobTopLevelList has entries whose JobId matches the selected job.
+    const listJobTopLevelList = JobTopLevelList.filterByJobId(
+      this.props.listJobTopLevelList, selectedJobId);
+
+    // listTopLevelList are those entries related to the selected job.
     const listTopLevelList =
-      JobTopLevelList.filterByJobId(
-        this.props.listTopLevelList, selectedJobId);
-    // TODO: if the list has only one entry, use that entry
+      JobTopLevelList.filterByListJobTopLevelList(
+        this.props.listTopLevelList, listJobTopLevelList);
+
+    // if the list has only one entry, use that entry
+    const valUnique = listTopLevelList.length === 1;
+    const valSelectedTopLevelList = valUnique ? listTopLevelList[0] : null;
     this.setState(prevState => ({
       ...prevState,
       selectedJob,
-      selectedTopLevelList: null,
+      selectedTopLevelList: valSelectedTopLevelList,
       listTopLevelList,
       selectedCategory: null,
       selectedSubCategory: null,
@@ -150,50 +193,81 @@ class CompJobSubcatDocForm extends Component {
         JobId: selectedJobId,
       },
     }));
+
+    if (valUnique) {
+      this.topLevelListChanged(valSelectedTopLevelList);
+    }
   }
 
   // TopLevelList dropdown value changed. 
-  // listCategory will follow the selected TopLevelList value
   handleTopLevelListDrownDownChange = (event) => {
     const selectedTopLevelList = event.target.value;
+    this.topLevelListChanged(selectedTopLevelList);
+  }
+
+  // TopLevelList value changed to selectedTopLevelList. 
+  // listCategory will follow the selected TopLevelList value
+  topLevelListChanged = (selectedTopLevelList) => {
     const selectedTopLevelListId = selectedTopLevelList.Id;
     const listCategory = Category.filterByTopLevelListId(
       this.props.listCategory, selectedTopLevelListId
     );
-    // TODO: if the list has only one entry, use that entry
+    // if the list has only one entry, use that entry
+    const valUnique = listCategory.length === 1;
+    const valSelectedCategory = valUnique ? listCategory[0] : null;
     this.setState(prevState => ({
       ...prevState,
       selectedTopLevelList,
-      selectedCategory: null,
+      selectedCategory: valSelectedCategory,
       listCategory,
       selectedSubCategory: null,
 
       // TopLevelListId is not in recInEdit.
     }));
+
+    if (valUnique) {
+      this.categoryChanged(valSelectedCategory);
+    }
   }
 
   // Category dropdown value changed. 
-  // listSubCategory will follow the selected Category value
   handleCategoryDrownDownChange = (event) => {
     const selectedCategory = event.target.value;
+    this.categoryChanged(selectedCategory);
+  }
+
+  // Category value changed to selectedCategory. 
+  // listSubCategory will follow the selected Category value
+  categoryChanged = (selectedCategory) => {
     const selectedCategoryId = selectedCategory.Id;
     const listSubCategory = SubCategory.filterByCatId(
       this.props.listSubCategory, selectedCategoryId
     );
-    // TODO: if the list has only one entry, use that entry
+    // if the list has only one entry, use that entry
+    const valUnique = listSubCategory.length === 1;
+    const valSelectedSubCategory = valUnique ? listSubCategory[0] : null;
     this.setState(prevState => ({
       ...prevState,
       selectedCategory,
-      selectedSubCategory: null,
+      selectedSubCategory: valSelectedSubCategory,
       listSubCategory,
 
       // CategoryId is not in recInEdit.
     }));
+
+    if (valUnique) {
+      this.subCategoryChanged(valSelectedSubCategory);
+    }
   }
 
   // SubCategory dropdown value changed. 
-  handleCategoryDrownDownChange = (event) => {
+  handleSubCategoryDrownDownChange = (event) => {
     const selectedSubCategory = event.target.value;
+    this.subCategoryChanged(selectedSubCategory);
+  }
+
+  // SubCategory value changed to selectedSubCategory
+  subCategoryChanged = (selectedSubCategory) => {
     const selectedSubCategoryId = selectedSubCategory.Id;
     this.setState(prevState => ({
       ...prevState,
@@ -201,13 +275,13 @@ class CompJobSubcatDocForm extends Component {
 
       recInEdit: {
         ...prevState.recInEdit,
-        SubCategoryId: selectedSubCategoryId,
+        SubCatId: selectedSubCategoryId,
       },
     }));
   }
 
   // BizDoc dropdown value changed. 
-  handleBizDocDrownDownChange = (event) => {
+  handleBizDocDropDownChange = (event) => {
     const selectedBizDoc = event.target.value;
     const selectedBizDocId = selectedBizDoc.Id;
     this.setState(prevState => ({
@@ -216,7 +290,7 @@ class CompJobSubcatDocForm extends Component {
 
       recInEdit: {
         ...prevState.recInEdit,
-        BizDocId: selectedBizDocId,
+        DocId: selectedBizDocId,
       },
     }));
   }
@@ -242,6 +316,18 @@ class CompJobSubcatDocForm extends Component {
           width={this.props.EDIT_FIELD_WIDTH}
         >
           <form onSubmit={this.handleSubmit}>
+            <div className="drp-align-center">
+              <label style={{ width: "45%", float: "left" }}>
+                <br />
+                <Switch
+                  name="Active"
+                  checked={this.state.recInEdit.Active}
+                  onChange={this.onDialogInputChange}
+                />
+                &nbsp;&nbsp;Active
+              </label>
+            </div>
+            <br />
             <div className="drp-margin-bottom">
               <DropDownList
                 name="JobId"
@@ -295,18 +381,19 @@ class CompJobSubcatDocForm extends Component {
                 disabled={!this.state.adding}
               />
             </div>
-            <div className="drp-align-center">
-              <label style={{ width: "45%", float: "left" }}>
-                <br />
-                <Switch
-                  name="Active"
-                  checked={this.state.recInEdit.Active}
-                  onChange={this.onDialogInputChange}
-                />
-                &nbsp;&nbsp;Active
-              </label>
+            <div className="drp-margin-bottom">
+              <DropDownList
+                label="BizDoc"
+                data={this.props.listBizDoc}
+                dataItemKey={'Id'}
+                textField={'DocNum'}
+                value={this.state.selectedBizDoc}
+                onChange={this.handleBizDocDropDownChange}
+                style={{ width: "100%" }}
+                required={true}
+                disabled={!this.state.adding}
+              />
             </div>
-            <br />
             <div className="drp-margin-bottom">
               <Input
                 name="Comment"
@@ -342,6 +429,9 @@ const mapStateToProps = (state, ownProps) => {
   const listJobUnsorted = createJobListSelector(state);
   const listJob = Job.sortByDispLabel(listJobUnsorted);
 
+  const listJobTopLevelListUnsorted = createJobTopLevelListListSelector(state);
+  const listJobTopLevelList = JobTopLevelList.sortByDispLabel(listJobTopLevelListUnsorted);
+
   const listTopLevelListAll = createTopLevelListListSelector(state);
   const listTopLevelListSansJob = TopLevelList.filterSansJob(listTopLevelListAll);
   const listTopLevelList = TopLevelList.sortByListLabel(listTopLevelListSansJob);
@@ -352,11 +442,16 @@ const mapStateToProps = (state, ownProps) => {
   const listSubCategoryUnsorted = createSubCategoryListSelector(state);
   const listSubCategory = SubCategory.sortByCatDispOrder(listSubCategoryUnsorted);
 
+  const listBizDocUnsorted = createBizDocListSelector(state);
+  const listBizDoc = BizDoc.sortByDocNum(listBizDocUnsorted);
+
   return {
     listJob,
+    listJobTopLevelList,
     listTopLevelList,
     listCategory,
     listSubCategory,
+    listBizDoc,
     getUserInfo: actionControl.getUserInfo(state),
     getCurrentRec: actionControl.getCurrentJobSubcatDoc(state),
   };

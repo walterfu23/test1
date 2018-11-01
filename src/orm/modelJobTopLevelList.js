@@ -1,4 +1,5 @@
 import { fk, attr, Model } from 'redux-orm';
+import utils from '../utils/utils';
 //import BizPageField from './modelBizPageField';
 
 export default class JobTopLevelList extends Model {
@@ -91,12 +92,31 @@ export default class JobTopLevelList extends Model {
   static sortByIdDesc = (list) =>
     list.sort((rec1, rec2) => rec2.Id - rec1.Id);
 
+  static sortByDispLabel = (list) =>
+    list.sort((rec1, rec2) =>
+      utils.strCompare(rec1.getDispLabel(), rec2.getDispLabel()));
+
   // filter list to get entries with the given jobId
   static filterByJobId = (list, jobId) =>
-    list.filter(JobTopLevelList => JobTopLevelList.JobId.Id === jobId);
+    list.filter(JobTopLevelList => JobTopLevelList.JobId === jobId);
 
   // filter list to get entries with the given listId
   static filterByListId = (list, listId) =>
-    list.filter(jobTopLevelList => jobTopLevelList.ListId.Id === listId);
+    list.filter(jobTopLevelList => jobTopLevelList.ListId === listId);
+
+  // returns true if ListId of a list item matches provided listId
+  static listIdInList = (list, listId) => {
+    for (var listItem of list) {
+      if (listItem.ListId === listId) {
+        return true;      
+      }
+    }
+    return false;
+  }
+
+  // filter listTopLevelList using the listid in listJobTopLevelList
+  static filterByListJobTopLevelList = (listTopLevelList, listJobTopLevelList) =>
+    listTopLevelList.filter(itemTopLevelList =>
+      JobTopLevelList.listIdInList(listJobTopLevelList, itemTopLevelList.Id));
 
 }; // JobTopLevelList

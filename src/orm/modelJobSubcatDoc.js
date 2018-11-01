@@ -8,7 +8,7 @@ export default class JobSubcatDoc extends Model {
   static get fields() {
     return {
       JobId: fk('Job', 'subcatDocs'),
-      SubcatId: fk('SubCategory', 'jobDocs'),
+      SubCatId: fk('SubCategory', 'jobDocs'),
       DocId: fk('BizDoc', 'jobSubcats'),
 
       Id: attr(),
@@ -64,13 +64,15 @@ export default class JobSubcatDoc extends Model {
   // convert the model to json
   toJson = () => {
     const Job = this.JobId && this.JobId.toJson();
-    const SubCategory = this.SubcatId && this.SubcatId.toJson();
+    const SubCategory = this.SubCatId && this.SubCatId.toJson();
     const BizDoc = this.DocId && this.DocId.toJson();
+    const dispLabel = SubCategory.Name + ' - ' + BizDoc.DocNum;
     const json = {
       ...this.ref,
       Job,
       SubCategory,
       BizDoc,
+      dispLabel,
     };
     return json;
   }

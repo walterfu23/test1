@@ -13,6 +13,7 @@ const ADDED_FIELDS = [
   'BizDocRevPage',
   'TopLevelList',
   'Category',
+  'SubCategory',
   'Job',
   'TopLevelList',
   'length',

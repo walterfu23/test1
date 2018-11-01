@@ -98,7 +98,7 @@ export default class SubCategory extends Model {
 
   // filter list to get subcategories with the given catId
   static filterByCatId = (list, catId) =>
-    list.filter(subCategory => subCategory.CatId.Id === catId);
+    list.filter(subCategory => subCategory.CatId === catId);
 
   // return Category if one of the subCategory entries in the list
   // has the CatId.Id matching the given catId value.
